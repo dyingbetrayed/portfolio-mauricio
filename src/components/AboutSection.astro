@@ -27,7 +27,6 @@ import Navbar from './Navbar.astro';
 					</p>
 				</div>
 			</div>
-			<hr class="about-divider about-divider--bottom" />
 		</div>
 	</div>
 </section>
@@ -138,10 +137,6 @@ import Navbar from './Navbar.astro';
 		margin: 0 0 clamp(1rem, 1.1vw, 1.75rem) 0;
 	}
 
-	.about-divider--bottom {
-		margin: clamp(1rem, 1.1vw, 1.75rem) 0 0 0;
-	}
-
 	.about-footer-content {
 		display: flex;
 		justify-content: space-between;
@@ -161,7 +156,7 @@ import Navbar from './Navbar.astro';
 	.name-title {
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(2rem, 4.8vw, 7rem);
+		font-size: clamp(1.6rem, 3.4vw, 4.75rem);
 		margin: 0;
 		color: #000000;
 		line-height: 0.95;
@@ -176,8 +171,10 @@ import Navbar from './Navbar.astro';
 		font-weight: 300;
 		font-size: clamp(0.95rem, 1.05vw, 1.55rem);
 		line-height: 1.4;
-		flex: 0 1 min(48vw, 1150px);
-		max-width: min(48vw, 1150px);
+		flex: 0 0 auto;
+		width: min(32vw, 34rem);
+		max-width: 100%;
+		margin-left: auto;
 		text-align: left;
 	}
 
