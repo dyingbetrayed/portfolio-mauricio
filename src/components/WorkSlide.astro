@@ -1,5 +1,6 @@
 ---
 import Navbar from './Navbar.astro';
+import Logo from './Logo.astro';
 import ProjectDetail from './ProjectDetail.astro';
 import ProjectNext from './ProjectNext.astro';
 import { projectCategories } from '../data/projects';
@@ -49,9 +50,16 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 	<div class="work-layer work-layer--category" data-layer="1" aria-hidden="true" inert>
 		{categories.map(([category, group]) => (
 			<div class="category-panel" data-category={category} id={category} hidden>
-				<div class="category-nav">
-					<Navbar theme="dark" active="work" showLogo />
-				</div>
+				<header class="category-nav">
+					<div class="category-nav__brand">
+						<Logo class="category-nav__logo" />
+						<button type="button" class="category-back" data-nav-back aria-label="Volver al menú Work">
+							<span class="category-back__icon" aria-hidden="true">←</span>
+							<span>Volver</span>
+						</button>
+					</div>
+					<Navbar theme="dark" active="work" />
+				</header>
 
 				<div class="category-content">
 					<h1 class="category-title">{group.title}</h1>
@@ -80,7 +88,7 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 		))}
 	</div>
 
-	{/* ── Capa 2: detalles de proyecto (pre-renderizados) ── */}
+	{/* ── Capa 2: detalles de proyecto (pre-renderizadas) ── */}
 	<div class="work-layer work-layer--project" data-layer="2" aria-hidden="true" inert>
 		{allProjects.map((project) => (
 			<ProjectDetail project={project} />
@@ -93,12 +101,6 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 			<ProjectNext project={project} />
 		))}
 	</div>
-
-	{/* Botón de retroceso: visible en niveles 1+ */}
-	<button type="button" class="work-back" data-work-back aria-label="Volver">
-		<span class="work-back__icon" aria-hidden="true">←</span>
-		<span class="work-back__label">Back</span>
-	</button>
 </section>
 
 <script>
@@ -108,7 +110,6 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 		const layerCategory = root.querySelector('.work-layer--category');
 		const layerProject = root.querySelector('.work-layer--project');
 		const layerNext = root.querySelector('.work-layer--next');
-		const backBtn = root.querySelector('[data-work-back]');
 
 		const categoryPanels = () =>
 			Array.from(root.querySelectorAll('[data-category]'));
@@ -133,20 +134,6 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 			setLayerState(layerCategory, depth >= 1);
 			setLayerState(layerProject, depth >= 2);
 			setLayerState(layerNext, depth >= 3);
-
-			if (backBtn instanceof HTMLElement) {
-				backBtn.classList.toggle('is-visible', depth > 0);
-
-				if (depth === 2) {
-					const activeProject = root.querySelector('[data-project]:not([hidden])');
-					const ink = activeProject
-						? getComputedStyle(activeProject).getPropertyValue('--ink').trim()
-						: '#ffffff';
-					backBtn.style.color = ink || '#ffffff';
-				} else {
-					backBtn.style.color = '#000000';
-				}
-			}
 
 			if (syncHash) {
 				const activeCategory = root.querySelector('[data-category]:not([hidden])');
@@ -208,8 +195,6 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 			setDepth(3, opts);
 		}
 
-		// Espera a que la capa termine de deslizarse antes de vaciarla,
-		// si no el panel desaparece de golpe y no se ve la animacion de salida.
 		function afterSlide(layer, done) {
 			let finished = false;
 			const finish = () => {
@@ -279,16 +264,17 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 				return;
 			}
 
+			if (target.closest('[data-nav-back]')) {
+				event.preventDefault();
+				goBack();
+				return;
+			}
+
 			const openProjectBtn = target.closest('[data-open-project]');
 			if (openProjectBtn instanceof HTMLElement) {
 				event.preventDefault();
 				openProject(openProjectBtn.getAttribute('data-open-project') || '');
 				return;
-			}
-
-			if (target.closest('[data-work-back]')) {
-				event.preventDefault();
-				goBack();
 			}
 		});
 
@@ -545,22 +531,68 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 	}
 
 	.category-nav {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
+		position: relative;
 		z-index: 20;
+		flex: 0 0 auto;
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 2rem;
 		padding: 1.5rem 3rem 0 2rem;
 	}
 
+	.category-nav :global(.navbar) {
+		width: auto;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.category-nav__brand {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.75rem;
+		flex-shrink: 0;
+	}
+
+	.category-nav__logo :global(img) {
+		width: clamp(140px, 12vw, 200px);
+		height: auto;
+	}
+
+	.category-back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		border: none;
+		background: transparent;
+		padding: 0;
+		cursor: pointer;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(1.05rem, 1.15vw, 1.7rem);
+		letter-spacing: 0.03em;
+		color: #000000;
+	}
+
+	.category-back:hover {
+		opacity: 0.65;
+	}
+
+	.category-back__icon {
+		font-size: 1.1em;
+		line-height: 1;
+	}
+
 	.category-content {
-		padding: 20vh 2rem 2vh 1.5rem;
+		padding: clamp(2rem, 6vh, 5rem) 2rem 2vh 1.5rem;
 		display: flex;
 		flex-direction: column;
 		width: 100%;
 		max-width: 100%;
 		box-sizing: border-box;
 		flex: 1;
+		min-height: 0;
 	}
 
 	.category-title {
@@ -638,46 +670,13 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 		color: #ffffff;
 	}
 
-	/* ── Botón back: debajo del logo, alineado a su borde izquierdo ── */
-	.work-back {
-		position: absolute;
-		top: calc(1.5rem + 83px + 0.75rem);
-		left: 2rem;
-		z-index: 30;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		border: none;
-		background: transparent;
-		padding: 0.35rem 0;
-		cursor: pointer;
-		font-family: var(--font-nav);
-		font-weight: 600;
-		font-size: clamp(1.05rem, 1.15vw, 1.7rem);
-		letter-spacing: 0.03em;
-		color: #000000;
-		opacity: 0;
-		visibility: hidden;
-		transform: translateY(-0.5rem);
-		transition: opacity 0.3s ease, transform 0.4s ease, color 0.4s ease,
-			visibility 0s linear 0.4s;
-	}
-
-	.work-back.is-visible {
-		opacity: 1;
-		visibility: visible;
-		transform: translateY(0);
-		transition-delay: 0s;
-	}
-
-	.work-back__icon {
-		font-size: 1.1em;
-		line-height: 1;
-	}
-
 	@media (max-width: 768px) {
+		.category-nav {
+			padding: 1.25rem 1.5rem 0 1.5rem;
+			flex-wrap: wrap;
+		}
 		.category-content {
-			padding: 8rem 2rem 2rem 2rem;
+			padding: 1.5rem 1.5rem 2rem 1.5rem;
 		}
 		.category-title {
 			font-size: 18vw;

@@ -2,6 +2,7 @@
 import Navbar from './Navbar.astro';
 import type { Project } from '../data/projects';
 import { readableInk } from '../utils/color';
+import { findProjectCategory, projectCategories } from '../data/projects';
 
 export interface Props {
 	project: Project;
@@ -14,6 +15,8 @@ const navTheme = ink === '#ffffff' ? 'light' : 'dark';
 const services = project.services?.length ? project.services.join(' · ') : null;
 const hasMeta = Boolean(project.tagline || services);
 const sections = project.sections ?? [];
+const categoryId = findProjectCategory(project.slug);
+const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 ---
 
 <article
@@ -59,9 +62,25 @@ const sections = project.sections ?? [];
 
 		{project.note && <p class="project__note">{project.note}</p>}
 
-		<button type="button" class="project__next-btn" data-open-project-next={project.slug}>
-			siguiente
-		</button>
+		<nav class="project__bottom-nav" aria-label="Navegación de proyecto">
+			<button
+				type="button"
+				class="project__nav-btn project__nav-btn--back"
+				data-nav-back
+			>
+				<span class="project__nav-icon" aria-hidden="true">←</span>
+				<span>{categoryTitle ?? 'Volver'}</span>
+			</button>
+
+			<button
+				type="button"
+				class="project__nav-btn project__nav-btn--next"
+				data-open-project-next={project.slug}
+			>
+				<span>Siguiente</span>
+				<span class="project__nav-icon" aria-hidden="true">→</span>
+			</button>
+		</nav>
 	</div>
 </article>
 
@@ -97,7 +116,7 @@ const sections = project.sections ?? [];
 		min-height: 0;
 		display: flex;
 		flex-direction: column;
-		padding: clamp(4rem, 11vh, 9rem) var(--pad-x) clamp(1.25rem, 3vh, 2.5rem);
+		padding: clamp(10rem, 14vh, 11rem) var(--pad-x) clamp(1.25rem, 3vh, 2.5rem);
 	}
 
 	.project__head {
@@ -211,23 +230,39 @@ const sections = project.sections ?? [];
 		opacity: 0.85;
 	}
 
-	.project__next-btn {
-		align-self: flex-start;
+	.project__bottom-nav {
 		margin-top: auto;
-		padding: clamp(0.75rem, 1.5vh, 1.25rem) 0 0;
+		padding-top: clamp(0.75rem, 1.5vh, 1.25rem);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		border-top: 1px solid var(--ink);
+	}
+
+	.project__nav-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
 		border: none;
 		background: transparent;
 		color: var(--ink);
 		cursor: pointer;
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(1.05rem, 1.15vw, 1.7rem);
+		font-size: clamp(0.95rem, 1.05vw, 1.45rem);
 		letter-spacing: 0.03em;
-		text-transform: lowercase;
+		padding: clamp(0.6rem, 1.2vh, 1rem) 0;
+		transition: opacity 0.2s ease;
 	}
 
-	.project__next-btn:hover {
-		opacity: 0.7;
+	.project__nav-btn:hover {
+		opacity: 0.65;
+	}
+
+	.project__nav-icon {
+		font-size: 1.1em;
+		line-height: 1;
 	}
 
 	@media (max-width: 768px) {

@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar.astro';
 import AboutSection from '../components/AboutSection.astro';
 import WorkSlide from '../components/WorkSlide.astro';
 import ContactSection from '../components/ContactSection.astro';
+
+const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 ---
 
 <Layout>
@@ -20,6 +22,11 @@ import ContactSection from '../components/ContactSection.astro';
 			<footer class="hero-footer">
 				<p>SI TIENES UNA IDEA EN MENTE Y QUIERES DESARROLLAR TU IDEA, PODEMOS TRABAJAR EN TU IDENTIDAD, PACKAGING, FLYER O MERCH.</p>
 			</footer>
+
+			<div class="scroll-hint" aria-hidden="true">
+				<span class="scroll-hint__text">Scroll</span>
+				<span class="scroll-hint__arrow">→</span>
+			</div>
 		</section>
 
 		<AboutSection />
@@ -28,6 +35,19 @@ import ContactSection from '../components/ContactSection.astro';
 
 		<ContactSection />
 	</main>
+
+	<nav class="scroll-indicator" aria-label="Secciones del sitio">
+		{slideLabels.map((label, i) => (
+			<button
+				type="button"
+				class="scroll-indicator__dot"
+				data-slide-index={i}
+				aria-label={label}
+			>
+				<span class="scroll-indicator__pip"></span>
+			</button>
+		))}
+	</nav>
 </Layout>
 
 <script>
@@ -65,6 +85,42 @@ import ContactSection from '../components/ContactSection.astro';
 			return Number(work?.dataset.depth || 0);
 		}
 
+		/* ── Wheel → horizontal (debounced snap) ── */
+		let isScrolling = false;
+		const SCROLL_COOLDOWN = 650;
+
+		container.addEventListener('wheel', (event) => {
+			if (workDepth() > 0) return;
+			if (Math.abs(event.deltaY) < 5) return;
+			event.preventDefault();
+			if (isScrolling) return;
+			isScrolling = true;
+			go(event.deltaY > 0 ? 1 : -1);
+			setTimeout(() => { isScrolling = false; }, SCROLL_COOLDOWN);
+		}, { passive: false });
+
+		/* ── Touch swipe → horizontal ── */
+		let touchStartX = 0;
+		let touchStartY = 0;
+		const SWIPE_THRESHOLD = 50;
+
+		container.addEventListener('touchstart', (event) => {
+			if (workDepth() > 0) return;
+			const touch = event.touches[0];
+			touchStartX = touch.clientX;
+			touchStartY = touch.clientY;
+		}, { passive: true });
+
+		container.addEventListener('touchend', (event) => {
+			if (workDepth() > 0) return;
+			const touch = event.changedTouches[0];
+			const dx = touch.clientX - touchStartX;
+			const dy = touch.clientY - touchStartY;
+			if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dy) > Math.abs(dx)) return;
+			go(dx < 0 ? 1 : -1);
+		}, { passive: true });
+
+		/* ── Keyboard navigation ── */
 		window.addEventListener('keydown', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
@@ -88,6 +144,49 @@ import ContactSection from '../components/ContactSection.astro';
 			event.preventDefault();
 			go(isNext ? 1 : -1);
 		});
+
+		/* ── Scroll hint: hide on first interaction ── */
+		const scrollHint = document.querySelector('.scroll-hint');
+		if (scrollHint) {
+			const hideHint = () => {
+				scrollHint.classList.add('is-hidden');
+				container.removeEventListener('scroll', hideHint);
+				window.removeEventListener('keydown', hideHint);
+			};
+			container.addEventListener('scroll', hideHint, { once: true });
+			window.addEventListener('keydown', hideHint, { once: true });
+		}
+
+		/* ── Scroll indicator dots ── */
+		const indicator = document.querySelector('.scroll-indicator');
+		if (indicator) {
+			const dots = Array.from(indicator.querySelectorAll('.scroll-indicator__dot'));
+
+			function updateDots() {
+				const idx = activeIndex();
+				dots.forEach((dot, i) => {
+					dot.classList.toggle('is-active', i === idx);
+				});
+				indicator.classList.toggle('is-hidden', workDepth() > 0);
+			}
+
+			container.addEventListener('scroll', updateDots, { passive: true });
+
+			const work = document.getElementById('work');
+			if (work) {
+				const observer = new MutationObserver(updateDots);
+				observer.observe(work, { attributes: true, attributeFilter: ['data-depth'] });
+			}
+
+			dots.forEach((dot) => {
+				dot.addEventListener('click', () => {
+					const idx = Number(dot.dataset.slideIndex);
+					go(idx - activeIndex());
+				});
+			});
+
+			updateDots();
+		}
 	}
 </script>
 
@@ -174,5 +273,93 @@ import ContactSection from '../components/ContactSection.astro';
 		letter-spacing: 1px;
 		line-height: 1.6;
 		color: #f4f4f4;
+	}
+
+	.scroll-hint {
+		position: absolute;
+		bottom: 2.5rem;
+		right: 3rem;
+		z-index: 3;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: rgba(255, 255, 255, 0.8);
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(0.85rem, 1vw, 1.1rem);
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		opacity: 1;
+		transition: opacity 0.6s ease;
+	}
+
+	.scroll-hint.is-hidden {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.scroll-hint__arrow {
+		display: inline-block;
+		animation: hint-bounce 1.4s ease-in-out infinite;
+	}
+
+	@keyframes hint-bounce {
+		0%, 100% { transform: translateX(0); }
+		50% { transform: translateX(6px); }
+	}
+
+	.scroll-indicator {
+		position: fixed;
+		bottom: 1.5rem;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 50;
+		display: flex;
+		gap: 0.75rem;
+		align-items: center;
+		padding: 0.5rem 0.75rem;
+		border-radius: 999px;
+		background: rgba(0, 0, 0, 0.25);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		transition: opacity 0.3s ease, visibility 0s linear 0s;
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.scroll-indicator.is-hidden {
+		opacity: 0;
+		visibility: hidden;
+		transition-delay: 0s, 0.3s;
+	}
+
+	.scroll-indicator__dot {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.scroll-indicator__pip {
+		display: block;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.45);
+		transition: background 0.3s ease, transform 0.3s ease;
+	}
+
+	.scroll-indicator__dot.is-active .scroll-indicator__pip {
+		background: #ffffff;
+		transform: scale(1.35);
+	}
+
+	.scroll-indicator__dot:hover .scroll-indicator__pip {
+		background: rgba(255, 255, 255, 0.8);
 	}
 </style>

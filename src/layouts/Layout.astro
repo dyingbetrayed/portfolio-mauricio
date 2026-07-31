@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -12,6 +12,7 @@
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
 	</head>
 	<body>
+		<a href="#about" class="skip-link">Saltar al contenido</a>
 		<slot />
 	</body>
 </html>
@@ -75,5 +76,37 @@
 	
 	* {
 		box-sizing: border-box;
+	}
+
+	.skip-link {
+		position: fixed;
+		top: -100%;
+		left: 1rem;
+		z-index: 9999;
+		padding: 0.75rem 1.25rem;
+		background: #000000;
+		color: #ffffff;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: 1rem;
+		border-radius: 0 0 6px 6px;
+		opacity: 1;
+		transition: top 0.2s ease;
+	}
+
+	.skip-link:focus {
+		top: 0;
+		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
 	}
 </style>

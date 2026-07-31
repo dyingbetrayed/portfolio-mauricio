@@ -145,3 +145,19 @@ export function getNextProjects(slug: string, count = 3): Project[] {
 	}
 	return [];
 }
+
+/** Proyecto anterior y siguiente dentro de la misma categoría (circular). */
+export function getAdjacentProjects(slug: string): { prev: Project | null; next: Project | null } {
+	for (const group of Object.values(projectCategories)) {
+		const index = group.projects.findIndex((p) => p.slug === slug);
+		if (index === -1) continue;
+
+		const pool = group.projects;
+		if (pool.length <= 1) return { prev: null, next: null };
+
+		const prev = pool[(index - 1 + pool.length) % pool.length];
+		const next = pool[(index + 1) % pool.length];
+		return { prev, next };
+	}
+	return { prev: null, next: null };
+}

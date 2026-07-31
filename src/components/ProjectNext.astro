@@ -15,6 +15,10 @@ const nextSlug = related[0]?.slug;
 
 <article class="project-next" data-project-next={project.slug} hidden>
 	<header class="project-next__nav">
+		<button type="button" class="project-next__back" data-nav-back aria-label="Volver al proyecto">
+			<span class="project-next__back-icon" aria-hidden="true">←</span>
+			<span>Volver</span>
+		</button>
 		<Navbar theme="dark" active="work" />
 	</header>
 
@@ -99,6 +103,41 @@ const nextSlug = related[0]?.slug;
 		z-index: 5;
 		padding: 1.5rem 3rem 1.5rem 2rem;
 		background: #ffffff;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+	}
+
+	.project-next__nav :global(.navbar) {
+		width: auto;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.project-next__back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		border: none;
+		background: transparent;
+		padding: 0;
+		cursor: pointer;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(1.05rem, 1.15vw, 1.7rem);
+		letter-spacing: 0.03em;
+		color: #000000;
+		flex-shrink: 0;
+	}
+
+	.project-next__back:hover {
+		opacity: 0.65;
+	}
+
+	.project-next__back-icon {
+		font-size: 1.1em;
+		line-height: 1;
 	}
 
 	.project-next__grid {
