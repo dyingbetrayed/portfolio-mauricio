@@ -14,8 +14,8 @@ const nextSlug = related[0]?.slug;
 ---
 
 <article class="project-next" data-project-next={project.slug} hidden>
-	<header class="project-next__nav" style="color: white;">
-		<Navbar theme="light" active="work" showLogo />
+	<header class="project-next__nav">
+		<Navbar theme="dark" active="work" showLogo />
 	</header>
 
 	<div class="project-next__grid">
@@ -101,6 +101,7 @@ const nextSlug = related[0]?.slug;
 		right: 0;
 		z-index: 5;
 		padding: 1.5rem 3rem 0 2rem;
+		min-height: 120px;
 		background: #ffffff;
 	}
 
@@ -163,13 +164,13 @@ const nextSlug = related[0]?.slug;
 	.project-next__forward--empty {
 		container-type: size;
 		display: flex;
-		align-items: flex-end;
+		align-items: center;
 		justify-content: space-between;
 		gap: clamp(0.35rem, 1.5cqw, 1rem);
 		width: 100%;
 		min-width: 0;
 		min-height: 0;
-		padding: clamp(0.5rem, 2cqh, 1rem) clamp(0.5rem, 2cqw, 1rem);
+		padding: clamp(1.5rem, 4cqh, 3rem) clamp(0.5rem, 2cqw, 1rem) clamp(0.5rem, 2cqh, 1rem);
 		border: none;
 		background: #ffffff;
 		color: #000000;
@@ -186,9 +187,9 @@ const nextSlug = related[0]?.slug;
 	.project-next__forward-label {
 		font-family: var(--font-text);
 		font-weight: 600;
-		font-size: min(26cqw, 55cqh);
+		font-size: min(30cqw, 64cqh);
 		line-height: 0.75;
-		letter-spacing: -0.07em;
+		letter-spacing: 0.03em;
 		flex: 1 1 auto;
 		min-width: 0;
 		white-space: nowrap;
