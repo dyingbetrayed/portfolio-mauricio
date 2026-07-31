@@ -49,7 +49,7 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 		{categories.map(([category, group]) => (
 			<div class="category-panel" data-category={category} id={category} hidden>
 				<div class="category-nav">
-					<Navbar theme="dark" active="work" />
+					<Navbar theme="dark" active="work" showLogo />
 				</div>
 
 				<div class="category-content">
@@ -495,6 +495,7 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 	.category-nav {
 		position: absolute;
 		top: 0;
+		left: 0;
 		right: 0;
 		z-index: 20;
 		padding: 1.5rem 3rem 0 2rem;
@@ -585,18 +586,18 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 		color: #ffffff;
 	}
 
-	/* ── Botón back ── */
+	/* ── Botón back: debajo del logo, alineado a su borde izquierdo ── */
 	.work-back {
 		position: absolute;
-		top: 1.5rem;
-		left: clamp(1.5rem, 2.5vw, 2.5rem);
+		top: calc(1.5rem + 83px + 0.75rem);
+		left: 2rem;
 		z-index: 30;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
 		border: none;
 		background: transparent;
-		padding: 0.35rem 0.25rem;
+		padding: 0.35rem 0;
 		cursor: pointer;
 		font-family: var(--font-nav);
 		font-weight: 600;
@@ -605,7 +606,7 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 		color: #000000;
 		opacity: 0;
 		visibility: hidden;
-		transform: translateX(-0.75rem);
+		transform: translateY(-0.5rem);
 		transition: opacity 0.3s ease, transform 0.4s ease, color 0.4s ease,
 			visibility 0s linear 0.4s;
 	}
@@ -613,7 +614,7 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 	.work-back.is-visible {
 		opacity: 1;
 		visibility: visible;
-		transform: translateX(0);
+		transform: translateY(0);
 		transition-delay: 0s;
 	}
 

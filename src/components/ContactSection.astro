@@ -95,14 +95,17 @@ import Navbar from './Navbar.astro';
 		justify-content: space-between;
 		width: 100%;
 		white-space: nowrap;
+		/* Compensa el sidebearing de la tinta, igual que branding */
+		--title-ink-lsb: 0.0854em;
+		--title-ink-rsb: 0.05em;
 	}
 
 	.contact-title span:first-child {
-		margin-left: -0.05em;
+		margin-left: calc(-1 * var(--title-ink-lsb));
 	}
 
 	.contact-title span:last-child {
-		margin-right: -0.05em;
+		margin-right: calc(-1 * var(--title-ink-rsb));
 	}
 
 	.contact-footer {

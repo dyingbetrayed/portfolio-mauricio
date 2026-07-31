@@ -24,7 +24,7 @@ const sections = project.sections ?? [];
 	hidden
 >
 	<header class="project__nav">
-		<Navbar theme={navTheme} active="work" />
+		<Navbar theme={navTheme} active="work" showLogo />
 	</header>
 
 	<div class="project__content">
@@ -85,7 +85,7 @@ const sections = project.sections ?? [];
 	.project__nav {
 		display: flex;
 		justify-content: flex-end;
-		padding: 1.5rem var(--pad-x) 0;
+		padding: 1.5rem var(--pad-x) 0 2rem;
 	}
 
 	.project__content {
