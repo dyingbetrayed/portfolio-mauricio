@@ -1,5 +1,6 @@
 ---
 import Navbar from './Navbar.astro';
+import Logo from './Logo.astro';
 import type { Project } from '../data/projects';
 import { readableInk } from '../utils/color';
 import { findProjectCategory, projectCategories } from '../data/projects';
@@ -27,7 +28,8 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 	hidden
 >
 	<header class="project__nav">
-		<Navbar theme={navTheme} active="work" showLogo />
+		<Logo class="project__logo" />
+		<Navbar theme={navTheme} active="work" />
 	</header>
 
 	<div class="project__content">
@@ -107,8 +109,28 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 
 	.project__nav {
 		display: flex;
-		justify-content: flex-end;
-		padding: 1.5rem var(--pad-x) 0 2rem;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 2rem;
+		padding: 1.5rem var(--pad-x) 0;
+		box-sizing: border-box;
+	}
+
+	.project__nav :global(.navbar) {
+		width: auto;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.project__logo {
+		flex-shrink: 0;
+		/* Mismo eje izquierdo que el título: sin absolute ni offsets ópticos */
+		margin: 0;
+		padding: 0;
+	}
+
+	.project__logo :global(img) {
+		display: block;
 	}
 
 	.project__content {
@@ -117,6 +139,7 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		display: flex;
 		flex-direction: column;
 		padding: clamp(10rem, 14vh, 11rem) var(--pad-x) clamp(1.25rem, 3vh, 2.5rem);
+		box-sizing: border-box;
 	}
 
 	.project__head {
@@ -127,9 +150,7 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 	}
 
 	.project__title {
-		--title-ink-lsb: 0.082em;
-
-		margin: 0 0 0 calc(-1 * var(--title-ink-lsb));
+		margin: 0;
 		font-family: var(--font-text);
 		font-weight: 700;
 		font-size: clamp(2.25rem, 4.7vw, 6.5rem);
