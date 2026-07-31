@@ -1,0 +1,168 @@
+---
+import type { Project } from '../data/projects';
+import { getNextProjects } from '../data/projects';
+import { readableInk } from '../utils/color';
+
+export interface Props {
+	project: Project;
+}
+
+const { project } = Astro.props;
+const related = getNextProjects(project.slug, 3);
+const nextSlug = related[0]?.slug;
+---
+
+<article class="project-next" data-project-next={project.slug} hidden>
+	<div class="project-next__grid">
+		{[0, 1, 2].map((index) => {
+			const item = related[index];
+			if (!item) {
+				return (
+					<div class="project-next__card project-next__card--empty" aria-hidden="true">
+						<div class="project-next__media"></div>
+						<div class="project-next__bar project-next__bar--empty"></div>
+					</div>
+				);
+			}
+
+			const ink = readableInk(item.color);
+			return (
+				<button
+					type="button"
+					class="project-next__card"
+					data-open-project={item.slug}
+					aria-label={`Abrir ${item.name}`}
+				>
+					<div class="project-next__media" aria-hidden="true"></div>
+					<div
+						class="project-next__bar"
+						style={`background-color: ${item.color}; color: ${ink};`}
+					>
+						<span class="project-next__name">{item.name}</span>
+					</div>
+				</button>
+			);
+		})}
+
+		{nextSlug ? (
+			<button
+				type="button"
+				class="project-next__forward"
+				data-open-project={nextSlug}
+				aria-label="Siguiente proyecto"
+			>
+				<span class="project-next__forward-label">NEXT</span>
+				<span class="project-next__forward-arrow" aria-hidden="true">↘</span>
+			</button>
+		) : (
+			<div class="project-next__forward project-next__forward--empty" aria-hidden="true">
+				<span class="project-next__forward-label">NEXT</span>
+				<span class="project-next__forward-arrow">↘</span>
+			</div>
+		)}
+	</div>
+</article>
+
+<style>
+	.project-next {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		background: #eeedec;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.project-next[hidden] {
+		display: none;
+	}
+
+	.project-next__grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+		width: 100%;
+		height: 100%;
+	}
+
+	.project-next__card {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		min-height: 0;
+		padding: 0;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		text-align: left;
+		font: inherit;
+		color: inherit;
+	}
+
+	.project-next__card--empty {
+		pointer-events: none;
+	}
+
+	.project-next__bar--empty {
+		background: #bdbdbd;
+		min-height: clamp(2.75rem, 6vh, 4rem);
+	}
+
+	.project-next__media {
+		flex: 1;
+		min-height: 0;
+		width: 100%;
+		background: #c8c8c8;
+	}
+
+	.project-next__bar {
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+		padding: clamp(0.85rem, 1.8vh, 1.35rem) clamp(1rem, 1.8vw, 1.75rem);
+	}
+
+	.project-next__name {
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(1rem, 1.35vw, 1.75rem);
+		letter-spacing: 0.02em;
+		line-height: 1.1;
+	}
+
+	.project-next__forward,
+	.project-next__forward--empty {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: clamp(0.75rem, 1.5vw, 1.5rem);
+		min-width: 0;
+		min-height: 0;
+		padding: clamp(1.5rem, 3vw, 3rem);
+		border: none;
+		background: #eeedec;
+		color: #000000;
+		font: inherit;
+		text-align: left;
+	}
+
+	.project-next__forward {
+		cursor: pointer;
+	}
+
+	.project-next__forward-label {
+		font-family: var(--font-text);
+		font-weight: 700;
+		font-size: clamp(3.5rem, 9vw, 11rem);
+		line-height: 0.85;
+		letter-spacing: -0.03em;
+	}
+
+	.project-next__forward-arrow {
+		font-family: var(--font-text);
+		font-weight: 700;
+		font-size: clamp(2.5rem, 6vw, 7rem);
+		line-height: 1;
+	}
+</style>

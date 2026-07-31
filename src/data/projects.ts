@@ -116,3 +116,32 @@ export function getCategory(category: string): ProjectCategory | undefined {
 export function projectHref(project: Project): string {
 	return `#${project.slug}`;
 }
+
+/** Categoría que contiene un proyecto, si existe */
+export function findProjectCategory(slug: string): string | undefined {
+	for (const [id, group] of Object.entries(projectCategories)) {
+		if (group.projects.some((project) => project.slug === slug)) return id;
+	}
+	return undefined;
+}
+
+/**
+ * Siguientes proyectos en el orden de la categoría del slug actual.
+ * Avanza circularmente y excluye el proyecto actual.
+ */
+export function getNextProjects(slug: string, count = 3): Project[] {
+	for (const group of Object.values(projectCategories)) {
+		const index = group.projects.findIndex((project) => project.slug === slug);
+		if (index === -1) continue;
+
+		const pool = group.projects;
+		if (pool.length <= 1) return [];
+
+		const result: Project[] = [];
+		for (let step = 1; step < pool.length && result.length < count; step += 1) {
+			result.push(pool[(index + step) % pool.length]);
+		}
+		return result;
+	}
+	return [];
+}
