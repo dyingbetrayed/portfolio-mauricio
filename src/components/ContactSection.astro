@@ -1,5 +1,6 @@
 ---
 import Navbar from './Navbar.astro';
+import ContactDrawer from './ContactDrawer.astro';
 ---
 
 <section class="slide contact-slide" id="contact">
@@ -28,7 +29,13 @@ import Navbar from './Navbar.astro';
 			</div>
 			
 			<div class="footer-col center-col">
-				<a href="mailto:mauricioatenciam@gmail.com" class="footer-link">mauricioatenciam@gmail.com</a>
+				<a
+					href="mailto:mauricioatenciam@gmail.com"
+					class="footer-link"
+					data-open-contact-drawer
+				>
+					mauricioatenciam@gmail.com
+				</a>
 			</div>
 			
 			<div class="footer-col right-col">
@@ -37,6 +44,8 @@ import Navbar from './Navbar.astro';
 			</div>
 		</footer>
 	</div>
+
+	<ContactDrawer />
 </section>
 
 <style>
