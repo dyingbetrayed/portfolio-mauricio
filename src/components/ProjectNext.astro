@@ -14,8 +14,8 @@ const nextSlug = related[0]?.slug;
 ---
 
 <article class="project-next" data-project-next={project.slug} hidden>
-	<header class="project-next__nav">
-		<Navbar theme="dark" active="work" showLogo />
+	<header class="project-next__nav" style="color: white;">
+		<Navbar theme="light" active="work" showLogo />
 	</header>
 
 	<div class="project-next__grid">
@@ -83,7 +83,7 @@ const nextSlug = related[0]?.slug;
 		inset: 0;
 		width: 100%;
 		height: 100%;
-		background: #eeedec;
+		background: #ffffff;
 		box-sizing: border-box;
 		overflow: hidden;
 		display: flex;
@@ -101,6 +101,7 @@ const nextSlug = related[0]?.slug;
 		right: 0;
 		z-index: 5;
 		padding: 1.5rem 3rem 0 2rem;
+		background: #ffffff;
 	}
 
 	.project-next__grid {
@@ -170,7 +171,7 @@ const nextSlug = related[0]?.slug;
 		min-height: 0;
 		padding: clamp(0.5rem, 2cqh, 1rem) clamp(0.5rem, 2cqw, 1rem);
 		border: none;
-		background: #eeedec;
+		background: #ffffff;
 		color: #000000;
 		font: inherit;
 		text-align: left;
@@ -185,7 +186,7 @@ const nextSlug = related[0]?.slug;
 	.project-next__forward-label {
 		font-family: var(--font-text);
 		font-weight: 600;
-		font-size: min(34cqw, 72cqh);
+		font-size: min(26cqw, 55cqh);
 		line-height: 0.75;
 		letter-spacing: -0.07em;
 		flex: 1 1 auto;
@@ -196,10 +197,9 @@ const nextSlug = related[0]?.slug;
 	.project-next__forward-arrow {
 		flex: 0 0 auto;
 		align-self: flex-end;
-		width: clamp(3.5rem, 12cqw, 8rem);
-		height: clamp(3.5rem, 12cqw, 8rem);
+		width: min(20cqw, 42cqh);
+		height: min(20cqw, 42cqh);
 		display: block;
 		object-fit: contain;
-		margin-bottom: 0.08em;
 	}
 </style>
