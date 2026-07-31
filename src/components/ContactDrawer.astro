@@ -3,6 +3,14 @@ const toEmail = 'mauricioatenciam@gmail.com';
 ---
 
 <div
+	class="contact-drawer-backdrop"
+	id="contact-drawer-backdrop"
+	hidden
+	data-contact-backdrop
+	aria-hidden="true"
+></div>
+
+<div
 	class="contact-drawer"
 	id="contact-drawer"
 	hidden
@@ -71,6 +79,30 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		border: 0;
 	}
 
+	.contact-drawer-backdrop {
+		position: absolute;
+		inset: 0;
+		z-index: 39;
+		background: transparent;
+		border: none;
+		padding: 0;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+	}
+
+	.contact-drawer-backdrop.is-open {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transition-delay: 0s;
+	}
+
+	.contact-drawer-backdrop[hidden] {
+		display: block;
+	}
+
 	.contact-drawer {
 		position: absolute;
 		top: 0;
@@ -84,14 +116,14 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		background: #000000;
 		color: #ffffff;
 		box-sizing: border-box;
-		transform: translateY(100%);
+		transform: translateX(100%);
 		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.4s;
 		visibility: hidden;
 		pointer-events: none;
 	}
 
 	.contact-drawer.is-open {
-		transform: translateY(0);
+		transform: translateX(0);
 		visibility: visible;
 		pointer-events: auto;
 		transition-delay: 0s;
@@ -211,6 +243,7 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		letter-spacing: 0.03em;
 		color: #ffffff;
 		padding: clamp(1.1rem, 2.4vh, 1.75rem) 1rem;
+		text-align: left;
 		transition: filter 0.2s ease, opacity 0.2s ease;
 	}
 
@@ -234,6 +267,7 @@ const toEmail = 'mauricioatenciam@gmail.com';
 <script>
 	// @ts-nocheck
 	const drawer = document.getElementById('contact-drawer');
+	const backdrop = document.getElementById('contact-drawer-backdrop');
 	const form = drawer?.querySelector('[data-contact-form]');
 	const cancelBtn = drawer?.querySelector('[data-contact-cancel]');
 	const toEmail = 'mauricioatenciam@gmail.com';
@@ -262,14 +296,23 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		return Math.abs(contact.offsetLeft - container.scrollLeft) < contact.offsetWidth * 0.35;
 	}
 
+	function isDrawerOpen() {
+		return drawer instanceof HTMLElement && drawer.classList.contains('is-open');
+	}
+
 	function openDrawer() {
 		if (!(drawer instanceof HTMLElement)) return;
 		stayOnContact();
 		drawer.hidden = false;
 		drawer.setAttribute('aria-hidden', 'false');
+		if (backdrop instanceof HTMLElement) {
+			backdrop.hidden = false;
+			backdrop.setAttribute('aria-hidden', 'false');
+		}
 		requestAnimationFrame(() => {
 			stayOnContact();
 			drawer.classList.add('is-open');
+			backdrop?.classList.add('is-open');
 			const input = drawer.querySelector('input[name="from"]');
 			if (input instanceof HTMLInputElement) {
 				input.focus({ preventScroll: true });
@@ -279,12 +322,15 @@ const toEmail = 'mauricioatenciam@gmail.com';
 	}
 
 	function closeDrawer() {
-		if (!(drawer instanceof HTMLElement)) return;
+		if (!(drawer instanceof HTMLElement) || !isDrawerOpen()) return;
 		drawer.classList.remove('is-open');
 		drawer.setAttribute('aria-hidden', 'true');
+		backdrop?.classList.remove('is-open');
+		backdrop?.setAttribute('aria-hidden', 'true');
 		const onEnd = (event) => {
 			if (event.target !== drawer) return;
 			drawer.hidden = true;
+			if (backdrop instanceof HTMLElement) backdrop.hidden = true;
 			drawer.removeEventListener('transitionend', onEnd);
 			stayOnContact();
 		};
@@ -298,6 +344,8 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		event.preventDefault();
 		closeDrawer();
 	});
+
+	backdrop?.addEventListener('click', () => closeDrawer());
 
 	drawer?.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape') {
