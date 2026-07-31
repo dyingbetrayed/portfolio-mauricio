@@ -1,4 +1,5 @@
 ---
+import Navbar from './Navbar.astro';
 import type { Project } from '../data/projects';
 import { getNextProjects } from '../data/projects';
 import { readableInk } from '../utils/color';
@@ -13,6 +14,10 @@ const nextSlug = related[0]?.slug;
 ---
 
 <article class="project-next" data-project-next={project.slug} hidden>
+	<header class="project-next__nav">
+		<Navbar theme="dark" active="work" showLogo />
+	</header>
+
 	<div class="project-next__grid">
 		{[0, 1, 2].map((index) => {
 			const item = related[index];
@@ -72,10 +77,21 @@ const nextSlug = related[0]?.slug;
 		background: #eeedec;
 		box-sizing: border-box;
 		overflow: hidden;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.project-next[hidden] {
 		display: none;
+	}
+
+	.project-next__nav {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 5;
+		padding: 1.5rem 3rem 0 2rem;
 	}
 
 	.project-next__grid {
@@ -84,6 +100,8 @@ const nextSlug = related[0]?.slug;
 		grid-template-rows: 1fr 1fr;
 		width: 100%;
 		height: 100%;
+		flex: 1;
+		min-height: 0;
 	}
 
 	.project-next__card {
@@ -133,18 +151,20 @@ const nextSlug = related[0]?.slug;
 
 	.project-next__forward,
 	.project-next__forward--empty {
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-		gap: clamp(0.75rem, 1.5vw, 1.5rem);
+		container-type: size;
+		position: relative;
+		display: block;
+		width: 100%;
 		min-width: 0;
 		min-height: 0;
-		padding: clamp(1.5rem, 3vw, 3rem);
+		padding: clamp(0.5rem, 2.5cqh, 1.25rem) clamp(0.5rem, 2.5cqw, 1.25rem);
 		border: none;
 		background: #eeedec;
 		color: #000000;
 		font: inherit;
 		text-align: left;
+		box-sizing: border-box;
+		overflow: hidden;
 	}
 
 	.project-next__forward {
@@ -152,17 +172,25 @@ const nextSlug = related[0]?.slug;
 	}
 
 	.project-next__forward-label {
+		position: absolute;
+		left: clamp(0.5rem, 2.5cqw, 1.25rem);
+		right: clamp(12cqw, 16cqw, 18cqw);
+		bottom: clamp(0.35rem, 2cqh, 1rem);
 		font-family: var(--font-text);
 		font-weight: 700;
-		font-size: clamp(3.5rem, 9vw, 11rem);
-		line-height: 0.85;
-		letter-spacing: -0.03em;
+		font-size: min(33cqw, 74cqh);
+		line-height: 0.72;
+		letter-spacing: -0.06em;
+		white-space: nowrap;
 	}
 
 	.project-next__forward-arrow {
+		position: absolute;
+		right: clamp(0.5rem, 2.5cqw, 1.25rem);
+		bottom: clamp(0.35rem, 2cqh, 1rem);
 		font-family: var(--font-text);
 		font-weight: 700;
-		font-size: clamp(2.5rem, 6vw, 7rem);
-		line-height: 1;
+		font-size: min(14cqw, 38cqh);
+		line-height: 0.72;
 	}
 </style>
