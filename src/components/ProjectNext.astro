@@ -95,10 +95,7 @@ const nextSlug = related[0]?.slug;
 	}
 
 	.project-next__nav {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
+		flex: 0 0 auto;
 		z-index: 5;
 		padding: 1.5rem 3rem 0 2rem;
 		min-height: 120px;
@@ -170,7 +167,7 @@ const nextSlug = related[0]?.slug;
 		width: 100%;
 		min-width: 0;
 		min-height: 0;
-		padding: clamp(1.5rem, 4cqh, 3rem) clamp(0.5rem, 2cqw, 1rem) clamp(0.5rem, 2cqh, 1rem);
+		padding: clamp(1.5rem, 4cqh, 3rem) clamp(0.5rem, 2cqw, 1rem);
 		border: none;
 		background: #ffffff;
 		color: #000000;
@@ -187,7 +184,7 @@ const nextSlug = related[0]?.slug;
 	.project-next__forward-label {
 		font-family: var(--font-text);
 		font-weight: 600;
-		font-size: min(30cqw, 64cqh);
+		font-size: min(24cqw, 50cqh);
 		line-height: 0.75;
 		letter-spacing: 0.03em;
 		flex: 1 1 auto;
@@ -197,9 +194,8 @@ const nextSlug = related[0]?.slug;
 
 	.project-next__forward-arrow {
 		flex: 0 0 auto;
-		align-self: flex-end;
-		width: min(20cqw, 42cqh);
-		height: min(20cqw, 42cqh);
+		width: min(16cqw, 34cqh);
+		height: min(16cqw, 34cqh);
 		display: block;
 		object-fit: contain;
 	}
