@@ -1,0 +1,178 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import AboutSection from '../components/AboutSection.astro';
+import WorkSlide from '../components/WorkSlide.astro';
+import ContactSection from '../components/ContactSection.astro';
+---
+
+<Layout>
+	<main class="horizontal-scroll-container">
+		<section class="slide hero-slide">
+			<div class="overlay"></div>
+			<header class="slide-header hero-header">
+				<Navbar theme="light" />
+			</header>
+			
+			<div class="hero-content">
+			</div>
+
+			<footer class="hero-footer">
+				<p>SI TIENES UNA IDEA EN MENTE Y QUIERES DESARROLLAR TU IDEA, PODEMOS TRABAJAR EN TU IDENTIDAD, PACKAGING, FLYER O MERCH.</p>
+			</footer>
+		</section>
+
+		<AboutSection />
+
+		<WorkSlide />
+
+		<ContactSection />
+	</main>
+</Layout>
+
+<script>
+	// @ts-nocheck
+	const container = document.querySelector('.horizontal-scroll-container');
+	if (container) {
+		const slides = () =>
+			Array.from(container.children).filter((el) => el.nodeType === 1);
+
+		function activeIndex() {
+			const left = container.scrollLeft;
+			const list = slides();
+			let best = 0;
+			let bestDist = Infinity;
+			list.forEach((slide, i) => {
+				const dist = Math.abs(slide.offsetLeft - left);
+				if (dist < bestDist) {
+					bestDist = dist;
+					best = i;
+				}
+			});
+			return best;
+		}
+
+		function go(delta) {
+			const list = slides();
+			const next = Math.min(list.length - 1, Math.max(0, activeIndex() + delta));
+			const slide = list[next];
+			if (!slide) return;
+			container.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' });
+		}
+
+		function workDepth() {
+			const work = document.getElementById('work');
+			return Number(work?.dataset.depth || 0);
+		}
+
+		window.addEventListener('keydown', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const tag = target.tagName;
+			if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+			if (target instanceof HTMLElement && target.isContentEditable) return;
+
+			const isNext = event.key === 'ArrowRight' || event.key === 'ArrowDown';
+			const isPrev = event.key === 'ArrowLeft' || event.key === 'ArrowUp';
+			if (!isNext && !isPrev) return;
+
+			const depth = workDepth();
+			if (depth > 0) {
+				event.preventDefault();
+				if (isPrev) {
+					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:back'));
+				}
+				return;
+			}
+
+			event.preventDefault();
+			go(isNext ? 1 : -1);
+		});
+	}
+</script>
+
+<style>
+	.horizontal-scroll-container {
+		display: flex;
+		flex-direction: row;
+		width: 100vw;
+		height: 100vh;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		scroll-behavior: smooth;
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+	
+	.horizontal-scroll-container::-webkit-scrollbar {
+		display: none;
+	}
+
+	.slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		height: 100vh;
+		scroll-snap-align: start;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.slide-header {
+		position: relative;
+		z-index: 2;
+		padding: 1.5rem 3rem 0 2rem;
+		display: flex;
+		align-items: center;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.hero-header {
+		justify-content: flex-end;
+	}
+
+	.hero-slide {
+		background-image: url('/index/1.jpg');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		justify-content: space-between;
+	}
+
+	.hero-slide .overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.15);
+		z-index: 1;
+		pointer-events: none;
+	}
+
+	.hero-content, .hero-footer {
+		position: relative;
+		z-index: 2;
+	}
+
+	.hero-footer {
+		padding: 2rem 4rem 2rem 4rem;
+		display: flex;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.hero-footer p {
+		font-family: var(--font-text);
+		font-weight: 300;
+		font-size: 1rem;
+		max-width: 70%;
+		letter-spacing: 1px;
+		line-height: 1.6;
+		color: #f4f4f4;
+	}
+</style>

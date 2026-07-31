@@ -1,0 +1,191 @@
+---
+import Navbar from './Navbar.astro';
+---
+
+<section class="slide about-slide" id="about">
+	<header class="about-header">
+		<Navbar theme="dark" active="about" showLogo />
+	</header>
+
+	<div class="about-content-wrapper">
+		<div class="about-center">
+			<img src="/about/image.png" alt="Mauricio Atencia" class="about-image" />
+		</div>
+
+		<div class="about-footer-container">
+			<div class="location-text">Medellín, Colombia</div>
+			<hr class="about-divider" />
+			<div class="about-footer-content">
+				<div class="about-title">About</div>
+				<h1 class="name-title">Mauricio Atencia</h1>
+				<div class="about-text">
+					<p>
+						la ficha studio es el proyecto con el cual durante más de cuatro años he desarrollado identidades visuales, experiencias de marca y espacios comerciales donde la estrategia, el diseño y la ejecución, trabajan como un solo sistema.
+					</p>
+					<p>
+						Mi enfoque combina branding, retail y dirección de arte para crear marcas coherentes, memorables y listas para el mundo real.
+					</p>
+				</div>
+			</div>
+			<hr class="about-divider about-divider--bottom" />
+		</div>
+	</div>
+</section>
+
+<style>
+	.about-slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		height: 100vh;
+		scroll-snap-align: start;
+		position: relative;
+		overflow: hidden;
+		box-sizing: border-box;
+
+		background-color: #eeedec;
+		color: #000000;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.about-header {
+		position: relative;
+		z-index: 2;
+		padding: clamp(1.5rem, 1.7vw, 2.75rem) clamp(3rem, 3.35vw, 5.25rem) 0 clamp(2rem, 2.25vw, 3.5rem);
+		display: flex;
+		align-items: flex-start;
+		width: 100%;
+		box-sizing: border-box;
+		justify-content: flex-end;
+	}
+
+	.about-content-wrapper {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-height: 0;
+		padding: 0 clamp(3rem, 3.35vw, 5.25rem) clamp(3rem, 3.35vw, 5.25rem) clamp(2rem, 2.25vw, 3.5rem);
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	.about-center {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		justify-content: center;
+		align-items: flex-end;
+		padding: 0 0 clamp(0.85rem, 1.2vw, 1.5rem) 0;
+	}
+
+	.about-image {
+		height: clamp(180px, 32vh, 480px);
+		max-height: 100%;
+		min-width: 180px;
+		width: auto;
+		object-fit: cover;
+		transform: translateY(clamp(1.25rem, 1.8vw, 2.25rem));
+	}
+
+	@media (max-width: 1440px) {
+		.about-center {
+			padding-bottom: 0.5rem;
+		}
+
+		.about-image {
+			height: clamp(80px, 18vw, 280px);
+			min-width: 0;
+			transform: translateY(clamp(1.25rem, 1.8vw, 2.25rem));
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.about-image {
+			height: clamp(60px, 14vw, 180px);
+			min-width: 0;
+			transform: translateY(1.25rem);
+		}
+	}
+
+	@media (max-width: 600px) {
+		.about-image {
+			height: clamp(50px, 18vw, 110px);
+			min-width: 0;
+			transform: translateY(0.85rem);
+		}
+	}
+
+	.about-footer-container {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+
+	.location-text {
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(1rem, 1.05vw, 1.6rem);
+		text-align: right;
+		margin-bottom: clamp(0.5rem, 0.6vw, 1rem);
+		letter-spacing: 0.03em;
+	}
+
+	.about-divider {
+		border: none;
+		border-top: clamp(2px, 0.15vw, 4px) solid #000000;
+		width: 100%;
+		margin: 0 0 clamp(1rem, 1.1vw, 1.75rem) 0;
+	}
+
+	.about-divider--bottom {
+		margin: clamp(1rem, 1.1vw, 1.75rem) 0 0 0;
+	}
+
+	.about-footer-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: clamp(1.5rem, 2.5vw, 3.5rem);
+	}
+
+	.about-title {
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(1.25rem, 1.4vw, 2.15rem);
+		flex: 0 0 auto;
+		line-height: 1;
+		padding-top: 0.15em;
+	}
+
+	.name-title {
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(2rem, 4.8vw, 7rem);
+		margin: 0;
+		color: #000000;
+		line-height: 0.95;
+		flex: 1;
+		min-width: 0;
+		letter-spacing: -0.022em;
+		-webkit-text-stroke: max(1px, 0.06vw) #000000;
+	}
+
+	.about-text {
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.95rem, 1.05vw, 1.55rem);
+		line-height: 1.4;
+		flex: 0 1 min(48vw, 1150px);
+		max-width: min(48vw, 1150px);
+		text-align: left;
+	}
+
+	.about-text p {
+		margin: 0;
+	}
+
+	.about-text p + p {
+		margin-top: 1em;
+	}
+</style>

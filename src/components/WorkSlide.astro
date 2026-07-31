@@ -1,0 +1,642 @@
+---
+import Navbar from './Navbar.astro';
+import ProjectDetail from './ProjectDetail.astro';
+import { projectCategories } from '../data/projects';
+
+const categories = Object.entries(projectCategories);
+const allProjects = categories.flatMap(([, group]) => group.projects);
+---
+
+<section id="work" class="work-slide" data-depth="0">
+	{/* ── Capa 0: menú de categorías ── */}
+	<div class="work-layer work-layer--menu" data-layer="0">
+		<div class="work-grid">
+			<button type="button" class="work-link hover-all work-row work-row--cream" data-open-category="all">
+				<span class="work-txt work-txt--xl work-txt--dark">ALL</span>
+			</button>
+
+			<button type="button" class="work-link hover-branding work-row work-row--black work-row--branding" data-open-category="branding">
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--light">BRANDING</span>
+			</button>
+
+			<button type="button" class="work-link hover-proyectos work-row work-row--cream" data-open-category="proyectos-retail">
+				<span class="work-txt work-txt--md work-txt--dark">PROYECTOS RETAIL</span>
+			</button>
+
+			<div class="work-split">
+				<button type="button" class="work-link hover-flyers work-row work-split__cell" data-open-category="flyers">
+					<span class="work-txt work-txt--md work-txt--light">FLYERS</span>
+				</button>
+				<button type="button" class="work-link hover-merch work-row" data-open-category="merch">
+					<span class="work-txt work-txt--md work-txt--light">MERCH</span>
+				</button>
+			</div>
+
+			<button type="button" class="work-link hover-ikeneas work-row work-row--cream" data-open-category="ikeneas">
+				<span class="work-txt work-txt--md work-txt--dark">IKENEAS</span>
+			</button>
+		</div>
+
+		<div class="work-nav">
+			<div class="work-nav__inner">
+				<Navbar theme="dark" active="work" />
+			</div>
+		</div>
+	</div>
+
+	{/* ── Capa 1: tablas de categoría (pre-renderizadas) ── */}
+	<div class="work-layer work-layer--category" data-layer="1" aria-hidden="true" inert>
+		{categories.map(([category, group]) => (
+			<div class="category-panel" data-category={category} id={category} hidden>
+				<div class="category-nav">
+					<Navbar theme="dark" active="work" />
+				</div>
+
+				<div class="category-content">
+					<h1 class="category-title">{group.title}</h1>
+					<div class="category-separator"></div>
+					<div class="project-list">
+						{group.projects.map((project) => (
+							<button
+								type="button"
+								class="project-row"
+								style={`--hover-bg: ${project.color};`}
+								data-open-project={project.slug}
+								data-from-category={category}
+							>
+								<div class="col-id">{project.id}</div>
+								<div class="col-name">
+									<span class="color-square" style={`background-color: ${project.color};`}></span>
+									<span class="name-text">{project.name}</span>
+								</div>
+								<div class="col-year">{project.year}</div>
+								<div class="col-location">{project.location}</div>
+							</button>
+						))}
+					</div>
+				</div>
+			</div>
+		))}
+	</div>
+
+	{/* ── Capa 2: detalles de proyecto (pre-renderizados) ── */}
+	<div class="work-layer work-layer--project" data-layer="2" aria-hidden="true" inert>
+		{allProjects.map((project) => (
+			<ProjectDetail project={project} />
+		))}
+	</div>
+
+	{/* Botón de retroceso: visible en niveles 1 y 2 */}
+	<button type="button" class="work-back" data-work-back aria-label="Volver">
+		<span class="work-back__icon" aria-hidden="true">←</span>
+		<span class="work-back__label">Back</span>
+	</button>
+</section>
+
+<script>
+	// @ts-nocheck
+	const root = document.getElementById('work');
+	if (root) {
+		const layerCategory = root.querySelector('.work-layer--category');
+		const layerProject = root.querySelector('.work-layer--project');
+		const backBtn = root.querySelector('[data-work-back]');
+
+		const categoryPanels = () =>
+			Array.from(root.querySelectorAll('[data-category]'));
+		const projectPanels = () =>
+			Array.from(root.querySelectorAll('[data-project]'));
+
+		function setLayerState(layer, open) {
+			if (!layer) return;
+			if (open) {
+				layer.removeAttribute('aria-hidden');
+				layer.removeAttribute('inert');
+			} else {
+				layer.setAttribute('aria-hidden', 'true');
+				layer.setAttribute('inert', '');
+			}
+		}
+
+		function setDepth(depth, { syncHash = true } = {}) {
+			root.dataset.depth = String(depth);
+			setLayerState(layerCategory, depth >= 1);
+			setLayerState(layerProject, depth >= 2);
+
+			if (backBtn instanceof HTMLElement) {
+				backBtn.classList.toggle('is-visible', depth > 0);
+
+				if (depth === 2) {
+					const activeProject = root.querySelector('[data-project]:not([hidden])');
+					const ink = activeProject
+						? getComputedStyle(activeProject).getPropertyValue('--ink').trim()
+						: '#ffffff';
+					backBtn.style.color = ink || '#ffffff';
+				} else {
+					backBtn.style.color = '#000000';
+				}
+			}
+
+			if (syncHash) {
+				const activeCategory = root.querySelector('[data-category]:not([hidden])');
+				const activeProject = root.querySelector('[data-project]:not([hidden])');
+				let hash = '#work';
+				if (depth === 2 && activeProject) {
+					hash = `#${activeProject.getAttribute('data-project')}`;
+				} else if (depth === 1 && activeCategory) {
+					hash = `#${activeCategory.getAttribute('data-category')}`;
+				}
+				if (location.hash !== hash) {
+					history.replaceState(null, '', hash);
+				}
+			}
+		}
+
+		function showOnly(nodes, attr, value) {
+			nodes.forEach((el) => {
+				const match = value !== null && el.getAttribute(attr) === value;
+				if (match) el.removeAttribute('hidden');
+				else el.setAttribute('hidden', '');
+			});
+		}
+
+		function openCategory(id, opts) {
+			const exists = categoryPanels().some((el) => el.getAttribute('data-category') === id);
+			if (!exists) return;
+			showOnly(categoryPanels(), 'data-category', id);
+			showOnly(projectPanels(), 'data-project', null);
+			setDepth(1, opts);
+		}
+
+		function openProject(slug, opts) {
+			const panel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
+			if (!panel) return;
+
+			const row = root.querySelector(`[data-open-project="${slug}"]`);
+			const category = row?.getAttribute('data-from-category');
+			if (category) {
+				showOnly(categoryPanels(), 'data-category', category);
+			}
+
+			showOnly(projectPanels(), 'data-project', slug);
+			setDepth(2, opts);
+		}
+
+		// Espera a que la capa termine de deslizarse antes de vaciarla,
+		// si no el panel desaparece de golpe y no se ve la animacion de salida.
+		function afterSlide(layer, done) {
+			let finished = false;
+			const finish = () => {
+				if (finished) return;
+				finished = true;
+				layer?.removeEventListener('transitionend', onEnd);
+				clearTimeout(timer);
+				done();
+			};
+			const onEnd = (event) => {
+				if (event.target === layer && event.propertyName === 'transform') finish();
+			};
+			layer?.addEventListener('transitionend', onEnd);
+			const timer = setTimeout(finish, 600);
+			if (!layer) finish();
+		}
+
+		function currentDepth() {
+			return Number(root.dataset.depth || 0);
+		}
+
+		function goBack() {
+			const depth = currentDepth();
+			if (depth === 2) {
+				setDepth(1);
+				afterSlide(layerProject, () => {
+					if (currentDepth() < 2) showOnly(projectPanels(), 'data-project', null);
+				});
+			} else if (depth === 1) {
+				setDepth(0);
+				afterSlide(layerCategory, () => {
+					if (currentDepth() < 1) showOnly(categoryPanels(), 'data-category', null);
+				});
+			}
+		}
+
+		function closeAll(opts) {
+			setDepth(0, opts);
+			afterSlide(layerCategory, () => {
+				if (currentDepth() > 0) return;
+				showOnly(projectPanels(), 'data-project', null);
+				showOnly(categoryPanels(), 'data-category', null);
+			});
+		}
+
+		root.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+
+			const openCategoryBtn = target.closest('[data-open-category]');
+			if (openCategoryBtn instanceof HTMLElement) {
+				event.preventDefault();
+				openCategory(openCategoryBtn.getAttribute('data-open-category') || '');
+				return;
+			}
+
+			const openProjectBtn = target.closest('[data-open-project]');
+			if (openProjectBtn instanceof HTMLElement) {
+				event.preventDefault();
+				openProject(openProjectBtn.getAttribute('data-open-project') || '');
+				return;
+			}
+
+			if (target.closest('[data-work-back]')) {
+				event.preventDefault();
+				goBack();
+			}
+		});
+
+		root.addEventListener('work:back', () => goBack());
+		root.addEventListener('work:close', () => closeAll());
+
+		document.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const link = target.closest('a[href^="#"]');
+			if (!(link instanceof HTMLAnchorElement)) return;
+			const hash = link.getAttribute('href');
+			if (!hash || hash === '#work') {
+				if (hash === '#work' && Number(root.dataset.depth || 0) > 0) {
+					closeAll();
+				}
+				return;
+			}
+			if (hash === '#about' || hash === '#contact' || hash === '#ikeneas') {
+				if (Number(root.dataset.depth || 0) > 0) closeAll();
+			}
+		});
+
+		function ensureWorkVisible() {
+			const container = document.querySelector('.horizontal-scroll-container');
+			if (container instanceof HTMLElement) {
+				container.scrollTo({ left: root.offsetLeft, behavior: 'instant' });
+			}
+		}
+
+		function applyHash() {
+			const id = location.hash.replace(/^#/, '');
+			if (!id || id === 'work') {
+				if (id === 'work') ensureWorkVisible();
+				closeAll({ syncHash: false });
+				return;
+			}
+			if (categoryPanels().some((el) => el.getAttribute('data-category') === id)) {
+				ensureWorkVisible();
+				openCategory(id, { syncHash: false });
+				return;
+			}
+			if (projectPanels().some((el) => el.getAttribute('data-project') === id)) {
+				ensureWorkVisible();
+				openProject(id, { syncHash: false });
+			}
+		}
+
+		applyHash();
+		window.addEventListener('hashchange', applyHash);
+
+		window.__workGoBack = goBack;
+		window.__workDepth = () => Number(root.dataset.depth || 0);
+	}
+</script>
+
+<style>
+	.work-slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		height: 100vh;
+		scroll-snap-align: start;
+		position: relative;
+		overflow: hidden;
+		background-color: #eeedec;
+	}
+
+	.work-layer {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.work-layer--menu {
+		z-index: 1;
+	}
+
+	.work-layer--category,
+	.work-layer--project {
+		z-index: 2;
+		transform: translateX(100%);
+		transition: transform 0.4s ease;
+		pointer-events: none;
+	}
+
+	.work-layer--project {
+		z-index: 3;
+	}
+
+	.work-slide[data-depth='1'] .work-layer--category,
+	.work-slide[data-depth='2'] .work-layer--category {
+		transform: translateX(0);
+		pointer-events: auto;
+	}
+
+	.work-slide[data-depth='2'] .work-layer--project {
+		transform: translateX(0);
+		pointer-events: auto;
+	}
+
+	/* ── Menú (capa 0) ── */
+	.work-grid {
+		--row-xl: 25vh;
+		--row-branding: 26vh;
+		--row-md: 16.33vh;
+		--shift-xl: 4.5vh;
+		--shift-branding: 3vh;
+		--shift-md: 1.6vh;
+
+		position: absolute;
+		inset: 0;
+		display: grid;
+		grid-template-rows: var(--row-xl) var(--row-branding) var(--row-md) var(--row-md) 1fr;
+	}
+
+	.work-row {
+		display: flex;
+		align-items: center;
+		padding: 0 2rem;
+		border: none;
+		background: none;
+		text-align: left;
+		cursor: pointer;
+		overflow: hidden;
+		position: relative;
+		width: 100%;
+		font: inherit;
+		color: inherit;
+	}
+
+	.work-row--cream {
+		background-color: #eeedec;
+	}
+
+	.work-row--black {
+		background-color: #000000;
+	}
+
+	.work-row--branding {
+		padding: 0 2rem 0 1.5rem;
+	}
+
+	.work-split {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		background-color: #000000;
+		overflow: hidden;
+	}
+
+	.work-split__cell {
+		border-right: 1.5px solid rgba(255, 255, 255, 0.3);
+	}
+
+	.work-txt {
+		font-family: 'Acumin Variable Concept', sans-serif;
+		font-weight: 600;
+		line-height: 0.9;
+		letter-spacing: -3px;
+		white-space: nowrap;
+		text-transform: uppercase;
+	}
+
+	.work-txt--xl {
+		font-size: 25vh;
+		transform: translateY(var(--shift-xl));
+	}
+
+	.work-txt--branding {
+		transform: translateY(var(--shift-branding));
+	}
+
+	.work-txt--md {
+		font-size: 17.5vh;
+		transform: translateY(var(--shift-md));
+	}
+
+	.work-txt--dark {
+		color: #000000;
+	}
+
+	.work-txt--light {
+		color: #ffffff;
+	}
+
+	.work-nav {
+		position: absolute;
+		top: 0;
+		right: 0;
+		z-index: 20;
+		padding: 1.5rem 3rem 0 2rem;
+		pointer-events: none;
+	}
+
+	.work-nav__inner {
+		pointer-events: auto;
+	}
+
+	.work-link {
+		transition: background-color 0.3s ease;
+	}
+
+	.work-link:hover span {
+		color: #000000 !important;
+	}
+
+	.hover-branding:hover {
+		background-color: #e26000 !important;
+	}
+
+	.hover-proyectos:hover {
+		background-color: #d70016 !important;
+	}
+
+	.hover-flyers:hover {
+		background-color: #b2cdb6 !important;
+	}
+
+	.hover-merch:hover {
+		background-color: #ab9900 !important;
+	}
+
+	.hover-ikeneas:hover {
+		background-color: #6c48b0 !important;
+	}
+
+	/* ── Tabla de categoría (capa 1) ── */
+	.category-panel {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #eeedec;
+		color: #000000;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+
+	.category-panel[hidden] {
+		display: none;
+	}
+
+	.category-nav {
+		position: absolute;
+		top: 0;
+		right: 0;
+		z-index: 20;
+		padding: 1.5rem 3rem 0 2rem;
+	}
+
+	.category-content {
+		padding: 20vh 2rem 2vh 1.5rem;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		flex: 1;
+	}
+
+	.category-title {
+		font-family: var(--font-text, 'Acumin Variable Concept', sans-serif);
+		font-weight: 600;
+		font-size: 15vw;
+		line-height: 0.85;
+		letter-spacing: -3px;
+		padding: 0;
+		text-transform: uppercase;
+		--title-ink-lsb: 0.0854em;
+		margin: 0 0 0 calc(0.5rem - var(--title-ink-lsb));
+	}
+
+	.category-separator {
+		border: none;
+		border-top: 2.5px solid #000000;
+		width: calc(100% - 0.5rem);
+		margin: 0.5rem 0 4vh 0.5rem;
+	}
+
+	.project-list {
+		display: flex;
+		flex-direction: column;
+		width: calc(100% - 0.5rem);
+		flex: 1;
+		justify-content: flex-start;
+		margin-left: 0.5rem;
+		--row-height: clamp(2.2rem, 4.2vh, 3.2rem);
+	}
+
+	.project-row {
+		display: grid;
+		grid-template-columns: 80px 3fr 1fr 1fr;
+		align-items: center;
+		padding: 0;
+		flex: 0 0 var(--row-height);
+		height: var(--row-height);
+		border: none;
+		background: transparent;
+		text-decoration: none;
+		color: #000000;
+		font-family: var(--font-nav, 'Aptos', sans-serif);
+		font-size: 1.35rem;
+		font-weight: 500;
+		text-align: left;
+		cursor: pointer;
+		transition: background-color 0.2s ease, color 0.2s ease;
+		margin: 0;
+		width: 100%;
+	}
+
+	.col-id {
+		font-variant-numeric: tabular-nums;
+	}
+
+	.col-name {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.color-square {
+		width: 20px;
+		height: 20px;
+		display: inline-block;
+	}
+
+	.col-location {
+		text-align: right;
+	}
+
+	.project-row:hover {
+		background-color: var(--hover-bg);
+		color: #ffffff;
+	}
+
+	/* ── Botón back ── */
+	.work-back {
+		position: absolute;
+		top: 1.5rem;
+		left: clamp(1.5rem, 2.5vw, 2.5rem);
+		z-index: 30;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		border: none;
+		background: transparent;
+		padding: 0.35rem 0.25rem;
+		cursor: pointer;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(1.05rem, 1.15vw, 1.7rem);
+		letter-spacing: 0.03em;
+		color: #000000;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateX(-0.75rem);
+		transition: opacity 0.3s ease, transform 0.4s ease, color 0.4s ease,
+			visibility 0s linear 0.4s;
+	}
+
+	.work-back.is-visible {
+		opacity: 1;
+		visibility: visible;
+		transform: translateX(0);
+		transition-delay: 0s;
+	}
+
+	.work-back__icon {
+		font-size: 1.1em;
+		line-height: 1;
+	}
+
+	@media (max-width: 768px) {
+		.category-content {
+			padding: 8rem 2rem 2rem 2rem;
+		}
+		.category-title {
+			font-size: 18vw;
+		}
+		.project-row {
+			grid-template-columns: 40px 1fr;
+			gap: 10px;
+			font-size: 1rem;
+		}
+		.col-year,
+		.col-location {
+			display: none;
+		}
+	}
+</style>

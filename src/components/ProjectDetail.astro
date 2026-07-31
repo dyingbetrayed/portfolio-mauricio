@@ -1,0 +1,227 @@
+---
+import Navbar from './Navbar.astro';
+import type { Project } from '../data/projects';
+import { readableInk } from '../utils/color';
+
+export interface Props {
+	project: Project;
+}
+
+const { project } = Astro.props;
+
+const ink = readableInk(project.color);
+const navTheme = ink === '#ffffff' ? 'light' : 'dark';
+const services = project.services?.length ? project.services.join(' · ') : null;
+const hasMeta = Boolean(project.tagline || services);
+const sections = project.sections ?? [];
+---
+
+<article
+	class="project"
+	id={project.slug}
+	data-project={project.slug}
+	style={`--project-bg: ${project.color}; --ink: ${ink};`}
+	hidden
+>
+	<header class="project__nav">
+		<Navbar theme={navTheme} active="work" />
+	</header>
+
+	<div class="project__content">
+		<div class="project__head">
+			<h1 class="project__title">{project.name}</h1>
+			{project.year && <span class="project__year">{project.year}</span>}
+		</div>
+
+		<hr class="project__rule" />
+
+		{hasMeta && (
+			<>
+				<div class="project__meta">
+					{project.tagline && <p class="project__tagline">{project.tagline}</p>}
+					{services && <p class="project__services">{services}</p>}
+				</div>
+
+				<hr class="project__rule" />
+			</>
+		)}
+
+		<div class="project__body">
+			{sections.map((section) => (
+				<div class="project__section">
+					<h2 class="project__label">{section.label}</h2>
+					<div class="project__copy">
+						{section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+					</div>
+				</div>
+			))}
+		</div>
+
+		{project.note && <p class="project__note">{project.note}</p>}
+	</div>
+</article>
+
+<style>
+	.project {
+		--pad-x: clamp(1.5rem, 3vw, 4rem);
+		--col-right: 42%;
+
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		background-color: var(--project-bg);
+		color: var(--ink);
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		box-sizing: border-box;
+	}
+
+	.project[hidden] {
+		display: none;
+	}
+
+	.project__nav {
+		display: flex;
+		justify-content: flex-end;
+		padding: 1.5rem var(--pad-x) 0;
+	}
+
+	.project__content {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		padding: clamp(4rem, 11vh, 9rem) var(--pad-x) clamp(1.25rem, 3vh, 2.5rem);
+	}
+
+	.project__head {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 2rem;
+	}
+
+	.project__title {
+		--title-ink-lsb: 0.082em;
+
+		margin: 0 0 0 calc(-1 * var(--title-ink-lsb));
+		font-family: var(--font-text);
+		font-weight: 700;
+		font-size: clamp(2.25rem, 4.7vw, 6.5rem);
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+	}
+
+	.project__year {
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(1rem, 1.6vw, 2rem);
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+	}
+
+	.project__rule {
+		border: none;
+		border-top: 1px solid var(--ink);
+		width: 100%;
+		margin: clamp(0.5rem, 1.2vh, 1rem) 0 0;
+	}
+
+	.project__meta {
+		display: grid;
+		grid-template-columns: 1fr var(--col-right);
+		gap: clamp(1.5rem, 3vw, 4rem);
+		align-items: start;
+		padding: clamp(0.75rem, 2vh, 1.5rem) 0 clamp(1rem, 2.4vh, 2rem);
+	}
+
+	.project__tagline {
+		margin: 0;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(1.1rem, 1.9vw, 2.4rem);
+		line-height: 1.15;
+		white-space: pre-line;
+	}
+
+	.project__services {
+		margin: 0;
+		grid-column: 2;
+		justify-self: end;
+		text-align: right;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.8rem, 1.05vw, 1.35rem);
+		letter-spacing: 0.02em;
+	}
+
+	.project__body {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		gap: clamp(2rem, 4vh, 3.5rem);
+		padding-top: clamp(1.5rem, 4vh, 3.5rem);
+	}
+
+	.project__section {
+		display: grid;
+		grid-template-columns: 1fr var(--col-right);
+		gap: clamp(1.5rem, 3vw, 4rem);
+		align-items: start;
+	}
+
+	.project__label {
+		margin: 0;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(1rem, 1.55vw, 2rem);
+		letter-spacing: 0.01em;
+	}
+
+	.project__copy {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(1rem, 2.2vh, 1.75rem);
+	}
+
+	.project__copy p {
+		margin: 0;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.8rem, 1.05vw, 1.35rem);
+		line-height: 1.5;
+		text-align: justify;
+		opacity: 0.92;
+	}
+
+	.project__note {
+		margin: 0;
+		padding-top: clamp(1rem, 2vh, 2rem);
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.55rem, 0.72vw, 0.9rem);
+		letter-spacing: 0.01em;
+		opacity: 0.85;
+	}
+
+	@media (max-width: 768px) {
+		.project__meta,
+		.project__section {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+
+		.project__services {
+			grid-column: auto;
+			justify-self: start;
+			text-align: left;
+		}
+
+		.project__copy p {
+			text-align: left;
+		}
+	}
+</style>
