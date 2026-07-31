@@ -15,7 +15,7 @@ const nextSlug = related[0]?.slug;
 
 <article class="project-next" data-project-next={project.slug} hidden>
 	<header class="project-next__nav">
-		<Navbar theme="dark" active="work" showLogo />
+		<Navbar theme="dark" active="work" />
 	</header>
 
 	<div class="project-next__grid">
@@ -97,8 +97,7 @@ const nextSlug = related[0]?.slug;
 	.project-next__nav {
 		flex: 0 0 auto;
 		z-index: 5;
-		padding: 1.5rem 3rem 0 2rem;
-		min-height: 120px;
+		padding: 1.5rem 3rem 1.5rem 2rem;
 		background: #ffffff;
 	}
 
