@@ -161,13 +161,14 @@ const nextSlug = related[0]?.slug;
 	.project-next__forward--empty {
 		container-type: size;
 		display: flex;
-		align-items: center;
+		align-items: flex-end;
 		justify-content: space-between;
 		gap: clamp(0.35rem, 1.5cqw, 1rem);
 		width: 100%;
 		min-width: 0;
 		min-height: 0;
-		padding: clamp(1.5rem, 4cqh, 3rem) clamp(0.5rem, 2cqw, 1rem);
+		/* padding: top right bottom left (bottom and left match .project-next__bar padding) */
+		padding: 0 clamp(0.2rem, 1vw, 0.5rem) clamp(0.85rem, 1.8vh, 1.35rem) clamp(1rem, 1.8vw, 1.75rem);
 		border: none;
 		background: #ffffff;
 		color: #000000;
@@ -184,7 +185,7 @@ const nextSlug = related[0]?.slug;
 	.project-next__forward-label {
 		font-family: var(--font-text);
 		font-weight: 600;
-		font-size: min(24cqw, 50cqh);
+		font-size: min(32cqw, 68cqh);
 		line-height: 0.75;
 		letter-spacing: 0.03em;
 		flex: 1 1 auto;
@@ -194,8 +195,8 @@ const nextSlug = related[0]?.slug;
 
 	.project-next__forward-arrow {
 		flex: 0 0 auto;
-		width: min(16cqw, 34cqh);
-		height: min(16cqw, 34cqh);
+		width: min(22cqw, 46cqh);
+		height: min(22cqw, 46cqh);
 		display: block;
 		object-fit: contain;
 	}
