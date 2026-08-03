@@ -3,16 +3,16 @@ import Navbar from './Navbar.astro';
 ---
 
 <section class="slide about-slide" id="about">
-	<header class="about-header">
+	<header class="about-header reveal" style="--reveal-delay: 60ms">
 		<Navbar theme="dark" active="about" showLogo />
 	</header>
 
 	<div class="about-content-wrapper" data-v-scroll>
-		<div class="about-center">
+		<div class="about-center reveal" style="--reveal-delay: 160ms">
 			<img src="/about/image.png" alt="Mauricio Atencia" class="about-image" />
 		</div>
 
-		<div class="about-footer-container">
+		<div class="about-footer-container reveal" style="--reveal-delay: 280ms">
 			<div class="location-text">Medellín, Colombia</div>
 			<hr class="about-divider" />
 			<div class="about-footer-content">
@@ -92,7 +92,13 @@ import Navbar from './Navbar.astro';
 		max-width: 100%;
 		object-fit: cover;
 		display: block;
-		transform: translateY(clamp(0.75rem, 1.8vw, 2.25rem));
+		--img-lift: clamp(0.75rem, 1.8vw, 2.25rem);
+		transform: translateY(var(--img-lift));
+		transition: transform var(--dur-slow) var(--ease-out);
+	}
+
+	.about-slide.is-active .about-image {
+		--img-lift: clamp(0.35rem, 1vw, 1.25rem);
 	}
 
 	@media (max-height: 500px) {
@@ -103,7 +109,7 @@ import Navbar from './Navbar.astro';
 
 		.about-image {
 			height: clamp(88px, 38vh, 150px);
-			transform: translateY(0.5rem);
+			--img-lift: 0.5rem;
 		}
 	}
 
@@ -137,6 +143,13 @@ import Navbar from './Navbar.astro';
 		border-top: clamp(2px, 0.15vw, 4px) solid #000000;
 		width: 100%;
 		margin: 0 0 clamp(0.65rem, 1.1vw, 1.75rem) 0;
+		transform: scaleX(0.92);
+		transform-origin: left center;
+		transition: transform var(--dur-med) var(--ease-out) 180ms;
+	}
+
+	.about-slide.is-active .about-divider {
+		transform: scaleX(1);
 	}
 
 	.about-footer-content {

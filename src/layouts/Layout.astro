@@ -14,6 +14,7 @@ import RotateDevice from '../components/RotateDevice.astro';
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
+		<script is:inline>document.documentElement.classList.add('js');</script>
 	</head>
 	<body>
 		<a href="#about" class="skip-link">Saltar al contenido</a>
@@ -76,6 +77,13 @@ import RotateDevice from '../components/RotateDevice.astro';
 		--nav-gap: clamp(1.25rem, 5.5vw, 8.5rem);
 		--nav-size: clamp(0.8rem, 1.15vw, 1.7rem);
 		--logo-w: clamp(96px, 14.75vw, 283px);
+
+		/* Motion */
+		--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+		--ease-inout: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+		--dur-fast: 0.32s;
+		--dur-med: 0.55s;
+		--dur-slow: 0.9s;
 	}
 
 	/*
@@ -145,11 +153,42 @@ import RotateDevice from '../components/RotateDevice.astro';
 	a {
 		color: inherit;
 		text-decoration: none;
-		transition: opacity 0.2s ease;
+		transition: opacity var(--dur-fast) var(--ease-out);
 	}
 	
 	a:hover {
 		opacity: 0.7;
+	}
+
+	/* Revelado suave al activar un slide */
+	.reveal {
+		opacity: 0;
+		transform: translate3d(0, 1.15rem, 0);
+		transition:
+			opacity var(--dur-med) var(--ease-out),
+			transform var(--dur-med) var(--ease-out);
+		transition-delay: var(--reveal-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	.is-active > .reveal,
+	.is-active .reveal {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	html:not(.js) .reveal {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
 	}
 	
 	ul {

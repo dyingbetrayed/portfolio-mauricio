@@ -4,12 +4,12 @@ import ContactDrawer from './ContactDrawer.astro';
 ---
 
 <section class="slide contact-slide" id="contact">
-	<header class="slide-header contact-header">
+	<header class="slide-header contact-header reveal" style="--reveal-delay: 60ms">
 		<Navbar theme="dark" active="contact" showLogo />
 	</header>
 	
 	<div class="contact-content-wrapper" data-v-scroll>
-		<div class="contact-title-container">
+		<div class="contact-title-container reveal" style="--reveal-delay: 140ms">
 			<h1 class="contact-title">
 				<span>H</span>
 				<span>A</span>
@@ -22,7 +22,7 @@ import ContactDrawer from './ContactDrawer.astro';
 			</h1>
 		</div>
 		
-		<footer class="contact-footer">
+		<footer class="contact-footer reveal" style="--reveal-delay: 280ms">
 			<div class="footer-col left-col">
 				<a href="/" class="footer-link">Instagram</a>
 				<a href="https://wa.me/573146253071" class="footer-link">WhatsApp</a>
@@ -116,6 +116,29 @@ import ContactDrawer from './ContactDrawer.astro';
 		--title-ink-rsb: 0.05em;
 	}
 
+	.contact-title span {
+		display: inline-block;
+		opacity: 0;
+		transform: translate3d(0, 0.35em, 0);
+		transition:
+			opacity var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+			transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+	}
+
+	.contact-slide.is-active .contact-title span {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	.contact-title span:nth-child(1) { transition-delay: 80ms; }
+	.contact-title span:nth-child(2) { transition-delay: 120ms; }
+	.contact-title span:nth-child(3) { transition-delay: 160ms; }
+	.contact-title span:nth-child(4) { transition-delay: 200ms; }
+	.contact-title span:nth-child(5) { transition-delay: 240ms; }
+	.contact-title span:nth-child(6) { transition-delay: 280ms; }
+	.contact-title span:nth-child(7) { transition-delay: 320ms; }
+	.contact-title span:nth-child(8) { transition-delay: 360ms; }
+
 	.contact-title span:first-child {
 		margin-left: calc(-1 * var(--title-ink-lsb));
 	}
@@ -159,10 +182,18 @@ import ContactDrawer from './ContactDrawer.astro';
 	.footer-link {
 		color: #000000;
 		text-decoration: none;
-		transition: opacity 0.2s ease;
+		transition: opacity var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 	}
 
 	.footer-link:hover {
 		opacity: 0.6;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.contact-title span {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
 	}
 </style>

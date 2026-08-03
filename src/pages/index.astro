@@ -10,18 +10,18 @@ import ContactSection from '../components/ContactSection.astro';
 	<main class="horizontal-scroll-container">
 		<section class="slide hero-slide">
 			<div class="overlay"></div>
-			<header class="slide-header hero-header">
+			<header class="slide-header hero-header reveal" style="--reveal-delay: 80ms">
 				<Navbar theme="light" />
 			</header>
 			
 			<div class="hero-content">
 			</div>
 
-			<footer class="hero-footer">
+			<footer class="hero-footer reveal" style="--reveal-delay: 220ms">
 				<p>SI TIENES UNA IDEA EN MENTE Y QUIERES DESARROLLAR TU IDEA, PODEMOS TRABAJAR EN TU IDENTIDAD, PACKAGING, FLYER O MERCH.</p>
 			</footer>
 
-			<div class="scroll-hint" aria-hidden="true">
+			<div class="scroll-hint reveal" style="--reveal-delay: 420ms" aria-hidden="true">
 				<span class="scroll-hint__text">Scroll</span>
 				<span class="scroll-hint__arrow">→</span>
 			</div>
@@ -44,7 +44,7 @@ import ContactSection from '../components/ContactSection.astro';
 
 		let currentIndex = 0;
 		let isScrolling = false;
-		const SCROLL_COOLDOWN = 650;
+		const SCROLL_COOLDOWN = 780;
 
 		function nearestIndex() {
 			const left = container.scrollLeft;
@@ -59,6 +59,17 @@ import ContactSection from '../components/ContactSection.astro';
 				}
 			});
 			return best;
+		}
+
+		function setActiveSlide(index) {
+			slides().forEach((slide, i) => {
+				const on = i === index;
+				const wasOn = slide.classList.contains('is-active');
+				if (on === wasOn) return;
+				slide.classList.toggle('is-active', on);
+				if (on) slide.setAttribute('data-active', '');
+				else slide.removeAttribute('data-active');
+			});
 		}
 
 		function goToIndex(index, { smooth = true } = {}) {
@@ -76,6 +87,8 @@ import ContactSection from '../components/ContactSection.astro';
 			window.setTimeout(() => {
 				isScrolling = false;
 				currentIndex = nearestIndex();
+				/* Activar al llegar: así el fade-up se ve en pantalla */
+				setActiveSlide(currentIndex);
 			}, SCROLL_COOLDOWN);
 		}
 
@@ -228,7 +241,10 @@ import ContactSection from '../components/ContactSection.astro';
 		});
 
 		container.addEventListener('scroll', () => {
-			if (!isScrolling) currentIndex = nearestIndex();
+			const idx = nearestIndex();
+			if (!isScrolling) currentIndex = idx;
+			/* Durante el swipe, activar cuando el slide ya es el más cercano */
+			setActiveSlide(idx);
 		}, { passive: true });
 
 		/* ── Scroll hint: hide on first interaction ── */
@@ -245,7 +261,31 @@ import ContactSection from '../components/ContactSection.astro';
 
 		currentIndex = nearestIndex();
 		const initialHash = indexForHash(location.hash);
-		if (initialHash >= 0) goToIndex(initialHash, { smooth: false });
+		if (initialHash >= 0) {
+			const list = slides();
+			const slide = list[initialHash];
+			if (slide) {
+				currentIndex = initialHash;
+				container.scrollTo({ left: slide.offsetLeft, behavior: 'instant' });
+			}
+		}
+
+		/* Primero pinta el estado inicial (opacity 0), luego activa el fade-up */
+		slides().forEach((slide) => {
+			slide.classList.remove('is-active');
+			slide.removeAttribute('data-active');
+		});
+
+		const preferReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (preferReduced) {
+			setActiveSlide(currentIndex);
+		} else {
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					setActiveSlide(currentIndex);
+				});
+			});
+		}
 	}
 </script>
 
@@ -304,10 +344,15 @@ import ContactSection from '../components/ContactSection.astro';
 
 	.hero-slide {
 		background-image: url('/index/1.jpg');
-		background-size: cover;
+		background-size: 112%;
 		background-position: center;
 		background-repeat: no-repeat;
 		justify-content: space-between;
+		transition: background-size var(--dur-slow) var(--ease-out);
+	}
+
+	.hero-slide.is-active {
+		background-size: 100%;
 	}
 
 	.hero-slide .overlay {
@@ -319,6 +364,12 @@ import ContactSection from '../components/ContactSection.astro';
 		background: rgba(0, 0, 0, 0.15);
 		z-index: 1;
 		pointer-events: none;
+		opacity: 0.55;
+		transition: opacity var(--dur-slow) var(--ease-out);
+	}
+
+	.hero-slide.is-active .overlay {
+		opacity: 1;
 	}
 
 	.hero-content, .hero-footer {
@@ -357,22 +408,33 @@ import ContactSection from '../components/ContactSection.astro';
 		font-size: clamp(0.7rem, 1vw, 1.1rem);
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
-		opacity: 1;
-		transition: opacity 0.6s ease;
+		transition: opacity 0.6s var(--ease-out);
 	}
 
 	.scroll-hint.is-hidden {
-		opacity: 0;
+		opacity: 0 !important;
 		pointer-events: none;
+		transform: none !important;
 	}
 
 	.scroll-hint__arrow {
 		display: inline-block;
-		animation: hint-bounce 1.4s ease-in-out infinite;
+		animation: hint-bounce 1.6s var(--ease-inout) infinite;
 	}
 
 	@keyframes hint-bounce {
 		0%, 100% { transform: translateX(0); }
-		50% { transform: translateX(6px); }
+		50% { transform: translateX(8px); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-slide {
+			background-size: 100%;
+			transition: none;
+		}
+
+		.scroll-hint__arrow {
+			animation: none;
+		}
 	}
 </style>
