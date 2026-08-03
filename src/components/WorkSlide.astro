@@ -2,11 +2,13 @@
 import Navbar from './Navbar.astro';
 import Logo from './Logo.astro';
 import ProjectDetail from './ProjectDetail.astro';
+import ProjectImage from './ProjectImage.astro';
 import ProjectNext from './ProjectNext.astro';
 import { projectCategories } from '../data/projects';
 
 const categories = Object.entries(projectCategories);
 const allProjects = categories.flatMap(([, group]) => group.projects);
+const projectsWithImages = allProjects.filter((project) => project.images?.length);
 ---
 
 <section id="work" class="work-slide" data-depth="0">
@@ -95,8 +97,22 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 		))}
 	</div>
 
-	{/* ── Capa 3: siguientes proyectos según el actual ── */}
-	<div class="work-layer work-layer--next" data-layer="3" aria-hidden="true" inert>
+	{/* ── Capa 3: imágenes a pantalla completa (una pantalla por imagen) ── */}
+	<div class="work-layer work-layer--images" data-layer="3" aria-hidden="true" inert>
+		{projectsWithImages.map((project) =>
+			(project.images ?? []).map((src, index) => (
+				<ProjectImage
+					project={project}
+					src={src}
+					index={index}
+					total={project.images!.length}
+				/>
+			))
+		)}
+	</div>
+
+	{/* ── Capa 4: siguientes proyectos según el actual ── */}
+	<div class="work-layer work-layer--next" data-layer="4" aria-hidden="true" inert>
 		{allProjects.map((project) => (
 			<ProjectNext project={project} />
 		))}
@@ -109,12 +125,15 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 	if (root) {
 		const layerCategory = root.querySelector('.work-layer--category');
 		const layerProject = root.querySelector('.work-layer--project');
+		const layerImages = root.querySelector('.work-layer--images');
 		const layerNext = root.querySelector('.work-layer--next');
 
 		const categoryPanels = () =>
 			Array.from(root.querySelectorAll('[data-category]'));
 		const projectPanels = () =>
 			Array.from(root.querySelectorAll('[data-project]'));
+		const imagePanels = () =>
+			Array.from(root.querySelectorAll('[data-project-image]'));
 		const nextPanels = () =>
 			Array.from(root.querySelectorAll('[data-project-next]'));
 
@@ -133,7 +152,8 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 			root.dataset.depth = String(depth);
 			setLayerState(layerCategory, depth >= 1);
 			setLayerState(layerProject, depth >= 2);
-			setLayerState(layerNext, depth >= 3);
+			setLayerState(layerImages, depth >= 3);
+			setLayerState(layerNext, depth >= 4);
 
 			if (syncHash) {
 				const activeCategory = root.querySelector('[data-category]:not([hidden])');
@@ -158,11 +178,40 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 			});
 		}
 
+		function hideAllImages() {
+			imagePanels().forEach((el) => el.setAttribute('hidden', ''));
+		}
+
+		function showProjectImage(slug, index) {
+			const panels = imagePanels().filter(
+				(el) => el.getAttribute('data-project-image') === slug
+			);
+			panels.forEach((el) => {
+				const match = Number(el.getAttribute('data-image-index')) === Number(index);
+				if (match) el.removeAttribute('hidden');
+				else el.setAttribute('hidden', '');
+			});
+			return panels.some(
+				(el) => Number(el.getAttribute('data-image-index')) === Number(index)
+			);
+		}
+
+		function activeImageIndex(slug) {
+			const visible = imagePanels().find(
+				(el) =>
+					el.getAttribute('data-project-image') === slug &&
+					!el.hasAttribute('hidden')
+			);
+			if (!visible) return -1;
+			return Number(visible.getAttribute('data-image-index'));
+		}
+
 		function openCategory(id, opts) {
 			const exists = categoryPanels().some((el) => el.getAttribute('data-category') === id);
 			if (!exists) return;
 			showOnly(categoryPanels(), 'data-category', id);
 			showOnly(projectPanels(), 'data-project', null);
+			hideAllImages();
 			showOnly(nextPanels(), 'data-project-next', null);
 			setDepth(1, opts);
 		}
@@ -178,8 +227,25 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 			}
 
 			showOnly(projectPanels(), 'data-project', slug);
+			hideAllImages();
 			showOnly(nextPanels(), 'data-project-next', null);
 			setDepth(2, opts);
+		}
+
+		function openProjectImage(slug, index, opts) {
+			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
+			if (!projectPanel) return;
+			if (!showProjectImage(slug, index)) return;
+
+			const row = root.querySelector(`[data-open-project="${slug}"]`);
+			const category = row?.getAttribute('data-from-category');
+			if (category) {
+				showOnly(categoryPanels(), 'data-category', category);
+			}
+
+			showOnly(projectPanels(), 'data-project', slug);
+			showOnly(nextPanels(), 'data-project-next', null);
+			setDepth(3, opts);
 		}
 
 		function openProjectNext(slug, opts) {
@@ -191,8 +257,17 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 				showOnly(projectPanels(), 'data-project', slug);
 			}
 
+			// Mantener la última imagen visible debajo de "siguientes"
+			const images = imagePanels().filter(
+				(el) => el.getAttribute('data-project-image') === slug
+			);
+			if (images.length) {
+				const lastIndex = images.length - 1;
+				showProjectImage(slug, lastIndex);
+			}
+
 			showOnly(nextPanels(), 'data-project-next', slug);
-			setDepth(3, opts);
+			setDepth(4, opts);
 		}
 
 		function afterSlide(layer, done) {
@@ -218,10 +293,24 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 
 		function goBack() {
 			const depth = currentDepth();
-			if (depth === 3) {
-				setDepth(2);
+			if (depth === 4) {
+				setDepth(3);
 				afterSlide(layerNext, () => {
-					if (currentDepth() < 3) showOnly(nextPanels(), 'data-project-next', null);
+					if (currentDepth() < 4) showOnly(nextPanels(), 'data-project-next', null);
+				});
+			} else if (depth === 3) {
+				const activeProject = root.querySelector('[data-project]:not([hidden])');
+				const slug = activeProject?.getAttribute('data-project');
+				const index = slug ? activeImageIndex(slug) : -1;
+
+				if (slug && index > 0) {
+					showProjectImage(slug, index - 1);
+					return;
+				}
+
+				setDepth(2);
+				afterSlide(layerImages, () => {
+					if (currentDepth() < 3) hideAllImages();
 				});
 			} else if (depth === 2) {
 				setDepth(1);
@@ -241,6 +330,7 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 			afterSlide(layerCategory, () => {
 				if (currentDepth() > 0) return;
 				showOnly(nextPanels(), 'data-project-next', null);
+				hideAllImages();
 				showOnly(projectPanels(), 'data-project', null);
 				showOnly(categoryPanels(), 'data-category', null);
 			});
@@ -254,6 +344,15 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 			if (openCategoryBtn instanceof HTMLElement) {
 				event.preventDefault();
 				openCategory(openCategoryBtn.getAttribute('data-open-category') || '');
+				return;
+			}
+
+			const openImageBtn = target.closest('[data-open-project-image]');
+			if (openImageBtn instanceof HTMLElement) {
+				event.preventDefault();
+				const slug = openImageBtn.getAttribute('data-open-project-image') || '';
+				const index = Number(openImageBtn.getAttribute('data-image-index') || 0);
+				openProjectImage(slug, index);
 				return;
 			}
 
@@ -355,6 +454,7 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 
 	.work-layer--category,
 	.work-layer--project,
+	.work-layer--images,
 	.work-layer--next {
 		z-index: 2;
 		transform: translateX(100%);
@@ -366,24 +466,36 @@ const allProjects = categories.flatMap(([, group]) => group.projects);
 		z-index: 3;
 	}
 
-	.work-layer--next {
+	.work-layer--images {
 		z-index: 4;
+	}
+
+	.work-layer--next {
+		z-index: 5;
 	}
 
 	.work-slide[data-depth='1'] .work-layer--category,
 	.work-slide[data-depth='2'] .work-layer--category,
-	.work-slide[data-depth='3'] .work-layer--category {
+	.work-slide[data-depth='3'] .work-layer--category,
+	.work-slide[data-depth='4'] .work-layer--category {
 		transform: translateX(0);
 		pointer-events: auto;
 	}
 
 	.work-slide[data-depth='2'] .work-layer--project,
-	.work-slide[data-depth='3'] .work-layer--project {
+	.work-slide[data-depth='3'] .work-layer--project,
+	.work-slide[data-depth='4'] .work-layer--project {
 		transform: translateX(0);
 		pointer-events: auto;
 	}
 
-	.work-slide[data-depth='3'] .work-layer--next {
+	.work-slide[data-depth='3'] .work-layer--images,
+	.work-slide[data-depth='4'] .work-layer--images {
+		transform: translateX(0);
+		pointer-events: auto;
+	}
+
+	.work-slide[data-depth='4'] .work-layer--next {
 		transform: translateX(0);
 		pointer-events: auto;
 	}

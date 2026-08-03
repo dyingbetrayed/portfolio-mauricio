@@ -1,0 +1,50 @@
+---
+import { readableInk } from '../utils/color';
+
+export interface Props {
+	projectName: string;
+	/** Mismo color del ítem en la tabla / fondo de la descripción */
+	color: string;
+	class?: string;
+}
+
+const { projectName, color, class: className } = Astro.props;
+const ink = readableInk(color);
+
+const message = `Hola, me interesa cotizar un proyecto similar a ${projectName}.`;
+const href = `https://wa.me/573146253071?text=${encodeURIComponent(message)}`;
+---
+
+<a
+	href={href}
+	class:list={['quote-similar', className]}
+	style={`background-color: ${color}; color: ${ink};`}
+	target="_blank"
+	rel="noopener noreferrer"
+>
+	Cotizar uno similar
+</a>
+
+<style>
+	.quote-similar {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.7em 1.15em;
+		border: none;
+		text-decoration: none;
+		cursor: pointer;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(0.85rem, 1.05vw, 1.15rem);
+		letter-spacing: 0.03em;
+		line-height: 1.2;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+		transition: opacity 0.2s ease, transform 0.2s ease;
+	}
+
+	.quote-similar:hover {
+		opacity: 0.88;
+		transform: translateY(-1px);
+	}
+</style>

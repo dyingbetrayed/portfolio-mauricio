@@ -16,6 +16,7 @@ const navTheme = ink === '#ffffff' ? 'light' : 'dark';
 const services = project.services?.length ? project.services.join(' · ') : null;
 const hasMeta = Boolean(project.tagline || services);
 const sections = project.sections ?? [];
+const hasImages = Boolean(project.images?.length);
 const categoryId = findProjectCategory(project.slug);
 const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 ---
@@ -74,14 +75,26 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 				<span>{categoryTitle ?? 'Volver'}</span>
 			</button>
 
-			<button
-				type="button"
-				class="project__nav-btn project__nav-btn--next"
-				data-open-project-next={project.slug}
-			>
-				<span>Siguiente</span>
-				<span class="project__nav-icon" aria-hidden="true">→</span>
-			</button>
+			{hasImages ? (
+				<button
+					type="button"
+					class="project__nav-btn project__nav-btn--next"
+					data-open-project-image={project.slug}
+					data-image-index="0"
+				>
+					<span>Siguiente</span>
+					<span class="project__nav-icon" aria-hidden="true">→</span>
+				</button>
+			) : (
+				<button
+					type="button"
+					class="project__nav-btn project__nav-btn--next"
+					data-open-project-next={project.slug}
+				>
+					<span>Siguiente</span>
+					<span class="project__nav-icon" aria-hidden="true">→</span>
+				</button>
+			)}
 		</nav>
 	</div>
 </article>

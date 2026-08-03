@@ -17,6 +17,11 @@ export interface Project {
 	sections?: ProjectSection[];
 	/** Nota legal al pie de la página */
 	note?: string;
+	/**
+	 * Pantallas de imagen a pantalla completa, después de la descripción.
+	 * Cada ruta es una pantalla distinta (ej. `/work/branding/pitao/2.jpg`).
+	 */
+	images?: string[];
 }
 
 export interface ProjectCategory {
@@ -47,6 +52,10 @@ export const projectCategories: Record<string, ProjectCategory> = {
 					},
 				],
 				note: '*Proyecto diseñado a través de Enplanos, por lo tanto, todos los derechos de propiedad intelectual pertenecen a ellos.',
+				images: [
+					'/work/branding/pitao/2.jpg',
+					'/work/branding/pitao/3.jpg',
+				],
 			},
 			{
 				id: '02',
