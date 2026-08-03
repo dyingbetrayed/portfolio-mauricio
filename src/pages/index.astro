@@ -4,8 +4,6 @@ import Navbar from '../components/Navbar.astro';
 import AboutSection from '../components/AboutSection.astro';
 import WorkSlide from '../components/WorkSlide.astro';
 import ContactSection from '../components/ContactSection.astro';
-
-const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 ---
 
 <Layout>
@@ -35,19 +33,6 @@ const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 
 		<ContactSection />
 	</main>
-
-	<nav class="scroll-indicator" aria-label="Secciones del sitio">
-		{slideLabels.map((label, i) => (
-			<button
-				type="button"
-				class="scroll-indicator__dot"
-				data-slide-index={i}
-				aria-label={label}
-			>
-				<span class="scroll-indicator__pip"></span>
-			</button>
-		))}
-	</nav>
 </Layout>
 
 <script>
@@ -57,7 +42,11 @@ const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 		const slides = () =>
 			Array.from(container.children).filter((el) => el.nodeType === 1);
 
-		function activeIndex() {
+		let currentIndex = 0;
+		let isScrolling = false;
+		const SCROLL_COOLDOWN = 650;
+
+		function nearestIndex() {
 			const left = container.scrollLeft;
 			const list = slides();
 			let best = 0;
@@ -72,12 +61,27 @@ const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 			return best;
 		}
 
-		function go(delta) {
+		function goToIndex(index, { smooth = true } = {}) {
 			const list = slides();
-			const next = Math.min(list.length - 1, Math.max(0, activeIndex() + delta));
+			const next = Math.min(list.length - 1, Math.max(0, index));
 			const slide = list[next];
 			if (!slide) return;
-			container.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' });
+
+			currentIndex = next;
+			isScrolling = true;
+			container.scrollTo({
+				left: slide.offsetLeft,
+				behavior: smooth ? 'smooth' : 'instant',
+			});
+			window.setTimeout(() => {
+				isScrolling = false;
+				currentIndex = nearestIndex();
+			}, SCROLL_COOLDOWN);
+		}
+
+		function go(delta) {
+			if (isScrolling) return;
+			goToIndex(currentIndex + delta);
 		}
 
 		function workDepth() {
@@ -85,18 +89,29 @@ const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 			return Number(work?.dataset.depth || 0);
 		}
 
-		/* ── Wheel → horizontal (debounced snap) ── */
-		let isScrolling = false;
-		const SCROLL_COOLDOWN = 650;
+		function indexForHash(hash) {
+			const id = hash.replace(/^#/, '');
+			if (!id) return 0;
+			const list = slides();
+			const byId = list.findIndex((el) => el.id === id);
+			if (byId !== -1) return byId;
+			// Proyectos / categorías viven dentro de #work
+			if (document.getElementById(id)?.closest('#work')) {
+				return list.findIndex((el) => el.id === 'work');
+			}
+			return -1;
+		}
 
+		/* ── Wheel → horizontal (debounced snap) ── */
 		container.addEventListener('wheel', (event) => {
 			if (workDepth() > 0) return;
-			if (Math.abs(event.deltaY) < 5) return;
+			if (Math.abs(event.deltaY) < 5 && Math.abs(event.deltaX) < 5) return;
 			event.preventDefault();
 			if (isScrolling) return;
-			isScrolling = true;
-			go(event.deltaY > 0 ? 1 : -1);
-			setTimeout(() => { isScrolling = false; }, SCROLL_COOLDOWN);
+			const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX)
+				? event.deltaY
+				: event.deltaX;
+			go(delta > 0 ? 1 : -1);
 		}, { passive: false });
 
 		/* ── Touch swipe → horizontal ── */
@@ -113,6 +128,7 @@ const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 
 		container.addEventListener('touchend', (event) => {
 			if (workDepth() > 0) return;
+			if (isScrolling) return;
 			const touch = event.changedTouches[0];
 			const dx = touch.clientX - touchStartX;
 			const dy = touch.clientY - touchStartY;
@@ -145,6 +161,30 @@ const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 			go(isNext ? 1 : -1);
 		});
 
+		/* ── Navbar / hash → misma navegación horizontal ── */
+		document.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const link = target.closest('a[href^="#"]');
+			if (!(link instanceof HTMLAnchorElement)) return;
+			const href = link.getAttribute('href');
+			if (!href || href === '#') return;
+
+			const idx = indexForHash(href);
+			if (idx < 0) return;
+
+			event.preventDefault();
+			if (workDepth() > 0 && href !== '#work') {
+				document.getElementById('work')?.dispatchEvent(new CustomEvent('work:close'));
+			}
+			goToIndex(idx);
+			history.replaceState(null, '', href);
+		});
+
+		container.addEventListener('scroll', () => {
+			if (!isScrolling) currentIndex = nearestIndex();
+		}, { passive: true });
+
 		/* ── Scroll hint: hide on first interaction ── */
 		const scrollHint = document.querySelector('.scroll-hint');
 		if (scrollHint) {
@@ -157,36 +197,9 @@ const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 			window.addEventListener('keydown', hideHint, { once: true });
 		}
 
-		/* ── Scroll indicator dots ── */
-		const indicator = document.querySelector('.scroll-indicator');
-		if (indicator) {
-			const dots = Array.from(indicator.querySelectorAll('.scroll-indicator__dot'));
-
-			function updateDots() {
-				const idx = activeIndex();
-				dots.forEach((dot, i) => {
-					dot.classList.toggle('is-active', i === idx);
-				});
-				indicator.classList.toggle('is-hidden', workDepth() > 0);
-			}
-
-			container.addEventListener('scroll', updateDots, { passive: true });
-
-			const work = document.getElementById('work');
-			if (work) {
-				const observer = new MutationObserver(updateDots);
-				observer.observe(work, { attributes: true, attributeFilter: ['data-depth'] });
-			}
-
-			dots.forEach((dot) => {
-				dot.addEventListener('click', () => {
-					const idx = Number(dot.dataset.slideIndex);
-					go(idx - activeIndex());
-				});
-			});
-
-			updateDots();
-		}
+		currentIndex = nearestIndex();
+		const initialHash = indexForHash(location.hash);
+		if (initialHash >= 0) goToIndex(initialHash, { smooth: false });
 	}
 </script>
 
@@ -306,60 +319,5 @@ const slideLabels = ['Inicio', 'About', 'Work', 'Contact'];
 	@keyframes hint-bounce {
 		0%, 100% { transform: translateX(0); }
 		50% { transform: translateX(6px); }
-	}
-
-	.scroll-indicator {
-		position: fixed;
-		bottom: 1.5rem;
-		left: 50%;
-		transform: translateX(-50%);
-		z-index: 50;
-		display: flex;
-		gap: 0.75rem;
-		align-items: center;
-		padding: 0.5rem 0.75rem;
-		border-radius: 999px;
-		background: rgba(0, 0, 0, 0.25);
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
-		transition: opacity 0.3s ease, visibility 0s linear 0s;
-		opacity: 1;
-		visibility: visible;
-	}
-
-	.scroll-indicator.is-hidden {
-		opacity: 0;
-		visibility: hidden;
-		transition-delay: 0s, 0.3s;
-	}
-
-	.scroll-indicator__dot {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 28px;
-		height: 28px;
-		padding: 0;
-		border: none;
-		background: transparent;
-		cursor: pointer;
-	}
-
-	.scroll-indicator__pip {
-		display: block;
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.45);
-		transition: background 0.3s ease, transform 0.3s ease;
-	}
-
-	.scroll-indicator__dot.is-active .scroll-indicator__pip {
-		background: #ffffff;
-		transform: scale(1.35);
-	}
-
-	.scroll-indicator__dot:hover .scroll-indicator__pip {
-		background: rgba(255, 255, 255, 0.8);
 	}
 </style>
