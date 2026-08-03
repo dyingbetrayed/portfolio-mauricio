@@ -7,7 +7,7 @@ import Navbar from './Navbar.astro';
 		<Navbar theme="dark" active="about" showLogo />
 	</header>
 
-	<div class="about-content-wrapper">
+	<div class="about-content-wrapper" data-v-scroll>
 		<div class="about-center">
 			<img src="/about/image.png" alt="Mauricio Atencia" class="about-image" />
 		</div>
@@ -36,6 +36,7 @@ import Navbar from './Navbar.astro';
 		flex: 0 0 100vw;
 		width: 100vw;
 		height: 100vh;
+		height: 100dvh;
 		scroll-snap-align: start;
 		position: relative;
 		overflow: hidden;
@@ -51,12 +52,14 @@ import Navbar from './Navbar.astro';
 	.about-header {
 		position: relative;
 		z-index: 2;
-		padding: 1.5rem 3rem 0 2rem;
+		flex: 0 0 auto;
+		padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
 		display: flex;
 		align-items: flex-start;
 		width: 100%;
 		box-sizing: border-box;
 		justify-content: flex-end;
+		background-color: #eeedec;
 	}
 
 	.about-content-wrapper {
@@ -64,54 +67,53 @@ import Navbar from './Navbar.astro';
 		flex-direction: column;
 		flex: 1;
 		min-height: 0;
-		padding: 0 clamp(3rem, 3.35vw, 5.25rem) clamp(3rem, 3.35vw, 5.25rem) clamp(2rem, 2.25vw, 3.5rem);
+		padding: 0 var(--pad-section-x-r) var(--pad-section-b) var(--pad-section-x-l);
 		box-sizing: border-box;
 		width: 100%;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
 	}
 
 	.about-center {
-		flex: 1;
-		min-height: 0;
+		flex: 1 1 auto;
+		min-height: clamp(120px, 30vh, 280px);
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
-		padding: 0 0 clamp(0.85rem, 1.2vw, 1.5rem) 0;
+		padding: 0 0 clamp(0.5rem, 1.2vw, 1.5rem) 0;
 	}
 
 	.about-image {
-		height: clamp(180px, 32vh, 480px);
-		max-height: 100%;
-		min-width: 180px;
+		height: clamp(120px, 30vh, 480px);
 		width: auto;
+		max-width: 100%;
 		object-fit: cover;
-		transform: translateY(clamp(1.25rem, 1.8vw, 2.25rem));
+		display: block;
+		transform: translateY(clamp(0.75rem, 1.8vw, 2.25rem));
 	}
 
-	@media (max-width: 1440px) {
+	@media (max-height: 500px) {
 		.about-center {
-			padding-bottom: 0.5rem;
+			flex: 0 0 auto;
+			min-height: clamp(88px, 38vh, 150px);
 		}
 
 		.about-image {
-			height: clamp(80px, 18vw, 280px);
-			min-width: 0;
-			transform: translateY(clamp(1.25rem, 1.8vw, 2.25rem));
-		}
-	}
-
-	@media (max-width: 1024px) {
-		.about-image {
-			height: clamp(60px, 14vw, 180px);
-			min-width: 0;
-			transform: translateY(1.25rem);
+			height: clamp(88px, 38vh, 150px);
+			transform: translateY(0.5rem);
 		}
 	}
 
-	@media (max-width: 600px) {
+	@media (min-height: 501px) and (max-width: 1440px) {
 		.about-image {
-			height: clamp(50px, 18vw, 110px);
-			min-width: 0;
-			transform: translateY(0.85rem);
+			height: clamp(120px, 28vh, 280px);
+		}
+
+		.about-center {
+			min-height: clamp(120px, 28vh, 280px);
 		}
 	}
 
@@ -124,9 +126,9 @@ import Navbar from './Navbar.astro';
 	.location-text {
 		font-family: var(--font-helvetica);
 		font-weight: 300;
-		font-size: clamp(1rem, 1.05vw, 1.6rem);
+		font-size: clamp(0.75rem, 1.05vw, 1.6rem);
 		text-align: right;
-		margin-bottom: clamp(0.5rem, 0.6vw, 1rem);
+		margin-bottom: clamp(0.35rem, 0.6vw, 1rem);
 		letter-spacing: 0.03em;
 	}
 
@@ -134,7 +136,7 @@ import Navbar from './Navbar.astro';
 		border: none;
 		border-top: clamp(2px, 0.15vw, 4px) solid #000000;
 		width: 100%;
-		margin: 0 0 clamp(1rem, 1.1vw, 1.75rem) 0;
+		margin: 0 0 clamp(0.65rem, 1.1vw, 1.75rem) 0;
 	}
 
 	.about-footer-content {
@@ -142,22 +144,23 @@ import Navbar from './Navbar.astro';
 		justify-content: flex-start;
 		align-items: flex-start;
 		gap: 0;
+		flex-wrap: wrap;
 	}
 
 	.about-title {
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(1.25rem, 1.4vw, 2.15rem);
+		font-size: clamp(0.95rem, 1.4vw, 2.15rem);
 		flex: 0 0 auto;
 		line-height: 1;
 		padding-top: 0.15em;
-		margin-right: clamp(0.75rem, 1.2vw, 1.5rem);
+		margin-right: clamp(0.5rem, 1.2vw, 1.5rem);
 	}
 
 	.name-title {
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(1.6rem, 3.4vw, 4.75rem);
+		font-size: clamp(1.15rem, 3.4vw, 4.75rem);
 		margin: 0;
 		color: #000000;
 		line-height: 0.95;
@@ -170,13 +173,28 @@ import Navbar from './Navbar.astro';
 	.about-text {
 		font-family: var(--font-helvetica);
 		font-weight: 300;
-		font-size: clamp(0.95rem, 1.05vw, 1.55rem);
+		font-size: clamp(0.7rem, 1.05vw, 1.55rem);
 		line-height: 1.4;
-		flex: 0 0 50rem;
-		width: 50rem;
-		max-width: 50rem;
-		margin-left: clamp(7rem, 11vw, 15rem);
+		flex: 1 1 min(50rem, 42vw);
+		width: min(50rem, 42vw);
+		max-width: min(50rem, 48%);
+		min-width: min(16rem, 100%);
+		margin-left: clamp(1.5rem, 11vw, 15rem);
 		text-align: justify;
+	}
+
+	@media (max-width: 900px) {
+		.about-footer-content {
+			flex-direction: column;
+			gap: 0.75rem;
+		}
+
+		.about-text {
+			width: 100%;
+			max-width: 100%;
+			margin-left: 0;
+			flex: 1 1 auto;
+		}
 	}
 
 	.about-text p {

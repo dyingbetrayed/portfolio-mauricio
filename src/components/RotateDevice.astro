@@ -1,0 +1,90 @@
+---
+---
+
+<div
+	class="rotate-device"
+	role="dialog"
+	aria-modal="true"
+	aria-label="Gira tu dispositivo a horizontal"
+>
+	<div class="rotate-device__inner">
+		<img
+			class="rotate-device__icon"
+			src="/Rotate%20Phone.svg"
+			alt=""
+			width="180"
+			height="180"
+			decoding="async"
+		/>
+		<p class="rotate-device__text">Gira tu dispositivo</p>
+	</div>
+</div>
+
+<style>
+	.rotate-device {
+		display: none;
+		position: fixed;
+		inset: 0;
+		z-index: 100000;
+		align-items: center;
+		justify-content: center;
+		background-color: #eeedec;
+		color: #000000;
+		padding: calc(2rem + var(--sat, 0px)) calc(2rem + var(--sar, 0px))
+			calc(2rem + var(--sab, 0px)) calc(2rem + var(--sal, 0px));
+		box-sizing: border-box;
+		overscroll-behavior: none;
+		touch-action: none;
+	}
+
+	.rotate-device__inner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1.25rem;
+		text-align: center;
+		max-width: 20rem;
+	}
+
+	.rotate-device__icon {
+		width: min(42vw, 11rem);
+		height: auto;
+		aspect-ratio: 1;
+		display: block;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.rotate-device__text {
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(1rem, 4.5vw, 1.35rem);
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	/* Celulares / tablets táctiles en vertical */
+	@media (orientation: portrait) and (max-width: 1024px) and (hover: none) {
+		.rotate-device {
+			display: flex;
+		}
+	}
+</style>
+
+<script>
+	// @ts-nocheck
+	const mq = window.matchMedia(
+		'(orientation: portrait) and (max-width: 1024px) and (hover: none)',
+	);
+
+	function sync() {
+		const lock = mq.matches;
+		document.documentElement.classList.toggle('orientation-locked', lock);
+		document.body.classList.toggle('orientation-locked', lock);
+	}
+
+	sync();
+	mq.addEventListener('change', sync);
+</script>

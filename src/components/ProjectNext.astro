@@ -101,12 +101,13 @@ const nextSlug = related[0]?.slug;
 	.project-next__nav {
 		flex: 0 0 auto;
 		z-index: 5;
-		padding: 1.5rem 3rem 1.5rem 2rem;
+		padding: var(--pad-header-y) var(--pad-header-x-r)
+			max(var(--pad-header-y-base, 0.65rem), 0.65rem) var(--pad-header-x-l);
 		background: #ffffff;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: 2rem;
+		gap: clamp(1rem, 2vw, 2rem);
 	}
 
 	.project-next__nav :global(.navbar) {
@@ -125,7 +126,7 @@ const nextSlug = related[0]?.slug;
 		cursor: pointer;
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(1.05rem, 1.15vw, 1.7rem);
+		font-size: var(--nav-size);
 		letter-spacing: 0.03em;
 		color: #000000;
 		flex-shrink: 0;

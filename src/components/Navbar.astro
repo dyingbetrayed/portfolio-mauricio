@@ -52,7 +52,7 @@ const links: { id: NavSection; label: string }[] = [
 
 	.navbar ul {
 		display: flex;
-		gap: clamp(5rem, 5.5vw, 8.5rem);
+		gap: var(--nav-gap);
 		margin: 0;
 		padding: 0;
 		list-style: none;
@@ -63,7 +63,7 @@ const links: { id: NavSection; label: string }[] = [
 		display: inline-block;
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(1.05rem, 1.15vw, 1.7rem);
+		font-size: var(--nav-size);
 		letter-spacing: 0.03em;
 		text-transform: capitalize;
 	}

@@ -102,21 +102,62 @@ import ContactSection from '../components/ContactSection.astro';
 			return -1;
 		}
 
+		function canScrollVertically(el, deltaY) {
+			if (!(el instanceof Element)) return false;
+			const style = getComputedStyle(el);
+			const overflowY = style.overflowY;
+			if (overflowY !== 'auto' && overflowY !== 'scroll' && overflowY !== 'overlay') {
+				return false;
+			}
+			const max = el.scrollHeight - el.clientHeight;
+			if (max <= 1) return false;
+			if (deltaY < 0) return el.scrollTop > 0;
+			if (deltaY > 0) return el.scrollTop < max - 1;
+			return true;
+		}
+
+		function findScrollableParent(start, deltaY) {
+			let node = start instanceof Element ? start : null;
+			while (node && node !== container) {
+				if (
+					node.hasAttribute('data-v-scroll') &&
+					canScrollVertically(node, deltaY)
+				) {
+					return node;
+				}
+				node = node.parentElement;
+			}
+			return null;
+		}
+
 		/* ── Wheel → horizontal (debounced snap) ── */
 		container.addEventListener('wheel', (event) => {
 			if (workDepth() > 0) return;
 			if (Math.abs(event.deltaY) < 5 && Math.abs(event.deltaX) < 5) return;
+
+			const primaryDelta =
+				Math.abs(event.deltaY) >= Math.abs(event.deltaX)
+					? event.deltaY
+					: event.deltaX;
+			const isVertical =
+				Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+
+			if (
+				isVertical &&
+				findScrollableParent(event.target, event.deltaY)
+			) {
+				return;
+			}
+
 			event.preventDefault();
 			if (isScrolling) return;
-			const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX)
-				? event.deltaY
-				: event.deltaX;
-			go(delta > 0 ? 1 : -1);
+			go(primaryDelta > 0 ? 1 : -1);
 		}, { passive: false });
 
 		/* ── Touch swipe → horizontal ── */
 		let touchStartX = 0;
 		let touchStartY = 0;
+		let touchOnVScroll = false;
 		const SWIPE_THRESHOLD = 50;
 
 		container.addEventListener('touchstart', (event) => {
@@ -124,6 +165,10 @@ import ContactSection from '../components/ContactSection.astro';
 			const touch = event.touches[0];
 			touchStartX = touch.clientX;
 			touchStartY = touch.clientY;
+			const target = event.target;
+			touchOnVScroll = Boolean(
+				target instanceof Element && target.closest('[data-v-scroll]'),
+			);
 		}, { passive: true });
 
 		container.addEventListener('touchend', (event) => {
@@ -133,6 +178,7 @@ import ContactSection from '../components/ContactSection.astro';
 			const dx = touch.clientX - touchStartX;
 			const dy = touch.clientY - touchStartY;
 			if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dy) > Math.abs(dx)) return;
+			if (touchOnVScroll && Math.abs(dy) > 10) return;
 			go(dx < 0 ? 1 : -1);
 		}, { passive: true });
 
@@ -150,8 +196,8 @@ import ContactSection from '../components/ContactSection.astro';
 
 			const depth = workDepth();
 			if (depth > 0) {
-				event.preventDefault();
 				if (isPrev) {
+					event.preventDefault();
 					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:back'));
 				}
 				return;
@@ -209,12 +255,20 @@ import ContactSection from '../components/ContactSection.astro';
 		flex-direction: row;
 		width: 100vw;
 		height: 100vh;
+		height: 100dvh;
 		overflow-x: auto;
 		overflow-y: hidden;
 		scroll-snap-type: x mandatory;
 		scroll-behavior: smooth;
 		-ms-overflow-style: none;
 		scrollbar-width: none;
+	}
+
+	/* Dentro de capas Work: no pelear el pan vertical del panel */
+	.horizontal-scroll-container.is-v-nested {
+		overflow-x: hidden;
+		touch-action: pan-y;
+		overscroll-behavior: none;
 	}
 	
 	.horizontal-scroll-container::-webkit-scrollbar {
@@ -225,6 +279,7 @@ import ContactSection from '../components/ContactSection.astro';
 		flex: 0 0 100vw;
 		width: 100vw;
 		height: 100vh;
+		height: 100dvh;
 		scroll-snap-align: start;
 		position: relative;
 		display: flex;
@@ -236,7 +291,7 @@ import ContactSection from '../components/ContactSection.astro';
 	.slide-header {
 		position: relative;
 		z-index: 2;
-		padding: 1.5rem 3rem 0 2rem;
+		padding: var(--pad-header-y) var(--pad-header-x-r) 0 var(--pad-header-x-l);
 		display: flex;
 		align-items: center;
 		width: 100%;
@@ -272,7 +327,7 @@ import ContactSection from '../components/ContactSection.astro';
 	}
 
 	.hero-footer {
-		padding: 2rem 4rem 2rem 4rem;
+		padding: clamp(1rem, 3vh, 2rem) var(--pad-section-x-r) var(--pad-section-b) var(--pad-section-x-l);
 		display: flex;
 		justify-content: center;
 		text-align: center;
@@ -281,8 +336,8 @@ import ContactSection from '../components/ContactSection.astro';
 	.hero-footer p {
 		font-family: var(--font-text);
 		font-weight: 300;
-		font-size: 1rem;
-		max-width: 70%;
+		font-size: clamp(0.75rem, 1.35vh + 0.35vw, 1rem);
+		max-width: min(70%, 52rem);
 		letter-spacing: 1px;
 		line-height: 1.6;
 		color: #f4f4f4;
@@ -290,8 +345,8 @@ import ContactSection from '../components/ContactSection.astro';
 
 	.scroll-hint {
 		position: absolute;
-		bottom: 2.5rem;
-		right: 3rem;
+		bottom: max(clamp(1rem, 3.5vh, 2.5rem), calc(var(--sab) + 0.5rem));
+		right: var(--pad-header-x-r);
 		z-index: 3;
 		display: flex;
 		align-items: center;
@@ -299,7 +354,7 @@ import ContactSection from '../components/ContactSection.astro';
 		color: rgba(255, 255, 255, 0.8);
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(0.85rem, 1vw, 1.1rem);
+		font-size: clamp(0.7rem, 1vw, 1.1rem);
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		opacity: 1;

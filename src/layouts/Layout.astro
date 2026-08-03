@@ -1,8 +1,12 @@
+---
+import RotateDevice from '../components/RotateDevice.astro';
+---
+
 <!doctype html>
 <html lang="es">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
@@ -13,6 +17,7 @@
 	</head>
 	<body>
 		<a href="#about" class="skip-link">Saltar al contenido</a>
+		<RotateDevice />
 		<slot />
 	</body>
 </html>
@@ -46,16 +51,95 @@
 		--font-nav: 'Aptos', 'Inter', sans-serif;
 		--font-text: 'Acumin Variable Concept', 'Inter', sans-serif;
 		--font-helvetica: 'Helvetica43', 'Inter', sans-serif;
+
+		/* Safe areas (notch / status bar / home indicator) */
+		--sat: env(safe-area-inset-top, 0px);
+		--sar: env(safe-area-inset-right, 0px);
+		--sab: env(safe-area-inset-bottom, 0px);
+		--sal: env(safe-area-inset-left, 0px);
+
+		/* Espaciado base (sin safe-area) */
+		--pad-header-y-base: clamp(0.65rem, 2.2vh, 1.5rem);
+		--pad-header-x-r-base: clamp(1rem, 3vw, 3rem);
+		--pad-header-x-l-base: clamp(0.85rem, 2vw, 2rem);
+		--pad-section-x-base: clamp(1rem, 3vw, 4rem);
+		--pad-section-b-base: clamp(1rem, 3.2vh, 3rem);
+
+		/* Espaciado compartido + safe-area */
+		--pad-header-y: calc(var(--pad-header-y-base) + var(--sat));
+		--pad-header-x-r: calc(var(--pad-header-x-r-base) + var(--sar));
+		--pad-header-x-l: calc(var(--pad-header-x-l-base) + var(--sal));
+		--pad-section-x: var(--pad-section-x-base);
+		--pad-section-x-l: calc(var(--pad-section-x-base) + var(--sal));
+		--pad-section-x-r: calc(var(--pad-section-x-base) + var(--sar));
+		--pad-section-b: calc(var(--pad-section-b-base) + var(--sab));
+		--nav-gap: clamp(1.25rem, 5.5vw, 8.5rem);
+		--nav-size: clamp(0.8rem, 1.15vw, 1.7rem);
+		--logo-w: clamp(96px, 14.75vw, 283px);
 	}
+
+	/*
+	 * En muchos móviles env(safe-area-*) llega en 0 aunque haya status bar / notch.
+	 * Forzamos mínimos en táctil; en landscape el inset lateral suele ser el crítico.
+	 */
+	@media (hover: none) {
+		:root {
+			--sat: max(env(safe-area-inset-top, 0px), 16px);
+			--sab: max(env(safe-area-inset-bottom, 0px), 12px);
+			--sal: max(env(safe-area-inset-left, 0px), 16px);
+			--sar: max(env(safe-area-inset-right, 0px), 16px);
+		}
+	}
+
+	@media (hover: none) and (orientation: landscape) {
+		:root {
+			--sat: max(env(safe-area-inset-top, 0px), 12px);
+			--sab: max(env(safe-area-inset-bottom, 0px), 12px);
+			--sal: max(env(safe-area-inset-left, 0px), 36px);
+			--sar: max(env(safe-area-inset-right, 0px), 36px);
+		}
+	}
+
+	/* En pantallas grandes se conservan los mínimos originales */
+	@media (min-width: 1200px) {
+		:root {
+			--nav-gap: clamp(5rem, 5.5vw, 8.5rem);
+			--nav-size: clamp(1.05rem, 1.15vw, 1.7rem);
+			--logo-w: clamp(160px, 14.75vw, 283px);
+			--pad-header-y-base: clamp(1rem, 2.2vh, 1.5rem);
+		}
+	}
+
+	@media (min-width: 1200px) and (hover: hover) {
+		:root {
+			--sat: env(safe-area-inset-top, 0px);
+			--sar: env(safe-area-inset-right, 0px);
+			--sab: env(safe-area-inset-bottom, 0px);
+			--sal: env(safe-area-inset-left, 0px);
+		}
+	}
+
 	html,
 	body {
 		margin: 0;
 		padding: 0;
 		width: 100%;
 		height: 100%;
+		height: 100dvh;
 		background-color: #050505;
 		color: #ffffff;
 		overflow: hidden;
+	}
+
+	html.orientation-locked,
+	body.orientation-locked {
+		overflow: hidden;
+		touch-action: none;
+	}
+
+	body.orientation-locked > :not(.rotate-device):not(.skip-link) {
+		visibility: hidden !important;
+		pointer-events: none !important;
 	}
 	
 	a {
@@ -81,7 +165,7 @@
 	.skip-link {
 		position: fixed;
 		top: -100%;
-		left: 1rem;
+		left: calc(1rem + var(--sal));
 		z-index: 9999;
 		padding: 0.75rem 1.25rem;
 		background: #000000;
@@ -95,7 +179,7 @@
 	}
 
 	.skip-link:focus {
-		top: 0;
+		top: var(--sat);
 		opacity: 1;
 	}
 

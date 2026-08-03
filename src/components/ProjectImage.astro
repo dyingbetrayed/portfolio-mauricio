@@ -82,8 +82,9 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		position: absolute;
 		top: 0;
 		left: 0;
+		right: 0;
 		z-index: 5;
-		padding: 1.5rem 2rem;
+		padding: var(--pad-header-y) var(--pad-header-x-r) 1rem var(--pad-header-x-l);
 		background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), transparent);
 	}
 
@@ -97,7 +98,7 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		cursor: pointer;
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(1.05rem, 1.15vw, 1.7rem);
+		font-size: var(--nav-size);
 		letter-spacing: 0.03em;
 		color: #ffffff;
 		flex-shrink: 0;
@@ -142,7 +143,8 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		align-items: flex-end;
 		justify-content: space-between;
 		gap: 1rem;
-		padding: clamp(1rem, 2.5vh, 1.75rem) clamp(1.25rem, 3vw, 2.5rem);
+		padding: clamp(0.65rem, 2.5vh, 1.75rem) var(--pad-section-x-r)
+			max(clamp(0.65rem, 2.5vh, 1.75rem), var(--sab)) var(--pad-section-x-l);
 		background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
 		pointer-events: none;
 	}
@@ -161,7 +163,7 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		cursor: pointer;
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(0.95rem, 1.05vw, 1.45rem);
+		font-size: clamp(0.8rem, 1.05vw, 1.45rem);
 		letter-spacing: 0.03em;
 		padding: 0;
 		margin-left: auto;
@@ -176,15 +178,5 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 	.project-image__next-icon {
 		font-size: 1.1em;
 		line-height: 1;
-	}
-
-	@media (max-width: 768px) {
-		.project-image__nav {
-			padding: 1.25rem 1.5rem;
-		}
-
-		.project-image__footer {
-			padding: 1rem 1.25rem 1.25rem;
-		}
 	}
 </style>

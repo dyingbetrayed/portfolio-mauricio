@@ -22,7 +22,7 @@ const toEmail = 'mauricioatenciam@gmail.com';
 	<form class="contact-drawer__form" data-contact-form>
 		<h2 id="contact-drawer-title" class="visually-hidden">Send email</h2>
 
-		<div class="contact-drawer__body">
+		<div class="contact-drawer__body" data-v-scroll>
 			<div class="contact-drawer__row">
 				<span class="contact-drawer__label">To:</span>
 				<span class="contact-drawer__value">{toEmail}</span>
@@ -120,6 +120,9 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.4s;
 		visibility: hidden;
 		pointer-events: none;
+		padding-top: var(--sat);
+		padding-right: var(--sar);
+		padding-bottom: var(--sab);
 	}
 
 	.contact-drawer.is-open {
@@ -149,6 +152,9 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		flex-direction: column;
 		padding: clamp(0.35rem, 0.8vh, 0.65rem) clamp(0.85rem, 1.5vw, 1.25rem) 0;
 		overflow: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
 	}
 
 	.contact-drawer__row {

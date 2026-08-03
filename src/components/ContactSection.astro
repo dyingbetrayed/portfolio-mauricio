@@ -8,7 +8,7 @@ import ContactDrawer from './ContactDrawer.astro';
 		<Navbar theme="dark" active="contact" showLogo />
 	</header>
 	
-	<div class="contact-content-wrapper">
+	<div class="contact-content-wrapper" data-v-scroll>
 		<div class="contact-title-container">
 			<h1 class="contact-title">
 				<span>H</span>
@@ -53,6 +53,7 @@ import ContactDrawer from './ContactDrawer.astro';
 		flex: 0 0 100vw;
 		width: 100vw;
 		height: 100vh;
+		height: 100dvh;
 		scroll-snap-align: start;
 		position: relative;
 		overflow: hidden;
@@ -68,7 +69,7 @@ import ContactDrawer from './ContactDrawer.astro';
 	.contact-header {
 		position: relative;
 		z-index: 2;
-		padding: 1.5rem 3rem 0 2rem;
+		padding: var(--pad-header-y) var(--pad-header-x-r) 0 var(--pad-header-x-l);
 		display: flex;
 		align-items: center;
 		width: 100%;
@@ -80,16 +81,22 @@ import ContactDrawer from './ContactDrawer.astro';
 		display: flex;
 		flex-direction: column;
 		flex: 1;
-		padding: 0 4rem 3rem 4rem;
+		min-height: 0;
+		padding: 0 var(--pad-section-x-r) var(--pad-section-b) var(--pad-section-x-l);
 		box-sizing: border-box;
 		width: 100%;
 		justify-content: flex-end;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
 	}
 
 	.contact-title-container {
 		width: 100%;
 		display: block;
-		margin-bottom: 1.5rem;
+		margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
 		container-type: inline-size;
 	}
 
@@ -124,8 +131,9 @@ import ContactDrawer from './ContactDrawer.astro';
 		width: 100%;
 		font-family: var(--font-helvetica);
 		font-weight: 300;
-		font-size: 1rem;
+		font-size: clamp(0.7rem, 1.35vh + 0.35vw, 1rem);
 		letter-spacing: 0.5px;
+		gap: 0.75rem;
 	}
 
 	.footer-col {

@@ -23,7 +23,7 @@ const { class: className } = Astro.props;
 	}
 
 	.site-logo img {
-		width: clamp(120px, 14.75vw, 283px);
+		width: var(--logo-w);
 		height: auto;
 		aspect-ratio: 283 / 83;
 		object-fit: contain;
