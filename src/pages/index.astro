@@ -143,7 +143,7 @@ import ContactSection from '../components/ContactSection.astro';
 			return null;
 		}
 
-		/* ── Wheel → horizontal (debounced snap) ── */
+		let lastWheelTime = Date.now();
 		container.addEventListener('wheel', (event) => {
 			if (workDepth() > 0) return;
 			if (Math.abs(event.deltaY) < 5 && Math.abs(event.deltaX) < 5) return;
@@ -163,7 +163,16 @@ import ContactSection from '../components/ContactSection.astro';
 			}
 
 			event.preventDefault();
+			
+			const now = Date.now();
+			const timeDiff = now - lastWheelTime;
+			lastWheelTime = now;
+
 			if (isScrolling) return;
+
+			// Handle trackpad inertia: wait for a pause in wheel events to allow the next slide change
+			if (timeDiff < 120) return;
+
 			go(primaryDelta > 0 ? 1 : -1);
 		}, { passive: false });
 
