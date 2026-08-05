@@ -1,0 +1,199 @@
+---
+import Navbar from './Navbar.astro';
+import ContactDrawer from './ContactDrawer.astro';
+---
+
+<section class="slide contact-slide" id="contact">
+	<header class="slide-header contact-header reveal" style="--reveal-delay: 60ms">
+		<Navbar theme="dark" active="contact" showLogo />
+	</header>
+	
+	<div class="contact-content-wrapper" data-v-scroll>
+		<div class="contact-title-container reveal" style="--reveal-delay: 140ms">
+			<h1 class="contact-title">
+				<span>H</span>
+				<span>A</span>
+				<span>B</span>
+				<span>L</span>
+				<span>E</span>
+				<span>M</span>
+				<span>O</span>
+				<span>S</span>
+			</h1>
+		</div>
+		
+		<footer class="contact-footer reveal" style="--reveal-delay: 280ms">
+			<div class="footer-col left-col">
+				<a href="/" class="footer-link">Instagram</a>
+				<a href="https://wa.me/573146253071" class="footer-link">WhatsApp</a>
+			</div>
+			
+			<div class="footer-col center-col">
+				<a
+					href="mailto:mauricioatenciam@gmail.com"
+					class="footer-link"
+					data-open-contact-drawer
+				>
+					mauricioatenciam@gmail.com
+				</a>
+			</div>
+			
+			<div class="footer-col right-col">
+				<a href="/" class="footer-link">Behance</a>
+				<span class="footer-link">+57 314 625 3071</span>
+			</div>
+		</footer>
+	</div>
+
+	<ContactDrawer />
+</section>
+
+<style>
+	.contact-slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh;
+		scroll-snap-align: start;
+		position: relative;
+		overflow: hidden;
+		box-sizing: border-box;
+
+		background-color: #eeedec;
+		color: #000000;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.contact-header {
+		position: relative;
+		z-index: 2;
+		padding: var(--pad-header-y) var(--pad-header-x-r) 0 var(--pad-header-x-l);
+		display: flex;
+		align-items: center;
+		width: 100%;
+		box-sizing: border-box;
+		justify-content: flex-end;
+	}
+
+	.contact-content-wrapper {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-height: 0;
+		padding: 0 var(--pad-section-x-r) var(--pad-section-b) var(--pad-section-x-l);
+		box-sizing: border-box;
+		width: 100%;
+		justify-content: flex-end;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
+	}
+
+	.contact-title-container {
+		width: 100%;
+		display: block;
+		margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+		container-type: inline-size;
+	}
+
+	.contact-title {
+		font-family: var(--font-text);
+		font-size: 18cqw; 
+		font-weight: 700;
+		line-height: 0.75;
+		margin: 0;
+		color: #000000;
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		white-space: nowrap;
+		/* Compensa el sidebearing de la tinta, igual que branding */
+		--title-ink-lsb: 0.0854em;
+		--title-ink-rsb: 0.05em;
+	}
+
+	.contact-title span {
+		display: inline-block;
+		opacity: 0;
+		transform: translate3d(0, 0.35em, 0);
+		transition:
+			opacity var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+			transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+	}
+
+	.contact-slide.is-active .contact-title span {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	.contact-title span:nth-child(1) { transition-delay: 80ms; }
+	.contact-title span:nth-child(2) { transition-delay: 120ms; }
+	.contact-title span:nth-child(3) { transition-delay: 160ms; }
+	.contact-title span:nth-child(4) { transition-delay: 200ms; }
+	.contact-title span:nth-child(5) { transition-delay: 240ms; }
+	.contact-title span:nth-child(6) { transition-delay: 280ms; }
+	.contact-title span:nth-child(7) { transition-delay: 320ms; }
+	.contact-title span:nth-child(8) { transition-delay: 360ms; }
+
+	.contact-title span:first-child {
+		margin-left: calc(-1 * var(--title-ink-lsb));
+	}
+
+	.contact-title span:last-child {
+		margin-right: calc(-1 * var(--title-ink-rsb));
+	}
+
+	.contact-footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		width: 100%;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.7rem, 1.35vh + 0.35vw, 1rem);
+		letter-spacing: 0.5px;
+		gap: 0.75rem;
+	}
+
+	.footer-col {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.left-col {
+		align-items: flex-start;
+	}
+
+	.center-col {
+		align-items: center;
+		text-align: center;
+	}
+
+	.right-col {
+		align-items: flex-end;
+		text-align: right;
+	}
+
+	.footer-link {
+		color: #000000;
+		text-decoration: none;
+		transition: opacity var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+	}
+
+	.footer-link:hover {
+		opacity: 0.6;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.contact-title span {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+</style>

@@ -1,0 +1,552 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import AboutSection from '../components/AboutSection.astro';
+import WorkSlide from '../components/WorkSlide.astro';
+import ContactSection from '../components/ContactSection.astro';
+---
+
+<Layout>
+	<main class="horizontal-scroll-container">
+		<section class="slide hero-slide">
+			<div class="overlay"></div>
+			<header class="slide-header hero-header reveal" style="--reveal-delay: 80ms">
+				<Navbar theme="light" />
+			</header>
+			
+			<div class="hero-content">
+			</div>
+
+			<footer class="hero-footer reveal" style="--reveal-delay: 220ms">
+				<p>SI TIENES UNA IDEA EN MENTE Y QUIERES DESARROLLAR TU IDEA, PODEMOS TRABAJAR EN TU IDENTIDAD, PACKAGING, FLYER O MERCH.</p>
+			</footer>
+
+			<div class="scroll-hint reveal" style="--reveal-delay: 420ms" aria-hidden="true">
+				<span class="scroll-hint__text">Scroll</span>
+				<span class="scroll-hint__arrow">→</span>
+			</div>
+		</section>
+
+		<AboutSection />
+
+		<WorkSlide />
+
+		<ContactSection />
+	</main>
+</Layout>
+
+<script>
+	// @ts-nocheck
+	const container = document.querySelector('.horizontal-scroll-container');
+	if (container) {
+		/* Astro puede insertar <script> entre componentes: solo las secciones son slides. */
+		const slides = () =>
+			Array.from(container.querySelectorAll(':scope > section'));
+
+		let currentIndex = 0;
+		let isScrolling = false;
+		let navigationTimer = 0;
+		const NAVIGATION_FALLBACK = 950;
+		const WHEEL_THRESHOLD = 36;
+		const WHEEL_IDLE = 180;
+		const TOUCH_INTENT_THRESHOLD = 8;
+		const SWIPE_THRESHOLD = 44;
+
+		function nearestIndex() {
+			const left = container.scrollLeft;
+			const list = slides();
+			let best = 0;
+			let bestDist = Infinity;
+			list.forEach((slide, i) => {
+				const dist = Math.abs(slide.offsetLeft - left);
+				if (dist < bestDist) {
+					bestDist = dist;
+					best = i;
+				}
+			});
+			return best;
+		}
+
+		function setActiveSlide(index) {
+			slides().forEach((slide, i) => {
+				const on = i === index;
+				const wasOn = slide.classList.contains('is-active');
+				if (on === wasOn) return;
+				slide.classList.toggle('is-active', on);
+				if (on) slide.setAttribute('data-active', '');
+				else slide.removeAttribute('data-active');
+			});
+		}
+
+		function finishNavigation() {
+			window.clearTimeout(navigationTimer);
+			navigationTimer = 0;
+			isScrolling = false;
+			currentIndex = nearestIndex();
+			setActiveSlide(currentIndex);
+		}
+
+		function goToIndex(index, { smooth = true } = {}) {
+			const list = slides();
+			const next = Math.min(list.length - 1, Math.max(0, index));
+			const slide = list[next];
+			if (!slide) return false;
+
+			const alreadyThere = Math.abs(container.scrollLeft - slide.offsetLeft) <= 2;
+			if (alreadyThere) {
+				currentIndex = next;
+				setActiveSlide(next);
+				return false;
+			}
+
+			currentIndex = next;
+			isScrolling = true;
+			container.scrollTo({
+				left: slide.offsetLeft,
+				behavior: smooth ? 'smooth' : 'instant',
+			});
+			window.clearTimeout(navigationTimer);
+			navigationTimer = window.setTimeout(finishNavigation, NAVIGATION_FALLBACK);
+			return true;
+		}
+
+		function go(delta) {
+			if (isScrolling) return;
+			/* El DOM es la fuente de verdad tras cualquier gesto o animación. */
+			const source = nearestIndex();
+			const target = Math.min(slides().length - 1, Math.max(0, source + delta));
+			if (goToIndex(target)) {
+				const id = slides()[target]?.id;
+				const url = id ? `#${id}` : `${location.pathname}${location.search}`;
+				history.replaceState(null, '', url);
+			}
+		}
+
+		function workDepth() {
+			const work = document.getElementById('work');
+			return Number(work?.dataset.depth || 0);
+		}
+
+		function indexForHash(hash) {
+			const id = hash.replace(/^#/, '');
+			if (!id) return 0;
+			const list = slides();
+			const byId = list.findIndex((el) => el.id === id);
+			if (byId !== -1) return byId;
+			// Proyectos / categorías viven dentro de #work
+			if (document.getElementById(id)?.closest('#work')) {
+				return list.findIndex((el) => el.id === 'work');
+			}
+			return -1;
+		}
+
+		function canScrollVertically(el, deltaY) {
+			if (!(el instanceof Element)) return false;
+			const style = getComputedStyle(el);
+			const overflowY = style.overflowY;
+			if (overflowY !== 'auto' && overflowY !== 'scroll' && overflowY !== 'overlay') {
+				return false;
+			}
+			const max = el.scrollHeight - el.clientHeight;
+			if (max <= 1) return false;
+			if (deltaY < 0) return el.scrollTop > 0;
+			if (deltaY > 0) return el.scrollTop < max - 1;
+			return true;
+		}
+
+		function findScrollableParent(start, deltaY) {
+			let node = start instanceof Element ? start : null;
+			while (node && node !== container) {
+				if (
+					node.hasAttribute('data-v-scroll') &&
+					canScrollVertically(node, deltaY)
+				) {
+					return node;
+				}
+				node = node.parentElement;
+			}
+			return null;
+		}
+
+		let wheelGestureActive = false;
+		let wheelGestureUsesNestedScroll = false;
+		let wheelAccumulator = 0;
+		let wheelIdleTimer = 0;
+
+		function resetWheelGesture() {
+			wheelGestureActive = false;
+			wheelGestureUsesNestedScroll = false;
+			wheelAccumulator = 0;
+		}
+
+		function keepWheelGestureOpen() {
+			window.clearTimeout(wheelIdleTimer);
+			wheelIdleTimer = window.setTimeout(resetWheelGesture, WHEEL_IDLE);
+		}
+
+		container.addEventListener('wheel', (event) => {
+			if (workDepth() > 0) return;
+
+			const rawDelta =
+				Math.abs(event.deltaY) >= Math.abs(event.deltaX)
+					? event.deltaY
+					: event.deltaX;
+			const deltaScale =
+				event.deltaMode === WheelEvent.DOM_DELTA_LINE
+					? 16
+					: event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+						? container.clientWidth
+						: 1;
+			const primaryDelta = rawDelta * deltaScale;
+			if (Math.abs(primaryDelta) < 2) return;
+			const isVertical =
+				Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+
+			if (
+				isVertical &&
+				findScrollableParent(event.target, event.deltaY)
+			) {
+				wheelGestureUsesNestedScroll = true;
+				keepWheelGestureOpen();
+				return;
+			}
+
+			event.preventDefault();
+			keepWheelGestureOpen();
+
+			/* No encadenar el final de un scroll vertical con otro salto horizontal. */
+			if (wheelGestureUsesNestedScroll) return;
+
+			/* La inercia completa del touchpad pertenece a un solo gesto. */
+			if (wheelGestureActive || isScrolling) return;
+			if (wheelAccumulator && Math.sign(wheelAccumulator) !== Math.sign(primaryDelta)) {
+				wheelAccumulator = 0;
+			}
+			wheelAccumulator += primaryDelta;
+			if (Math.abs(wheelAccumulator) < WHEEL_THRESHOLD) return;
+
+			wheelGestureActive = true;
+			go(wheelAccumulator > 0 ? 1 : -1);
+		}, { passive: false });
+
+		/* ── Touch: un controlador para pan horizontal y swipe vertical ── */
+		let touchGesture = null;
+
+		container.addEventListener('touchstart', (event) => {
+			if (workDepth() > 0 || event.touches.length !== 1) {
+				touchGesture = null;
+				return;
+			}
+			const touch = event.touches[0];
+			const target = event.target;
+			touchGesture = {
+				startX: touch.clientX,
+				startY: touch.clientY,
+				axis: null,
+				navigates: false,
+				scrollTarget: target instanceof Element ? target.closest('[data-v-scroll]') : null,
+			};
+		}, { passive: true });
+
+		container.addEventListener('touchmove', (event) => {
+			if (!touchGesture || workDepth() > 0 || event.touches.length !== 1) return;
+			const touch = event.touches[0];
+			const dx = touch.clientX - touchGesture.startX;
+			const dy = touch.clientY - touchGesture.startY;
+
+			if (!touchGesture.axis) {
+				if (Math.max(Math.abs(dx), Math.abs(dy)) < TOUCH_INTENT_THRESHOLD) return;
+				touchGesture.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+				if (touchGesture.axis === 'x') {
+					touchGesture.navigates = true;
+				} else {
+					/* Dedo arriba equivale a scroll positivo; al llegar al borde cambia de sección. */
+					touchGesture.navigates = !canScrollVertically(touchGesture.scrollTarget, -dy);
+				}
+			}
+
+			if (touchGesture.navigates && event.cancelable) event.preventDefault();
+		}, { passive: false });
+
+		container.addEventListener('touchend', (event) => {
+			if (!touchGesture || workDepth() > 0) {
+				touchGesture = null;
+				return;
+			}
+			const touch = event.changedTouches[0];
+			const dx = touch.clientX - touchGesture.startX;
+			const dy = touch.clientY - touchGesture.startY;
+			const distance = touchGesture.axis === 'x' ? dx : dy;
+			const shouldNavigate =
+				touchGesture.navigates &&
+				!isScrolling &&
+				Math.abs(distance) >= SWIPE_THRESHOLD;
+			touchGesture = null;
+			if (shouldNavigate) go(distance < 0 ? 1 : -1);
+		}, { passive: true });
+
+		container.addEventListener('touchcancel', () => {
+			touchGesture = null;
+		}, { passive: true });
+
+		/* ── Keyboard navigation ── */
+		window.addEventListener('keydown', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const tag = target.tagName;
+			if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+			if (target instanceof HTMLElement && target.isContentEditable) return;
+
+			const isNext = event.key === 'ArrowRight' || event.key === 'ArrowDown';
+			const isPrev = event.key === 'ArrowLeft' || event.key === 'ArrowUp';
+			if (!isNext && !isPrev) return;
+			if (event.repeat) {
+				event.preventDefault();
+				return;
+			}
+
+			const depth = workDepth();
+			if (depth > 0) {
+				if (isPrev) {
+					event.preventDefault();
+					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:back'));
+				}
+				return;
+			}
+
+			event.preventDefault();
+			go(isNext ? 1 : -1);
+		});
+
+		/* ── Navbar / hash → misma navegación horizontal ── */
+		document.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const link = target.closest('a[href^="#"]');
+			if (!(link instanceof HTMLAnchorElement)) return;
+			const href = link.getAttribute('href');
+			if (!href || href === '#') return;
+
+			const idx = indexForHash(href);
+			if (idx < 0) return;
+
+			event.preventDefault();
+			if (workDepth() > 0 && href !== '#work') {
+				document.getElementById('work')?.dispatchEvent(new CustomEvent('work:close'));
+			}
+			goToIndex(idx);
+			history.replaceState(null, '', href);
+		});
+
+		container.addEventListener('scroll', () => {
+			const idx = nearestIndex();
+			if (!isScrolling) currentIndex = idx;
+			/* Durante el swipe, activar cuando el slide ya es el más cercano */
+			setActiveSlide(idx);
+		}, { passive: true });
+
+		container.addEventListener('scrollend', () => {
+			if (isScrolling) finishNavigation();
+			else {
+				currentIndex = nearestIndex();
+				setActiveSlide(currentIndex);
+			}
+		}, { passive: true });
+
+		/* ── Scroll hint: hide on first interaction ── */
+		const scrollHint = document.querySelector('.scroll-hint');
+		if (scrollHint) {
+			const hideHint = () => {
+				scrollHint.classList.add('is-hidden');
+				container.removeEventListener('scroll', hideHint);
+				window.removeEventListener('keydown', hideHint);
+			};
+			container.addEventListener('scroll', hideHint, { once: true });
+			window.addEventListener('keydown', hideHint, { once: true });
+		}
+
+		currentIndex = nearestIndex();
+		const initialHash = indexForHash(location.hash);
+		if (initialHash >= 0) {
+			const list = slides();
+			const slide = list[initialHash];
+			if (slide) {
+				currentIndex = initialHash;
+				container.scrollTo({ left: slide.offsetLeft, behavior: 'instant' });
+			}
+		}
+
+		/* Primero pinta el estado inicial (opacity 0), luego activa el fade-up */
+		slides().forEach((slide) => {
+			slide.classList.remove('is-active');
+			slide.removeAttribute('data-active');
+		});
+
+		const preferReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (preferReduced) {
+			setActiveSlide(currentIndex);
+		} else {
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					setActiveSlide(currentIndex);
+				});
+			});
+		}
+	}
+</script>
+
+<style>
+	.horizontal-scroll-container {
+		display: flex;
+		flex-direction: row;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		scroll-behavior: smooth;
+		touch-action: pan-y;
+		overscroll-behavior: none;
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	:global(.horizontal-scroll-container > section) {
+		scroll-snap-stop: always;
+	}
+
+	/* Dentro de capas Work: no pelear el pan vertical del panel */
+	.horizontal-scroll-container.is-v-nested {
+		overflow-x: hidden;
+		touch-action: pan-y;
+		overscroll-behavior: none;
+	}
+	
+	.horizontal-scroll-container::-webkit-scrollbar {
+		display: none;
+	}
+
+	.slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh;
+		scroll-snap-align: start;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.slide-header {
+		position: relative;
+		z-index: 2;
+		padding: var(--pad-header-y) var(--pad-header-x-r) 0 var(--pad-header-x-l);
+		display: flex;
+		align-items: center;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.hero-header {
+		justify-content: flex-end;
+	}
+
+	.hero-slide {
+		background-image: url('/index/1.jpg');
+		background-size: 112%;
+		background-position: center;
+		background-repeat: no-repeat;
+		justify-content: space-between;
+		transition: background-size var(--dur-slow) var(--ease-out);
+	}
+
+	.hero-slide.is-active {
+		background-size: 100%;
+	}
+
+	.hero-slide .overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.15);
+		z-index: 1;
+		pointer-events: none;
+		opacity: 0.55;
+		transition: opacity var(--dur-slow) var(--ease-out);
+	}
+
+	.hero-slide.is-active .overlay {
+		opacity: 1;
+	}
+
+	.hero-content, .hero-footer {
+		position: relative;
+		z-index: 2;
+	}
+
+	.hero-footer {
+		padding: clamp(1rem, 3vh, 2rem) var(--pad-section-x-r) var(--pad-section-b) var(--pad-section-x-l);
+		display: flex;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.hero-footer p {
+		font-family: var(--font-text);
+		font-weight: 300;
+		font-size: clamp(0.75rem, 1.35vh + 0.35vw, 1rem);
+		max-width: min(70%, 52rem);
+		letter-spacing: 1px;
+		line-height: 1.6;
+		color: #f4f4f4;
+	}
+
+	.scroll-hint {
+		position: absolute;
+		bottom: max(clamp(1rem, 3.5vh, 2.5rem), calc(var(--sab) + 0.5rem));
+		right: var(--pad-header-x-r);
+		z-index: 3;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: rgba(255, 255, 255, 0.8);
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(0.7rem, 1vw, 1.1rem);
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		transition: opacity 0.6s var(--ease-out);
+	}
+
+	.scroll-hint.is-hidden {
+		opacity: 0 !important;
+		pointer-events: none;
+		transform: none !important;
+	}
+
+	.scroll-hint__arrow {
+		display: inline-block;
+		animation: hint-bounce 1.6s var(--ease-inout) infinite;
+	}
+
+	@keyframes hint-bounce {
+		0%, 100% { transform: translateX(0); }
+		50% { transform: translateX(8px); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-slide {
+			background-size: 100%;
+			transition: none;
+		}
+
+		.scroll-hint__arrow {
+			animation: none;
+		}
+	}
+</style>

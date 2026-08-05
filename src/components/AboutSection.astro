@@ -1,0 +1,248 @@
+---
+import Navbar from './Navbar.astro';
+---
+
+<section class="slide about-slide" id="about">
+	<header class="about-header reveal" style="--reveal-delay: 60ms">
+		<Navbar theme="dark" active="about" showLogo />
+	</header>
+
+	<div class="about-content-wrapper" data-v-scroll>
+		<div class="about-center reveal" style="--reveal-delay: 160ms">
+			<img src="/about/image.png" alt="Mauricio Atencia" class="about-image" />
+		</div>
+
+		<div class="about-footer-container reveal" style="--reveal-delay: 280ms">
+			<div class="location-text">Medellín, Colombia</div>
+			<hr class="about-divider" />
+			<div class="about-footer-content">
+				<div class="about-title">About</div>
+				<h1 class="name-title">Mauricio Atencia</h1>
+				<div class="about-text">
+					<p>
+						la ficha studio es el proyecto con el cual durante más de cuatro años he desarrollado identidades visuales, experiencias de marca y espacios comerciales donde la estrategia, el diseño y la ejecución, trabajan como un solo sistema.
+					</p>
+					<p>
+						Mi enfoque combina branding, retail y dirección de arte para crear marcas coherentes, memorables y listas para el mundo real.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.about-slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh;
+		scroll-snap-align: start;
+		position: relative;
+		overflow: hidden;
+		box-sizing: border-box;
+
+		background-color: #eeedec;
+		color: #000000;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.about-header {
+		position: relative;
+		z-index: 2;
+		flex: 0 0 auto;
+		padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
+		display: flex;
+		align-items: flex-start;
+		width: 100%;
+		box-sizing: border-box;
+		justify-content: flex-end;
+		background-color: #eeedec;
+	}
+
+	.about-content-wrapper {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-height: 0;
+		padding: 0 var(--pad-section-x-r) var(--pad-section-b) var(--pad-section-x-l);
+		box-sizing: border-box;
+		width: 100%;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
+	}
+
+	.about-center {
+		flex: 1 1 auto;
+		min-height: clamp(120px, 30vh, 280px);
+		display: flex;
+		justify-content: center;
+		align-items: flex-end;
+		padding: 0 0 clamp(0.5rem, 1.2vw, 1.5rem) 0;
+	}
+
+	.about-image {
+		height: clamp(120px, 30vh, 480px);
+		width: auto;
+		max-width: 100%;
+		object-fit: cover;
+		display: block;
+		--img-lift: clamp(0.75rem, 1.8vw, 2.25rem);
+		transform: translateY(var(--img-lift));
+		transition: transform var(--dur-slow) var(--ease-out);
+	}
+
+	.about-slide.is-active .about-image {
+		--img-lift: clamp(0.35rem, 1vw, 1.25rem);
+	}
+
+	@media (max-height: 500px) {
+		.about-center {
+			flex: 0 0 auto;
+			min-height: clamp(88px, 38vh, 150px);
+		}
+
+		.about-image {
+			height: clamp(88px, 38vh, 150px);
+			--img-lift: 0.5rem;
+		}
+	}
+
+	@media (min-height: 501px) and (max-width: 1440px) {
+		.about-image {
+			height: clamp(120px, 28vh, 280px);
+		}
+
+		.about-center {
+			min-height: clamp(120px, 28vh, 280px);
+			padding-bottom: 0;
+		}
+	}
+
+	.about-footer-container {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+
+	.location-text {
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.75rem, 1.05vw, 1.6rem);
+		text-align: right;
+		margin-bottom: clamp(0.35rem, 0.6vw, 1rem);
+		letter-spacing: 0.03em;
+	}
+
+	.about-divider {
+		border: none;
+		border-top: clamp(2px, 0.15vw, 4px) solid #000000;
+		width: 100%;
+		margin: 0 0 clamp(0.65rem, 1.1vw, 1.75rem) 0;
+		transform: scaleX(0.92);
+		transform-origin: left center;
+		transition: transform var(--dur-med) var(--ease-out) 180ms;
+	}
+
+	.about-slide.is-active .about-divider {
+		transform: scaleX(1);
+	}
+
+	.about-footer-content {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		gap: 0;
+		flex-wrap: wrap;
+	}
+
+	.about-title {
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(0.95rem, 1.4vw, 2.15rem);
+		flex: 0 0 auto;
+		line-height: 1;
+		padding-top: 0.15em;
+		margin-right: clamp(0.5rem, 1.2vw, 1.5rem);
+	}
+
+	.name-title {
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(1.15rem, 3.4vw, 4.75rem);
+		margin: 0;
+		color: #000000;
+		line-height: 0.95;
+		flex: 0 1 auto;
+		min-width: 0;
+		letter-spacing: -0.022em;
+		-webkit-text-stroke: max(1px, 0.06vw) #000000;
+	}
+
+	.about-text {
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.7rem, 1.05vw, 1.55rem);
+		line-height: 1.4;
+		flex: 1 1 min(50rem, 42vw);
+		width: min(50rem, 42vw);
+		max-width: min(50rem, 48%);
+		min-width: min(16rem, 100%);
+		margin-left: var(--text-align-offset, clamp(1.5rem, 12.3vw, 15rem));
+		text-align: justify;
+	}
+
+	@media (max-width: 900px) {
+		.about-footer-content {
+			flex-direction: column;
+			gap: 0.75rem;
+		}
+
+		.about-text {
+			width: 100%;
+			max-width: 100%;
+			margin-left: 0;
+			flex: 1 1 auto;
+		}
+	}
+
+	.about-text p {
+		margin: 0;
+	}
+
+	.about-text p + p {
+		margin-top: 1em;
+	}
+</style>
+
+<script>
+	function syncTextToImage() {
+		const section = document.querySelector('.about-slide') as HTMLElement | null;
+		if (!section) return;
+
+		const img = section.querySelector('.about-image');
+		const footerContent = section.querySelector('.about-footer-content');
+		if (!img || !footerContent || window.innerWidth <= 900) {
+			section.style.removeProperty('--text-align-offset');
+			return;
+		}
+
+		const imgRect = img.getBoundingClientRect();
+		const footerRect = footerContent.getBoundingClientRect();
+		const offset = imgRect.right - footerRect.left;
+
+		if (offset > 0) {
+			section.style.setProperty('--text-align-offset', `${offset}px`);
+		}
+	}
+
+	syncTextToImage();
+	window.addEventListener('resize', syncTextToImage);
+	window.addEventListener('load', syncTextToImage);
+</script>
+

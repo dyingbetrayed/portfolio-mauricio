@@ -1,0 +1,243 @@
+---
+import Navbar from './Navbar.astro';
+import type { Project } from '../data/projects';
+import { getNextProjects } from '../data/projects';
+import { readableInk } from '../utils/color';
+
+export interface Props {
+	project: Project;
+}
+
+const { project } = Astro.props;
+const related = getNextProjects(project.slug, 3);
+const nextSlug = related[0]?.slug;
+---
+
+<article class="project-next" data-project-next={project.slug} hidden>
+	<header class="project-next__nav">
+		<button type="button" class="project-next__back" data-nav-back aria-label="Volver al proyecto">
+			<span class="project-next__back-icon" aria-hidden="true">←</span>
+			<span>Volver</span>
+		</button>
+		<Navbar theme="dark" active="work" />
+	</header>
+
+	<div class="project-next__grid">
+		{[0, 1, 2].map((index) => {
+			const item = related[index];
+			if (!item) {
+				return (
+					<div class="project-next__card project-next__card--empty" aria-hidden="true">
+						<div class="project-next__media"></div>
+						<div class="project-next__bar project-next__bar--empty"></div>
+					</div>
+				);
+			}
+
+			const ink = readableInk(item.color);
+			return (
+				<button
+					type="button"
+					class="project-next__card"
+					data-open-project={item.slug}
+					aria-label={`Abrir ${item.name}`}
+				>
+					<div class="project-next__media" aria-hidden="true"></div>
+					<div
+						class="project-next__bar"
+						style={`background-color: ${item.color}; color: ${ink};`}
+					>
+						<span class="project-next__name">{item.name}</span>
+					</div>
+				</button>
+			);
+		})}
+
+		{nextSlug ? (
+			<button
+				type="button"
+				class="project-next__forward"
+				data-open-project={nextSlug}
+				aria-label="Siguiente proyecto"
+			>
+				<span class="project-next__forward-label">NEXT</span>
+				<img
+					class="project-next__forward-arrow"
+					src="/arrow-right-down-line.svg"
+					alt=""
+					aria-hidden="true"
+				/>
+			</button>
+		) : (
+			<div class="project-next__forward project-next__forward--empty" aria-hidden="true">
+				<span class="project-next__forward-label">NEXT</span>
+				<img
+					class="project-next__forward-arrow"
+					src="/arrow-right-down-line.svg"
+					alt=""
+				/>
+			</div>
+		)}
+	</div>
+</article>
+
+<style>
+	.project-next {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		background: #ffffff;
+		box-sizing: border-box;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.project-next[hidden] {
+		display: none;
+	}
+
+	.project-next__nav {
+		flex: 0 0 auto;
+		z-index: 5;
+		padding: var(--pad-header-y) var(--pad-header-x-r)
+			max(var(--pad-header-y-base, 0.65rem), 0.65rem) var(--pad-header-x-l);
+		background: #ffffff;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: clamp(1rem, 2vw, 2rem);
+	}
+
+	.project-next__nav :global(.navbar) {
+		width: auto;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.project-next__back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		border: none;
+		background: transparent;
+		padding: 0;
+		cursor: pointer;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: var(--nav-size);
+		letter-spacing: 0.03em;
+		color: #000000;
+		flex-shrink: 0;
+	}
+
+	.project-next__back:hover {
+		opacity: 0.65;
+	}
+
+	.project-next__back-icon {
+		font-size: 1.1em;
+		line-height: 1;
+	}
+
+	.project-next__grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+		width: 100%;
+		height: 100%;
+		flex: 1;
+		min-height: 0;
+	}
+
+	.project-next__card {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		min-height: 0;
+		padding: 0;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		text-align: left;
+		font: inherit;
+		color: inherit;
+	}
+
+	.project-next__card--empty {
+		pointer-events: none;
+	}
+
+	.project-next__bar--empty {
+		background: #bdbdbd;
+		min-height: clamp(2.75rem, 6vh, 4rem);
+	}
+
+	.project-next__media {
+		flex: 1;
+		min-height: 0;
+		width: 100%;
+		background: #c8c8c8;
+	}
+
+	.project-next__bar {
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+		padding: clamp(0.85rem, 1.8vh, 1.35rem) clamp(1rem, 1.8vw, 1.75rem);
+	}
+
+	.project-next__name {
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(1rem, 1.35vw, 1.75rem);
+		letter-spacing: 0.02em;
+		line-height: 1.1;
+	}
+
+	.project-next__forward,
+	.project-next__forward--empty {
+		container-type: size;
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: clamp(0.35rem, 1.5cqw, 1rem);
+		width: 100%;
+		min-width: 0;
+		min-height: 0;
+		/* padding: top right bottom left */
+		padding: 0 0 clamp(0.85rem, 1.8vh, 1.35rem) 0.5rem;
+		border: none;
+		background: #ffffff;
+		color: #000000;
+		font: inherit;
+		text-align: left;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.project-next__forward {
+		cursor: pointer;
+	}
+
+	.project-next__forward-label {
+		font-family: var(--font-text);
+		font-weight: 600;
+		font-size: min(28cqw, 60cqh);
+		line-height: 0.75;
+		letter-spacing: 0.03em;
+		flex: 1 1 auto;
+		min-width: 0;
+		white-space: nowrap;
+	}
+
+	.project-next__forward-arrow {
+		flex: 0 0 auto;
+		width: min(22cqw, 46cqh);
+		height: min(22cqw, 46cqh);
+		display: block;
+		object-fit: contain;
+		transform: translateX(15%);
+	}
+</style>

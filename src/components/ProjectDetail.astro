@@ -1,0 +1,353 @@
+---
+import Navbar from './Navbar.astro';
+import Logo from './Logo.astro';
+import type { Project } from '../data/projects';
+import { readableInk } from '../utils/color';
+import { findProjectCategory, projectCategories } from '../data/projects';
+
+export interface Props {
+	project: Project;
+}
+
+const { project } = Astro.props;
+
+const ink = readableInk(project.color);
+const navTheme = ink === '#ffffff' ? 'light' : 'dark';
+const services = project.services?.length ? project.services.join(' · ') : null;
+const hasMeta = Boolean(project.tagline || services);
+const sections = project.sections ?? [];
+const hasImages = Boolean(project.images?.length);
+const categoryId = findProjectCategory(project.slug);
+const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
+---
+
+<article
+	class="project"
+	id={project.slug}
+	data-project={project.slug}
+	style={`--project-bg: ${project.color}; --ink: ${ink};`}
+	hidden
+>
+	<header class="project__nav">
+		<Logo class="project__logo" />
+		<Navbar theme={navTheme} active="work" />
+	</header>
+
+	<div class="project__content" data-v-scroll>
+		<div class="project__head">
+			<h1 class="project__title">{project.name}</h1>
+			{project.year && <span class="project__year">{project.year}</span>}
+		</div>
+
+		<hr class="project__rule" />
+
+		{hasMeta && (
+			<>
+				<div class="project__meta">
+					{project.tagline && <p class="project__tagline">{project.tagline}</p>}
+					{services && <p class="project__services">{services}</p>}
+				</div>
+
+				<hr class="project__rule" />
+			</>
+		)}
+
+		<div class="project__body">
+			{sections.map((section) => (
+				<div class="project__section">
+					<h2 class="project__label">{section.label}</h2>
+					<div class="project__copy">
+						{section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+					</div>
+				</div>
+			))}
+		</div>
+
+		{project.note && <p class="project__note">{project.note}</p>}
+
+		<nav class="project__bottom-nav" aria-label="Navegación de proyecto">
+			<button
+				type="button"
+				class="project__nav-btn project__nav-btn--back"
+				data-nav-back
+			>
+				<span class="project__nav-icon" aria-hidden="true">←</span>
+				<span>{categoryTitle ?? 'Volver'}</span>
+			</button>
+
+			{hasImages ? (
+				<button
+					type="button"
+					class="project__nav-btn project__nav-btn--next"
+					data-open-project-image={project.slug}
+					data-image-index="0"
+				>
+					<span>Siguiente</span>
+					<span class="project__nav-icon" aria-hidden="true">→</span>
+				</button>
+			) : (
+				<button
+					type="button"
+					class="project__nav-btn project__nav-btn--next"
+					data-open-project-next={project.slug}
+				>
+					<span>Siguiente</span>
+					<span class="project__nav-icon" aria-hidden="true">→</span>
+				</button>
+			)}
+		</nav>
+	</div>
+</article>
+
+<style>
+	.project {
+		--pad-x-l: var(--pad-section-x-l);
+		--pad-x-r: var(--pad-section-x-r);
+		--col-right: 42%;
+
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		background-color: var(--project-bg);
+		color: var(--ink);
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		box-sizing: border-box;
+		touch-action: pan-y;
+	}
+
+	.project[hidden] {
+		display: none;
+	}
+
+	.project__nav {
+		position: relative;
+		z-index: 5;
+		flex: 0 0 auto;
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: clamp(1rem, 2vw, 2rem);
+		padding: var(--pad-header-y) var(--pad-x-r) 0.5rem var(--pad-x-l);
+		box-sizing: border-box;
+		background-color: var(--project-bg);
+	}
+
+	.project__nav :global(.navbar) {
+		width: auto;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.project__logo {
+		flex-shrink: 0;
+		margin: 0;
+		padding: 0;
+	}
+
+	.project__logo :global(img) {
+		display: block;
+	}
+
+	.project__content {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		padding: clamp(2.5rem, 14vh, 11rem) var(--pad-x-r) var(--pad-section-b) var(--pad-x-l);
+		box-sizing: border-box;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
+		opacity: 0;
+		transform: translate3d(0, 0.75rem, 0);
+		transition:
+			opacity var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) 80ms,
+			transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) 80ms;
+	}
+
+	.project:not([hidden]) .project__content {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	.project__head {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: clamp(1rem, 2vw, 2rem);
+		flex-shrink: 0;
+	}
+
+	.project__title {
+		margin: 0;
+		font-family: var(--font-text);
+		font-weight: 700;
+		font-size: clamp(1.5rem, 4.7vw, 6.5rem);
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+	}
+
+	.project__year {
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.8rem, 1.6vw, 2rem);
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+	}
+
+	.project__rule {
+		border: none;
+		border-top: 1px solid var(--ink);
+		width: 100%;
+		margin: clamp(0.35rem, 1.2vh, 1rem) 0 0;
+		flex-shrink: 0;
+	}
+
+	.project__meta {
+		display: grid;
+		grid-template-columns: 1fr var(--col-right);
+		gap: clamp(1rem, 3vw, 4rem);
+		align-items: start;
+		padding: clamp(0.5rem, 2vh, 1.5rem) 0 clamp(0.65rem, 2.4vh, 2rem);
+		flex-shrink: 0;
+	}
+
+	.project__tagline {
+		margin: 0;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.85rem, 1.9vw, 2.4rem);
+		line-height: 1.15;
+		white-space: pre-line;
+	}
+
+	.project__services {
+		margin: 0;
+		grid-column: 2;
+		justify-self: end;
+		text-align: right;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.65rem, 1.05vw, 1.35rem);
+		letter-spacing: 0.02em;
+	}
+
+	.project__body {
+		flex: 0 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: clamp(1rem, 4vh, 3.5rem);
+		padding-top: clamp(0.75rem, 4vh, 3.5rem);
+	}
+
+	.project__section {
+		display: grid;
+		grid-template-columns: 1fr var(--col-right);
+		gap: clamp(1rem, 3vw, 4rem);
+		align-items: start;
+	}
+
+	.project__label {
+		margin: 0;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.8rem, 1.55vw, 2rem);
+		letter-spacing: 0.01em;
+	}
+
+	.project__copy {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(0.65rem, 2.2vh, 1.75rem);
+	}
+
+	.project__copy p {
+		margin: 0;
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.65rem, 1.05vw, 1.35rem);
+		line-height: 1.5;
+		text-align: justify;
+		opacity: 0.92;
+	}
+
+	.project__note {
+		margin: 0;
+		padding-top: clamp(0.5rem, 2vh, 2rem);
+		font-family: var(--font-helvetica);
+		font-weight: 300;
+		font-size: clamp(0.5rem, 0.72vw, 0.9rem);
+		letter-spacing: 0.01em;
+		opacity: 0.85;
+		flex-shrink: 0;
+	}
+
+	.project__bottom-nav {
+		margin-top: auto;
+		padding-top: clamp(0.5rem, 1.5vh, 1.25rem);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		border-top: 1px solid var(--ink);
+		flex-shrink: 0;
+	}
+
+	.project__nav-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		border: none;
+		background: transparent;
+		color: var(--ink);
+		cursor: pointer;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(0.8rem, 1.05vw, 1.45rem);
+		letter-spacing: 0.03em;
+		padding: clamp(0.45rem, 1.2vh, 1rem) 0;
+		transition: opacity 0.2s ease;
+	}
+
+	.project__nav-btn:hover {
+		opacity: 0.65;
+	}
+
+	.project__nav-icon {
+		font-size: 1.1em;
+		line-height: 1;
+	}
+
+	@media (min-width: 1200px) and (min-height: 700px) {
+		.project__content {
+			padding-top: clamp(10rem, 14vh, 11rem);
+		}
+	}
+
+	@media (max-width: 700px), (max-height: 420px) {
+		.project__meta,
+		.project__section {
+			grid-template-columns: 1fr;
+			gap: 0.65rem;
+		}
+
+		.project__services {
+			grid-column: auto;
+			justify-self: start;
+			text-align: left;
+		}
+
+		.project__copy p {
+			text-align: left;
+		}
+
+		.project__content {
+			padding-top: clamp(0.75rem, 3vh, 1.5rem);
+		}
+	}
+</style>

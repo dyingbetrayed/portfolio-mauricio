@@ -1,0 +1,893 @@
+---
+import Navbar from './Navbar.astro';
+import Logo from './Logo.astro';
+import ProjectDetail from './ProjectDetail.astro';
+import ProjectImage from './ProjectImage.astro';
+import ProjectNext from './ProjectNext.astro';
+import { projectCategories } from '../data/projects';
+
+const categories = Object.entries(projectCategories);
+const allProjects = categories.flatMap(([, group]) => group.projects);
+const projectsWithImages = allProjects.filter((project) => project.images?.length);
+---
+
+<section id="work" class="work-slide" data-depth="0">
+	{/* ── Capa 0: menú de categorías ── */}
+	<div class="work-layer work-layer--menu" data-layer="0">
+		<div class="work-grid" data-v-scroll>
+			<button type="button" class="work-link hover-all work-row work-row--cream" data-open-category="all">
+				<span class="work-txt work-txt--xl work-txt--dark">ALL</span>
+			</button>
+
+			<button type="button" class="work-link hover-branding work-row work-row--black work-row--branding" data-open-category="branding">
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--light">BRANDING</span>
+			</button>
+
+			<button type="button" class="work-link hover-proyectos work-row work-row--cream" data-open-category="proyectos-retail">
+				<span class="work-txt work-txt--md work-txt--dark">PROYECTOS RETAIL</span>
+			</button>
+
+			<div class="work-split">
+				<button type="button" class="work-link hover-flyers work-row work-split__cell" data-open-category="flyers">
+					<span class="work-txt work-txt--md work-txt--light">FLYERS</span>
+				</button>
+				<button type="button" class="work-link hover-merch work-row" data-open-category="merch">
+					<span class="work-txt work-txt--md work-txt--light">MERCH</span>
+				</button>
+			</div>
+
+			<button type="button" class="work-link hover-ikeneas work-row work-row--cream" data-open-category="ikeneas">
+				<span class="work-txt work-txt--md work-txt--dark">IKENEAS</span>
+			</button>
+		</div>
+
+		<div class="work-nav">
+			<div class="work-nav__inner">
+				<Navbar theme="dark" active="work" />
+			</div>
+		</div>
+	</div>
+
+	{/* ── Capa 1: tablas de categoría (pre-renderizadas) ── */}
+	<div class="work-layer work-layer--category" data-layer="1" aria-hidden="true" inert>
+		{categories.map(([category, group]) => (
+			<div class="category-panel" data-category={category} id={category} data-v-scroll hidden>
+				<header class="category-nav">
+					<div class="category-nav__brand">
+						<Logo class="category-nav__logo" />
+						<button type="button" class="category-back" data-nav-back aria-label="Volver al menú Work">
+							<span class="category-back__icon" aria-hidden="true">←</span>
+							<span>Volver</span>
+						</button>
+					</div>
+					<Navbar theme="dark" active="work" />
+				</header>
+
+				<div class="category-content">
+					<h1 class="category-title">{group.title}</h1>
+					<div class="category-separator"></div>
+					<div class="project-list">
+						{group.projects.map((project) => (
+							<button
+								type="button"
+								class="project-row"
+								style={`--hover-bg: ${project.color};`}
+								data-open-project={project.slug}
+								data-from-category={category}
+							>
+								<div class="col-id">{project.id}</div>
+								<div class="col-name">
+									<span class="color-square" style={`background-color: ${project.color};`}></span>
+									<span class="name-text">{project.name}</span>
+								</div>
+								<div class="col-year">{project.year}</div>
+								<div class="col-location">{project.location}</div>
+							</button>
+						))}
+					</div>
+				</div>
+			</div>
+		))}
+	</div>
+
+	{/* ── Capa 2: detalles de proyecto (pre-renderizadas) ── */}
+	<div class="work-layer work-layer--project" data-layer="2" aria-hidden="true" inert>
+		{allProjects.map((project) => (
+			<ProjectDetail project={project} />
+		))}
+	</div>
+
+	{/* ── Capa 3: imágenes a pantalla completa (una pantalla por imagen) ── */}
+	<div class="work-layer work-layer--images" data-layer="3" aria-hidden="true" inert>
+		{projectsWithImages.map((project) =>
+			(project.images ?? []).map((src, index) => (
+				<ProjectImage
+					project={project}
+					src={src}
+					index={index}
+					total={project.images!.length}
+				/>
+			))
+		)}
+	</div>
+
+	{/* ── Capa 4: siguientes proyectos según el actual ── */}
+	<div class="work-layer work-layer--next" data-layer="4" aria-hidden="true" inert>
+		{allProjects.map((project) => (
+			<ProjectNext project={project} />
+		))}
+	</div>
+</section>
+
+<script>
+	// @ts-nocheck
+	const root = document.getElementById('work');
+	if (root) {
+		const layerCategory = root.querySelector('.work-layer--category');
+		const layerProject = root.querySelector('.work-layer--project');
+		const layerImages = root.querySelector('.work-layer--images');
+		const layerNext = root.querySelector('.work-layer--next');
+
+		const categoryPanels = () =>
+			Array.from(root.querySelectorAll('[data-category]'));
+		const projectPanels = () =>
+			Array.from(root.querySelectorAll('[data-project]'));
+		const imagePanels = () =>
+			Array.from(root.querySelectorAll('[data-project-image]'));
+		const nextPanels = () =>
+			Array.from(root.querySelectorAll('[data-project-next]'));
+
+		function setLayerState(layer, open) {
+			if (!layer) return;
+			if (open) {
+				layer.removeAttribute('aria-hidden');
+				layer.removeAttribute('inert');
+			} else {
+				layer.setAttribute('aria-hidden', 'true');
+				layer.setAttribute('inert', '');
+			}
+		}
+
+		function setDepth(depth, { syncHash = true } = {}) {
+			root.dataset.depth = String(depth);
+			setLayerState(layerCategory, depth >= 1);
+			setLayerState(layerProject, depth >= 2);
+			setLayerState(layerImages, depth >= 3);
+			setLayerState(layerNext, depth >= 4);
+
+			/* Evita que el scroll horizontal padre robe el pan vertical en móvil */
+			const shell = document.querySelector('.horizontal-scroll-container');
+			shell?.classList.toggle('is-v-nested', depth > 0);
+			document.documentElement.classList.toggle('work-deep', depth > 0);
+
+			if (syncHash) {
+				const activeCategory = root.querySelector('[data-category]:not([hidden])');
+				const activeProject = root.querySelector('[data-project]:not([hidden])');
+				let hash = '#work';
+				if (depth >= 2 && activeProject) {
+					hash = `#${activeProject.getAttribute('data-project')}`;
+				} else if (depth === 1 && activeCategory) {
+					hash = `#${activeCategory.getAttribute('data-category')}`;
+				}
+				if (location.hash !== hash) {
+					history.replaceState(null, '', hash);
+				}
+			}
+		}
+
+		function showOnly(nodes, attr, value) {
+			nodes.forEach((el) => {
+				const match = value !== null && el.getAttribute(attr) === value;
+				if (match) el.removeAttribute('hidden');
+				else el.setAttribute('hidden', '');
+			});
+		}
+
+		function hideAllImages() {
+			imagePanels().forEach((el) => el.setAttribute('hidden', ''));
+		}
+
+		function showProjectImage(slug, index) {
+			const panels = imagePanels().filter(
+				(el) => el.getAttribute('data-project-image') === slug
+			);
+			panels.forEach((el) => {
+				const match = Number(el.getAttribute('data-image-index')) === Number(index);
+				if (match) el.removeAttribute('hidden');
+				else el.setAttribute('hidden', '');
+			});
+			return panels.some(
+				(el) => Number(el.getAttribute('data-image-index')) === Number(index)
+			);
+		}
+
+		function activeImageIndex(slug) {
+			const visible = imagePanels().find(
+				(el) =>
+					el.getAttribute('data-project-image') === slug &&
+					!el.hasAttribute('hidden')
+			);
+			if (!visible) return -1;
+			return Number(visible.getAttribute('data-image-index'));
+		}
+
+		function openCategory(id, opts) {
+			const exists = categoryPanels().some((el) => el.getAttribute('data-category') === id);
+			if (!exists) return;
+			showOnly(categoryPanels(), 'data-category', id);
+			showOnly(projectPanels(), 'data-project', null);
+			hideAllImages();
+			showOnly(nextPanels(), 'data-project-next', null);
+			setDepth(1, opts);
+		}
+
+		function openProject(slug, opts) {
+			const panel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
+			if (!panel) return;
+
+			const row = root.querySelector(`[data-open-project="${slug}"]`);
+			const category = row?.getAttribute('data-from-category');
+			if (category) {
+				showOnly(categoryPanels(), 'data-category', category);
+			}
+
+			showOnly(projectPanels(), 'data-project', slug);
+			hideAllImages();
+			showOnly(nextPanels(), 'data-project-next', null);
+			setDepth(2, opts);
+		}
+
+		function openProjectImage(slug, index, opts) {
+			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
+			if (!projectPanel) return;
+			if (!showProjectImage(slug, index)) return;
+
+			const row = root.querySelector(`[data-open-project="${slug}"]`);
+			const category = row?.getAttribute('data-from-category');
+			if (category) {
+				showOnly(categoryPanels(), 'data-category', category);
+			}
+
+			showOnly(projectPanels(), 'data-project', slug);
+			showOnly(nextPanels(), 'data-project-next', null);
+			setDepth(3, opts);
+		}
+
+		function openProjectNext(slug, opts) {
+			const panel = nextPanels().find((el) => el.getAttribute('data-project-next') === slug);
+			if (!panel) return;
+
+			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
+			if (projectPanel) {
+				showOnly(projectPanels(), 'data-project', slug);
+			}
+
+			// Mantener la última imagen visible debajo de "siguientes"
+			const images = imagePanels().filter(
+				(el) => el.getAttribute('data-project-image') === slug
+			);
+			if (images.length) {
+				const lastIndex = images.length - 1;
+				showProjectImage(slug, lastIndex);
+			}
+
+			showOnly(nextPanels(), 'data-project-next', slug);
+			setDepth(4, opts);
+		}
+
+		function afterSlide(layer, done) {
+			let finished = false;
+			const finish = () => {
+				if (finished) return;
+				finished = true;
+				layer?.removeEventListener('transitionend', onEnd);
+				clearTimeout(timer);
+				done();
+			};
+			const onEnd = (event) => {
+				if (event.target === layer && event.propertyName === 'transform') finish();
+			};
+			layer?.addEventListener('transitionend', onEnd);
+			const timer = setTimeout(finish, 750);
+			if (!layer) finish();
+		}
+
+		function currentDepth() {
+			return Number(root.dataset.depth || 0);
+		}
+
+		function goBack() {
+			const depth = currentDepth();
+			if (depth === 4) {
+				setDepth(3);
+				afterSlide(layerNext, () => {
+					if (currentDepth() < 4) showOnly(nextPanels(), 'data-project-next', null);
+				});
+			} else if (depth === 3) {
+				const activeProject = root.querySelector('[data-project]:not([hidden])');
+				const slug = activeProject?.getAttribute('data-project');
+				const index = slug ? activeImageIndex(slug) : -1;
+
+				if (slug && index > 0) {
+					showProjectImage(slug, index - 1);
+					return;
+				}
+
+				setDepth(2);
+				afterSlide(layerImages, () => {
+					if (currentDepth() < 3) hideAllImages();
+				});
+			} else if (depth === 2) {
+				setDepth(1);
+				afterSlide(layerProject, () => {
+					if (currentDepth() < 2) showOnly(projectPanels(), 'data-project', null);
+				});
+			} else if (depth === 1) {
+				setDepth(0);
+				afterSlide(layerCategory, () => {
+					if (currentDepth() < 1) showOnly(categoryPanels(), 'data-category', null);
+				});
+			}
+		}
+
+		function closeAll(opts) {
+			setDepth(0, opts);
+			afterSlide(layerCategory, () => {
+				if (currentDepth() > 0) return;
+				showOnly(nextPanels(), 'data-project-next', null);
+				hideAllImages();
+				showOnly(projectPanels(), 'data-project', null);
+				showOnly(categoryPanels(), 'data-category', null);
+			});
+		}
+
+		root.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+
+			const openCategoryBtn = target.closest('[data-open-category]');
+			if (openCategoryBtn instanceof HTMLElement) {
+				event.preventDefault();
+				openCategory(openCategoryBtn.getAttribute('data-open-category') || '');
+				return;
+			}
+
+			const openImageBtn = target.closest('[data-open-project-image]');
+			if (openImageBtn instanceof HTMLElement) {
+				event.preventDefault();
+				const slug = openImageBtn.getAttribute('data-open-project-image') || '';
+				const index = Number(openImageBtn.getAttribute('data-image-index') || 0);
+				openProjectImage(slug, index);
+				return;
+			}
+
+			const openNextBtn = target.closest('[data-open-project-next]');
+			if (openNextBtn instanceof HTMLElement) {
+				event.preventDefault();
+				openProjectNext(openNextBtn.getAttribute('data-open-project-next') || '');
+				return;
+			}
+
+			if (target.closest('[data-nav-back]')) {
+				event.preventDefault();
+				goBack();
+				return;
+			}
+
+			const openProjectBtn = target.closest('[data-open-project]');
+			if (openProjectBtn instanceof HTMLElement) {
+				event.preventDefault();
+				openProject(openProjectBtn.getAttribute('data-open-project') || '');
+				return;
+			}
+		});
+
+		root.addEventListener('work:back', () => goBack());
+		root.addEventListener('work:close', () => closeAll());
+
+		document.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const link = target.closest('a[href^="#"]');
+			if (!(link instanceof HTMLAnchorElement)) return;
+			const hash = link.getAttribute('href');
+			if (!hash || hash === '#work') {
+				if (hash === '#work' && Number(root.dataset.depth || 0) > 0) {
+					closeAll();
+				}
+				return;
+			}
+			if (hash === '#about' || hash === '#contact' || hash === '#ikeneas') {
+				if (Number(root.dataset.depth || 0) > 0) closeAll();
+			}
+		});
+
+		function ensureWorkVisible() {
+			const container = document.querySelector('.horizontal-scroll-container');
+			if (container instanceof HTMLElement) {
+				container.scrollTo({ left: root.offsetLeft, behavior: 'instant' });
+			}
+		}
+
+		function applyHash() {
+			const id = location.hash.replace(/^#/, '');
+			if (!id || id === 'work') {
+				if (id === 'work') ensureWorkVisible();
+				closeAll({ syncHash: false });
+				return;
+			}
+			if (categoryPanels().some((el) => el.getAttribute('data-category') === id)) {
+				ensureWorkVisible();
+				openCategory(id, { syncHash: false });
+				return;
+			}
+			if (projectPanels().some((el) => el.getAttribute('data-project') === id)) {
+				ensureWorkVisible();
+				openProject(id, { syncHash: false });
+			}
+		}
+
+		applyHash();
+		window.addEventListener('hashchange', applyHash);
+
+		window.__workGoBack = goBack;
+		window.__workDepth = () => Number(root.dataset.depth || 0);
+	}
+</script>
+
+<style>
+	.work-slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh;
+		scroll-snap-align: start;
+		position: relative;
+		overflow: hidden;
+		background-color: #eeedec;
+	}
+
+	.work-layer {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.work-layer--menu {
+		z-index: 1;
+	}
+
+	.work-layer--category,
+	.work-layer--project,
+	.work-layer--images,
+	.work-layer--next {
+		z-index: 2;
+		transform: translate3d(100%, 0, 0);
+		opacity: 0.72;
+		transition:
+			transform 0.62s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+			opacity 0.45s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+		pointer-events: none;
+		overflow: hidden;
+		will-change: transform, opacity;
+	}
+
+	.work-layer--project {
+		z-index: 3;
+	}
+
+	.work-layer--images {
+		z-index: 4;
+	}
+
+	.work-layer--next {
+		z-index: 5;
+	}
+
+	.work-slide[data-depth='1'] .work-layer--category,
+	.work-slide[data-depth='2'] .work-layer--category,
+	.work-slide[data-depth='3'] .work-layer--category,
+	.work-slide[data-depth='4'] .work-layer--category {
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.work-slide[data-depth='2'] .work-layer--project,
+	.work-slide[data-depth='3'] .work-layer--project,
+	.work-slide[data-depth='4'] .work-layer--project {
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.work-slide[data-depth='3'] .work-layer--images,
+	.work-slide[data-depth='4'] .work-layer--images {
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.work-slide[data-depth='4'] .work-layer--next {
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	/* ── Menú (capa 0) ── */
+	.work-layer--menu {
+		overflow: hidden;
+		opacity: 0;
+		transform: translate3d(0, 1rem, 0);
+		transition:
+			opacity var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+			transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+		will-change: opacity, transform;
+	}
+
+	.work-slide.is-active .work-layer--menu {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.work-layer--menu {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+
+	.work-grid {
+		--row-xl: 25vh;
+		--row-branding: 26vh;
+		--row-md: 16.33vh;
+		--shift-xl: 4.5vh;
+		--shift-branding: 3vh;
+		--shift-md: 1.6vh;
+
+		position: absolute;
+		inset: 0;
+		display: grid;
+		grid-template-rows: var(--row-xl) var(--row-branding) var(--row-md) var(--row-md) 1fr;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
+	}
+
+	/* En móvil landscape el viewport es bajo: filas con mínimo fijo
+	   para que el total pase de 100% y se pueda hacer scroll vertical. */
+	@media (hover: none) and (max-height: 520px) {
+		.work-grid {
+			--shift-xl: 1.25rem;
+			--shift-branding: 0.85rem;
+			--shift-md: 0.45rem;
+
+			grid-template-rows:
+				minmax(6rem, 25vh)
+				minmax(6rem, 26vh)
+				minmax(4.75rem, 16.5vh)
+				minmax(4.75rem, 16.5vh)
+				minmax(4.75rem, 16.5vh);
+		}
+
+		.work-txt--xl {
+			font-size: clamp(2.75rem, 20vh, 25vh);
+		}
+
+		.work-txt--md {
+			font-size: clamp(1.85rem, 13vh, 17.5vh);
+		}
+	}
+
+	.work-row {
+		display: flex;
+		align-items: center;
+		padding: 0 max(clamp(1rem, 2vw, 2rem), var(--sar)) 0 max(clamp(1rem, 2vw, 2rem), var(--sal));
+		border: none;
+		background: none;
+		text-align: left;
+		cursor: pointer;
+		overflow: hidden;
+		position: relative;
+		width: 100%;
+		font: inherit;
+		color: inherit;
+	}
+
+	.work-row--cream {
+		background-color: #eeedec;
+	}
+
+	.work-row--black {
+		background-color: #000000;
+	}
+
+	.work-row--branding {
+		padding: 0 max(clamp(1rem, 2vw, 2rem), var(--sar)) 0 max(clamp(0.85rem, 1.5vw, 1.5rem), var(--sal));
+	}
+
+	.work-split {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		background-color: #000000;
+		overflow: hidden;
+	}
+
+	.work-split__cell {
+		border-right: 1.5px solid rgba(255, 255, 255, 0.3);
+	}
+
+	.work-txt {
+		font-family: 'Acumin Variable Concept', sans-serif;
+		font-weight: 600;
+		line-height: 0.9;
+		letter-spacing: clamp(-3px, -0.25vw, -1.5px);
+		white-space: nowrap;
+		text-transform: uppercase;
+		transition: transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+	}
+
+	.work-txt--xl {
+		font-size: 25vh;
+		transform: translateY(var(--shift-xl));
+	}
+
+	.work-txt--branding {
+		transform: translateY(var(--shift-branding));
+	}
+
+	.work-txt--md {
+		font-size: 17.5vh;
+		transform: translateY(var(--shift-md));
+	}
+
+	.work-link:hover .work-txt--xl {
+		transform: translateY(var(--shift-xl)) scale(1.015);
+	}
+
+	.work-link:hover .work-txt--branding {
+		transform: translateY(var(--shift-branding)) scale(1.015);
+	}
+
+	.work-link:hover .work-txt--md {
+		transform: translateY(var(--shift-md)) scale(1.02);
+	}
+
+	.work-txt--dark {
+		color: #000000;
+	}
+
+	.work-txt--light {
+		color: #ffffff;
+	}
+
+	.work-nav {
+		position: absolute;
+		top: 0;
+		right: 0;
+		z-index: 20;
+		padding: var(--pad-header-y) var(--pad-header-x-r) 0 var(--pad-header-x-l);
+		pointer-events: none;
+	}
+
+	.work-nav__inner {
+		pointer-events: auto;
+	}
+
+	.work-link {
+		transition: background-color var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+	}
+
+	.work-link:hover span {
+		color: #000000 !important;
+	}
+
+	.hover-branding:hover {
+		background-color: #e26000 !important;
+	}
+
+	.hover-proyectos:hover {
+		background-color: #d70016 !important;
+	}
+
+	.hover-flyers:hover {
+		background-color: #b2cdb6 !important;
+	}
+
+	.hover-merch:hover {
+		background-color: #ab9900 !important;
+	}
+
+	.hover-ikeneas:hover {
+		background-color: #6c48b0 !important;
+	}
+
+	/* ── Tabla de categoría (capa 1) ── */
+	.category-panel {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #eeedec;
+		color: #000000;
+		display: flex;
+		flex-direction: column;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
+	}
+
+	.category-panel[hidden] {
+		display: none;
+	}
+
+	.category-nav {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		flex: 0 0 auto;
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: clamp(1rem, 2vw, 2rem);
+		padding: var(--pad-header-y) var(--pad-header-x-r) 0.5rem var(--pad-header-x-l);
+		background-color: #eeedec;
+	}
+
+	.category-nav :global(.navbar) {
+		width: auto;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.category-nav__brand {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: clamp(0.35rem, 1vh, 0.75rem);
+		flex-shrink: 0;
+	}
+
+	.category-nav__logo :global(img) {
+		width: clamp(96px, 12vw, 200px);
+		height: auto;
+	}
+
+	.category-back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		border: none;
+		background: transparent;
+		padding: 0;
+		cursor: pointer;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: var(--nav-size);
+		letter-spacing: 0.03em;
+		color: #000000;
+	}
+
+	.category-back:hover {
+		opacity: 0.65;
+	}
+
+	.category-back__icon {
+		font-size: 1.1em;
+		line-height: 1;
+	}
+
+	.category-content {
+		padding: clamp(1rem, 6vh, 5rem) var(--pad-header-x-r) var(--pad-section-b) var(--pad-header-x-l);
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		flex: 0 0 auto;
+		min-height: min-content;
+		overflow: visible;
+	}
+
+	.category-title {
+		font-family: var(--font-text, 'Acumin Variable Concept', sans-serif);
+		font-weight: 600;
+		font-size: clamp(2.5rem, 12vw, 15vw);
+		line-height: 0.85;
+		letter-spacing: -3px;
+		padding: 0;
+		text-transform: uppercase;
+		--title-ink-lsb: 0.0854em;
+		margin: 0 0 0 calc(0.5rem - var(--title-ink-lsb));
+		flex-shrink: 0;
+	}
+
+	.category-separator {
+		border: none;
+		border-top: 2.5px solid #000000;
+		width: calc(100% - 0.5rem);
+		margin: 0.5rem 0 clamp(1rem, 4vh, 4vh) 0.5rem;
+		flex-shrink: 0;
+	}
+
+	.project-list {
+		display: flex;
+		flex-direction: column;
+		width: calc(100% - 0.5rem);
+		flex: 0 0 auto;
+		justify-content: flex-start;
+		margin-left: 0.5rem;
+		--row-height: clamp(1.85rem, 4.2vh, 3.2rem);
+		overflow: visible;
+		min-height: 0;
+		padding-bottom: 0.25rem;
+	}
+
+	.project-row {
+		display: grid;
+		grid-template-columns: clamp(40px, 5vw, 80px) 3fr 1fr 1fr;
+		align-items: center;
+		padding: 0;
+		flex: 0 0 var(--row-height);
+		height: var(--row-height);
+		border: none;
+		background: transparent;
+		text-decoration: none;
+		color: #000000;
+		font-family: var(--font-nav, 'Aptos', sans-serif);
+		font-size: clamp(0.8rem, 1.1vw + 0.35vh, 1.35rem);
+		font-weight: 500;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			background-color var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+			color var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+			padding-left var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+		margin: 0;
+		width: 100%;
+	}
+
+	.project-row:hover {
+		background-color: var(--hover-bg);
+		color: #ffffff;
+		padding-left: 0.35rem;
+	}
+
+	.col-id {
+		font-variant-numeric: tabular-nums;
+	}
+
+	.col-name {
+		display: flex;
+		align-items: center;
+		gap: clamp(0.5rem, 1vw, 1rem);
+	}
+
+	.color-square {
+		width: clamp(12px, 1.2vw, 20px);
+		height: clamp(12px, 1.2vw, 20px);
+		display: inline-block;
+		flex-shrink: 0;
+	}
+
+	.col-location {
+		text-align: right;
+	}
+
+	@media (max-width: 700px) {
+		.project-row {
+			grid-template-columns: 40px 1fr;
+			gap: 10px;
+		}
+		.col-year,
+		.col-location {
+			display: none;
+		}
+	}
+</style>

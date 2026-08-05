@@ -1,0 +1,235 @@
+---
+import RotateDevice from '../components/RotateDevice.astro';
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Mauro Portfolio</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
+		<script is:inline>document.documentElement.classList.add('js');</script>
+	</head>
+	<body>
+		<a href="#about" class="skip-link">Saltar al contenido</a>
+		<RotateDevice />
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	@font-face {
+		font-family: 'Aptos';
+		src: url('/fonts/Aptos%20font/Aptos-SemiBold.ttf') format('truetype');
+		font-weight: 600;
+		font-style: normal;
+		font-display: swap;
+	}
+
+	@font-face {
+		font-family: 'Acumin Variable Concept';
+		src: url('/fonts/AcuminVariableConcept.otf') format('opentype');
+		font-weight: 100 900;
+		font-style: normal;
+		font-display: swap;
+	}
+
+	@font-face {
+		font-family: 'Helvetica43';
+		src: url('/fonts/Helvetica43-ExtendedLight%20Light.ttf') format('truetype');
+		font-weight: 300;
+		font-style: normal;
+		font-display: swap;
+	}
+
+	:root {
+		--font-nav: 'Aptos', 'Inter', sans-serif;
+		--font-text: 'Acumin Variable Concept', 'Inter', sans-serif;
+		--font-helvetica: 'Helvetica43', 'Inter', sans-serif;
+
+		/* Safe areas (notch / status bar / home indicator) */
+		--sat: env(safe-area-inset-top, 0px);
+		--sar: env(safe-area-inset-right, 0px);
+		--sab: env(safe-area-inset-bottom, 0px);
+		--sal: env(safe-area-inset-left, 0px);
+
+		/* Espaciado base (sin safe-area) */
+		--pad-header-y-base: clamp(0.65rem, 2.2vh, 1.5rem);
+		--pad-header-x-r-base: clamp(1rem, 3vw, 3rem);
+		--pad-header-x-l-base: clamp(0.85rem, 2vw, 2rem);
+		--pad-section-x-base: clamp(1rem, 3vw, 4rem);
+		--pad-section-b-base: clamp(1rem, 3.2vh, 3rem);
+
+		/* Espaciado compartido + safe-area */
+		--pad-header-y: calc(var(--pad-header-y-base) + var(--sat));
+		--pad-header-x-r: calc(var(--pad-header-x-r-base) + var(--sar));
+		--pad-header-x-l: calc(var(--pad-header-x-l-base) + var(--sal));
+		--pad-section-x: var(--pad-section-x-base);
+		--pad-section-x-l: calc(var(--pad-section-x-base) + var(--sal));
+		--pad-section-x-r: calc(var(--pad-section-x-base) + var(--sar));
+		--pad-section-b: calc(var(--pad-section-b-base) + var(--sab));
+		--nav-gap: clamp(1.25rem, 5.5vw, 8.5rem);
+		--nav-size: clamp(0.8rem, 1.15vw, 1.7rem);
+		--logo-w: clamp(96px, 14.75vw, 283px);
+
+		/* Motion */
+		--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+		--ease-inout: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+		--dur-fast: 0.32s;
+		--dur-med: 0.55s;
+		--dur-slow: 0.9s;
+	}
+
+	/*
+	 * En muchos móviles env(safe-area-*) llega en 0 aunque haya status bar / notch.
+	 * Forzamos mínimos en táctil; en landscape el inset lateral suele ser el crítico.
+	 */
+	@media (hover: none) {
+		:root {
+			--sat: max(env(safe-area-inset-top, 0px), 16px);
+			--sab: max(env(safe-area-inset-bottom, 0px), 12px);
+			--sal: max(env(safe-area-inset-left, 0px), 16px);
+			--sar: max(env(safe-area-inset-right, 0px), 16px);
+		}
+	}
+
+	@media (hover: none) and (orientation: landscape) {
+		:root {
+			--sat: max(env(safe-area-inset-top, 0px), 12px);
+			--sab: max(env(safe-area-inset-bottom, 0px), 12px);
+			--sal: max(env(safe-area-inset-left, 0px), 36px);
+			--sar: max(env(safe-area-inset-right, 0px), 36px);
+		}
+	}
+
+	/* En pantallas grandes se conservan los mínimos originales */
+	@media (min-width: 1200px) {
+		:root {
+			--nav-gap: clamp(5rem, 5.5vw, 8.5rem);
+			--nav-size: clamp(1.05rem, 1.15vw, 1.7rem);
+			--logo-w: clamp(160px, 14.75vw, 283px);
+			--pad-header-y-base: clamp(1rem, 2.2vh, 1.5rem);
+		}
+	}
+
+	@media (min-width: 1200px) and (hover: hover) {
+		:root {
+			--sat: env(safe-area-inset-top, 0px);
+			--sar: env(safe-area-inset-right, 0px);
+			--sab: env(safe-area-inset-bottom, 0px);
+			--sal: env(safe-area-inset-left, 0px);
+		}
+	}
+
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		height: 100%;
+		height: 100dvh;
+		background-color: #050505;
+		color: #ffffff;
+		overflow: hidden;
+	}
+
+	html.orientation-locked,
+	body.orientation-locked {
+		overflow: hidden;
+		touch-action: none;
+	}
+
+	body.orientation-locked > :not(.rotate-device):not(.skip-link) {
+		visibility: hidden !important;
+		pointer-events: none !important;
+	}
+	
+	a {
+		color: inherit;
+		text-decoration: none;
+		transition: opacity var(--dur-fast) var(--ease-out);
+	}
+	
+	a:hover {
+		opacity: 0.7;
+	}
+
+	/* Revelado suave al activar un slide */
+	.reveal {
+		opacity: 0;
+		transform: translate3d(0, 1.15rem, 0);
+		transition:
+			opacity var(--dur-med) var(--ease-out),
+			transform var(--dur-med) var(--ease-out);
+		transition-delay: var(--reveal-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	.is-active > .reveal,
+	.is-active .reveal {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	html:not(.js) .reveal {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+	
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+	* {
+		box-sizing: border-box;
+	}
+
+	.skip-link {
+		position: fixed;
+		top: -100%;
+		left: calc(1rem + var(--sal));
+		z-index: 9999;
+		padding: 0.75rem 1.25rem;
+		background: #000000;
+		color: #ffffff;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: 1rem;
+		border-radius: 0 0 6px 6px;
+		opacity: 1;
+		transition: top 0.2s ease;
+	}
+
+	.skip-link:focus {
+		top: var(--sat);
+		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
+	}
+</style>
