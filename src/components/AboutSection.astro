@@ -234,7 +234,7 @@ import Navbar from './Navbar.astro';
 
 		const imgRect = img.getBoundingClientRect();
 		const footerRect = footerContent.getBoundingClientRect();
-		const offset = imgRect.right - footerRect.left;
+		const offset = imgRect.left - footerRect.left;
 
 		if (offset > 0) {
 			section.style.setProperty('--text-align-offset', `${offset}px`);
