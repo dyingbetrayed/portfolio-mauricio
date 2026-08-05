@@ -193,7 +193,7 @@ import Navbar from './Navbar.astro';
 		width: min(50rem, 42vw);
 		max-width: min(50rem, 48%);
 		min-width: min(16rem, 100%);
-		margin-left: clamp(1.5rem, 11vw, 15rem);
+		margin-left: var(--text-align-offset, clamp(1.5rem, 12.3vw, 15rem));
 		text-align: justify;
 	}
 
@@ -219,3 +219,30 @@ import Navbar from './Navbar.astro';
 		margin-top: 1em;
 	}
 </style>
+
+<script>
+	function syncTextToImage() {
+		const section = document.querySelector('.about-slide') as HTMLElement | null;
+		if (!section) return;
+
+		const img = section.querySelector('.about-image');
+		const footerContent = section.querySelector('.about-footer-content');
+		if (!img || !footerContent || window.innerWidth <= 900) {
+			section.style.removeProperty('--text-align-offset');
+			return;
+		}
+
+		const imgRect = img.getBoundingClientRect();
+		const footerRect = footerContent.getBoundingClientRect();
+		const offset = imgRect.right - footerRect.left;
+
+		if (offset > 0) {
+			section.style.setProperty('--text-align-offset', `${offset}px`);
+		}
+	}
+
+	syncTextToImage();
+	window.addEventListener('resize', syncTextToImage);
+	window.addEventListener('load', syncTextToImage);
+</script>
+
