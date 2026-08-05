@@ -4,7 +4,8 @@ import Navbar from './Navbar.astro';
 
 <section class="slide about-slide" id="about">
 	<header class="about-header reveal" style="--reveal-delay: 60ms">
-		<Navbar theme="dark" active="about" showLogo />
+		<h1 class="name-title top-name-title">Mauricio Atencia</h1>
+		<Navbar theme="dark" active="about" />
 	</header>
 
 	<div class="about-content-wrapper" data-v-scroll>
@@ -17,13 +18,9 @@ import Navbar from './Navbar.astro';
 			<hr class="about-divider" />
 			<div class="about-footer-content">
 				<div class="about-title">About</div>
-				<h1 class="name-title">Mauricio Atencia</h1>
 				<div class="about-text">
 					<p>
-						la ficha studio es el proyecto con el cual durante más de cuatro años he desarrollado identidades visuales, experiencias de marca y espacios comerciales donde la estrategia, el diseño y la ejecución, trabajan como un solo sistema.
-					</p>
-					<p>
-						Mi enfoque combina branding, retail y dirección de arte para crear marcas coherentes, memorables y listas para el mundo real.
+						Profesional creativo con más de 10 años de experiencia en artes visuales y periodismo cultural, especializado en la creación de estrategias de contenido y diseño gráfico para el entorno digital. Mi enfoque combina la creatividad visual con una sólida base estratégica para generar mensajes de marca que conectan con la audiencia. Experto en optimización de pauta digital y diseño de campañas visuales para redes sociales.
 					</p>
 				</div>
 			</div>
@@ -60,6 +57,14 @@ import Navbar from './Navbar.astro';
 		box-sizing: border-box;
 		justify-content: flex-end;
 		background-color: #eeedec;
+	}
+
+	.top-name-title {
+		position: absolute;
+		left: var(--pad-header-x-l);
+		top: var(--pad-header-y);
+		z-index: 10;
+		pointer-events: none;
 	}
 
 	.about-content-wrapper {
@@ -226,15 +231,15 @@ import Navbar from './Navbar.astro';
 		if (!section) return;
 
 		const img = section.querySelector('.about-image');
-		const nameTitle = section.querySelector('.name-title');
-		if (!img || !nameTitle || window.innerWidth <= 900) {
+		const aboutTitle = section.querySelector('.about-title');
+		if (!img || !aboutTitle || window.innerWidth <= 900) {
 			section.style.removeProperty('--text-align-offset');
 			return;
 		}
 
 		const imgRect = img.getBoundingClientRect();
-		const nameRect = nameTitle.getBoundingClientRect();
-		const offset = imgRect.left - nameRect.right;
+		const titleRect = aboutTitle.getBoundingClientRect();
+		const offset = imgRect.left - titleRect.right;
 
 		if (offset > 0) {
 			section.style.setProperty('--text-align-offset', `${offset}px`);
