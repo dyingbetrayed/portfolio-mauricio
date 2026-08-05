@@ -158,7 +158,7 @@ import Navbar from './Navbar.astro';
 		justify-content: flex-start;
 		align-items: flex-start;
 		gap: 0;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 	}
 
 	.about-title {
@@ -193,7 +193,7 @@ import Navbar from './Navbar.astro';
 		width: min(50rem, 42vw);
 		max-width: min(50rem, 48%);
 		min-width: min(16rem, 100%);
-		margin-left: var(--text-align-offset, clamp(1.5rem, 12.3vw, 15rem));
+		margin-left: var(--text-align-offset, auto);
 		text-align: justify;
 	}
 
@@ -226,18 +226,20 @@ import Navbar from './Navbar.astro';
 		if (!section) return;
 
 		const img = section.querySelector('.about-image');
-		const footerContent = section.querySelector('.about-footer-content');
-		if (!img || !footerContent || window.innerWidth <= 900) {
+		const nameTitle = section.querySelector('.name-title');
+		if (!img || !nameTitle || window.innerWidth <= 900) {
 			section.style.removeProperty('--text-align-offset');
 			return;
 		}
 
 		const imgRect = img.getBoundingClientRect();
-		const footerRect = footerContent.getBoundingClientRect();
-		const offset = imgRect.left - footerRect.left;
+		const nameRect = nameTitle.getBoundingClientRect();
+		const offset = imgRect.left - nameRect.right;
 
 		if (offset > 0) {
 			section.style.setProperty('--text-align-offset', `${offset}px`);
+		} else {
+			section.style.setProperty('--text-align-offset', `clamp(1rem, 2vw, 2rem)`);
 		}
 	}
 
