@@ -93,7 +93,8 @@ import Navbar from './Navbar.astro';
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
-		padding: 0 0 clamp(0.5rem, 1.2vw, 1.5rem) 0;
+		padding: 0;
+		margin-top: clamp(2rem, 6vh, 6rem);
 	}
 
 	.about-image {
@@ -102,13 +103,13 @@ import Navbar from './Navbar.astro';
 		max-width: 100%;
 		object-fit: cover;
 		display: block;
-		--img-lift: clamp(0.75rem, 1.8vw, 2.25rem);
+		--img-lift: clamp(2.5rem, 4vw, 3.5rem);
 		transform: translateY(var(--img-lift));
 		transition: transform var(--dur-slow) var(--ease-out);
 	}
 
 	.about-slide.is-active .about-image {
-		--img-lift: clamp(0.35rem, 1vw, 1.25rem);
+		--img-lift: clamp(1.5rem, 2.5vw, 2.2rem);
 	}
 
 	@media (max-height: 500px) {
@@ -138,8 +139,6 @@ import Navbar from './Navbar.astro';
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		--footer-lift: clamp(0.4rem, 1vh, 1rem);
-		transform: translateY(calc(-1 * var(--footer-lift)));
 	}
 
 	.location-text {
@@ -201,9 +200,9 @@ import Navbar from './Navbar.astro';
 		font-weight: 300;
 		font-size: clamp(0.7rem, 1.05vw, 1.55rem);
 		line-height: 1.2;
-		flex: 1 1 min(50rem, 42vw);
-		width: min(50rem, 42vw);
-		max-width: min(50rem, 48%);
+		flex: 1 1 min(35rem, 40vw);
+		width: min(35rem, 40vw);
+		max-width: 32rem;
 		min-width: min(16rem, 100%);
 		margin-left: var(--text-align-offset, auto);
 		text-align: justify;
