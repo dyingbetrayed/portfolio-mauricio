@@ -18,6 +18,7 @@ import Navbar from './Navbar.astro';
 			<hr class="about-divider" />
 			<div class="about-footer-content">
 				<div class="about-title">About</div>
+				<div class="name-title" style="visibility: hidden;" aria-hidden="true">Mauricio Atencia</div>
 				<div class="about-text">
 					<p>
 						Profesional creativo con más de 10 años de experiencia en artes visuales y periodismo cultural, especializado en la creación de estrategias de contenido y diseño gráfico para el entorno digital. Mi enfoque combina la creatividad visual con una sólida base estratégica para generar mensajes de marca que conectan con la audiencia. Experto en optimización de pauta digital y diseño de campañas visuales para redes sociales.
@@ -231,15 +232,15 @@ import Navbar from './Navbar.astro';
 		if (!section) return;
 
 		const img = section.querySelector('.about-image');
-		const aboutTitle = section.querySelector('.about-title');
-		if (!img || !aboutTitle || window.innerWidth <= 900) {
+		const hiddenNameTitle = section.querySelector('.about-footer-content .name-title');
+		if (!img || !hiddenNameTitle || window.innerWidth <= 900) {
 			section.style.removeProperty('--text-align-offset');
 			return;
 		}
 
 		const imgRect = img.getBoundingClientRect();
-		const titleRect = aboutTitle.getBoundingClientRect();
-		const offset = imgRect.left - titleRect.right;
+		const nameRect = hiddenNameTitle.getBoundingClientRect();
+		const offset = imgRect.left - nameRect.right;
 
 		if (offset > 0) {
 			section.style.setProperty('--text-align-offset', `${offset}px`);
