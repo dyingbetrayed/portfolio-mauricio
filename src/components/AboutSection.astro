@@ -119,6 +119,19 @@ import Navbar from './Navbar.astro';
 			height: clamp(100px, 42vh, 180px);
 			--img-lift: 0.5rem;
 		}
+
+		/* Viewports bajos (móvil en landscape): el título grande choca
+		   con el nav porque su altura ya no cabe en el header.
+		   Reducimos --pad-header-y (afecta a padding y al `top` del
+		   título absoluto a la vez) y bajamos el tamaño del título. */
+		.about-slide {
+			--pad-header-y: clamp(0.4rem, 2vh, 0.75rem);
+		}
+
+		.name-title {
+			font-size: clamp(1rem, 4.2vw, 1.7rem);
+			-webkit-text-stroke: 1px #000000;
+		}
 	}
 
 	@media (min-height: 501px) and (max-width: 1440px) {
@@ -191,7 +204,9 @@ import Navbar from './Navbar.astro';
 		flex: 0 1 auto;
 		min-width: 0;
 		letter-spacing: -0.022em;
-		-webkit-text-stroke: max(1px, 0.07vw) #000000;
+		/* Antes: max(1px, 0.07vw) — sin tope, se engrosaba de más
+		   en pantallas 4K/ultrawide. Ahora topado con clamp(). */
+		-webkit-text-stroke: clamp(1px, 0.07vw, 2px) #000000;
 	}
 
 	.about-text {
@@ -231,33 +246,70 @@ import Navbar from './Navbar.astro';
 </style>
 
 <script>
-	function syncTextToImage() {
-		const section = document.querySelector('.about-slide') as HTMLElement | null;
-		if (!section) return;
+function syncTextToImage() {
+	const section = document.querySelector('.about-slide') as HTMLElement | null;
+	if (!section) return;
 
-		const img = section.querySelector('.about-image');
-		const aboutLabel = section.querySelector('.about-footer-content .about-title') as HTMLElement | null;
-		if (!img || !aboutLabel || window.innerWidth <= 900) {
-			section.style.removeProperty('--text-align-offset');
-			return;
-		}
-
-		const imgRect = img.getBoundingClientRect();
-		const labelRect = aboutLabel.getBoundingClientRect();
-		const labelMarginRight = parseFloat(getComputedStyle(aboutLabel).marginRight) || 0;
-		// Where .about-text would naturally start (margin-left: 0) is right after
-		// the "About" label + its margin, since it's the only sibling before it now.
-		const naturalTextStart = labelRect.right + labelMarginRight;
-		const offset = imgRect.left - naturalTextStart;
-
-		if (offset > 0) {
-			section.style.setProperty('--text-align-offset', `${offset}px`);
-		} else {
-			section.style.setProperty('--text-align-offset', `clamp(1rem, 2vw, 2rem)`);
-		}
+	const img = section.querySelector('.about-image');
+	const aboutLabel = section.querySelector('.about-footer-content .about-title') as HTMLElement | null;
+	if (!img || !aboutLabel || window.innerWidth <= 900) {
+		section.style.removeProperty('--text-align-offset');
+		return;
 	}
 
-	syncTextToImage();
-	window.addEventListener('resize', syncTextToImage);
-	window.addEventListener('load', syncTextToImage);
+	const imgRect = img.getBoundingClientRect();
+	const labelRect = aboutLabel.getBoundingClientRect();
+	const labelMarginRight = parseFloat(getComputedStyle(aboutLabel).marginRight) || 0;
+	const naturalTextStart = labelRect.right + labelMarginRight;
+	const offset = imgRect.left - naturalTextStart;
+
+	if (offset > 0) {
+		section.style.setProperty('--text-align-offset', `${offset}px`);
+	} else {
+		section.style.setProperty('--text-align-offset', `clamp(1rem, 2vw, 2rem)`);
+	}
+}
+
+function syncTitleToNav() {
+	const header = document.querySelector('.about-header') as HTMLElement | null;
+	const title = document.querySelector('.top-name-title') as HTMLElement | null;
+	const firstNavLink = document.querySelector('.about-header .navbar a') as HTMLElement | null;
+	if (!header || !title || !firstNavLink) return;
+
+	title.style.fontSize = '';
+
+	const titleRect = title.getBoundingClientRect();
+	const navRect = firstNavLink.getBoundingClientRect();
+	const minGap = 20;
+
+	const overlap = (titleRect.right + minGap) - navRect.left;
+
+	if (overlap > 0 && titleRect.width > 0) {
+		const currentSize = parseFloat(getComputedStyle(title).fontSize);
+		const availableWidth = Math.max(0, titleRect.width - overlap);
+		const minSize = 14;
+		const newSize = Math.max(minSize, currentSize * (availableWidth / titleRect.width));
+		title.style.fontSize = `${newSize}px`;
+	}
+}
+
+function scheduleSync() {
+	requestAnimationFrame(() => {
+		syncTextToImage();
+		syncTitleToNav();
+	});
+}
+
+scheduleSync();
+window.addEventListener('resize', scheduleSync);
+window.addEventListener('load', scheduleSync);
+
+if (document.fonts?.ready) {
+	document.fonts.ready.then(scheduleSync);
+}
+
+const headerEl = document.querySelector('.about-header');
+if (headerEl && 'ResizeObserver' in window) {
+	new ResizeObserver(scheduleSync).observe(headerEl);
+}
 </script>
