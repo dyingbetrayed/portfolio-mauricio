@@ -89,7 +89,7 @@ import Navbar from './Navbar.astro';
 
 	.about-center {
 		flex: 1 1 auto;
-		min-height: clamp(120px, 30vh, 280px);
+		min-height: clamp(150px, 34vh, 320px);
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
@@ -97,7 +97,7 @@ import Navbar from './Navbar.astro';
 	}
 
 	.about-image {
-		height: clamp(120px, 30vh, 480px);
+		height: clamp(150px, 38vh, 620px);
 		width: auto;
 		max-width: 100%;
 		object-fit: cover;
@@ -114,22 +114,22 @@ import Navbar from './Navbar.astro';
 	@media (max-height: 500px) {
 		.about-center {
 			flex: 0 0 auto;
-			min-height: clamp(88px, 38vh, 150px);
+			min-height: clamp(100px, 42vh, 180px);
 		}
 
 		.about-image {
-			height: clamp(88px, 38vh, 150px);
+			height: clamp(100px, 42vh, 180px);
 			--img-lift: 0.5rem;
 		}
 	}
 
 	@media (min-height: 501px) and (max-width: 1440px) {
 		.about-image {
-			height: clamp(120px, 28vh, 280px);
+			height: clamp(150px, 34vh, 340px);
 		}
 
 		.about-center {
-			min-height: clamp(120px, 28vh, 280px);
+			min-height: clamp(150px, 34vh, 340px);
 			padding-bottom: 0;
 		}
 	}
@@ -138,6 +138,8 @@ import Navbar from './Navbar.astro';
 		display: flex;
 		flex-direction: column;
 		width: 100%;
+		--footer-lift: clamp(0.4rem, 1vh, 1rem);
+		transform: translateY(calc(-1 * var(--footer-lift)));
 	}
 
 	.location-text {
@@ -184,21 +186,21 @@ import Navbar from './Navbar.astro';
 	.name-title {
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: clamp(1.15rem, 10vw, 4.75rem);
+		font-size: clamp(1.4rem, 13vw, 6.5rem);
 		margin: 0;
 		color: #000000;
 		line-height: 0.95;
 		flex: 0 1 auto;
 		min-width: 0;
 		letter-spacing: -0.022em;
-		-webkit-text-stroke: max(1px, 0.06vw) #000000;
+		-webkit-text-stroke: max(1px, 0.07vw) #000000;
 	}
 
 	.about-text {
 		font-family: var(--font-helvetica);
 		font-weight: 300;
 		font-size: clamp(0.7rem, 1.05vw, 1.55rem);
-		line-height: 1.4;
+		line-height: 1.2;
 		flex: 1 1 min(50rem, 42vw);
 		width: min(50rem, 42vw);
 		max-width: min(50rem, 48%);
@@ -211,6 +213,10 @@ import Navbar from './Navbar.astro';
 		.about-footer-content {
 			flex-direction: column;
 			gap: 0.75rem;
+		}
+
+		.about-footer-content .name-title[aria-hidden="true"] {
+			display: none;
 		}
 
 		.about-text {
@@ -226,7 +232,7 @@ import Navbar from './Navbar.astro';
 	}
 
 	.about-text p + p {
-		margin-top: 1em;
+		margin-top: 1.6em;
 	}
 </style>
 
@@ -257,4 +263,3 @@ import Navbar from './Navbar.astro';
 	window.addEventListener('resize', syncTextToImage);
 	window.addEventListener('load', syncTextToImage);
 </script>
-
