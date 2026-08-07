@@ -18,7 +18,6 @@ import Navbar from './Navbar.astro';
 			<hr class="about-divider" />
 			<div class="about-footer-content">
 				<div class="about-title">About</div>
-				<div class="name-title" style="visibility: hidden;" aria-hidden="true">Mauricio Atencia</div>
 				<div class="about-text">
 					<p>
 						Durante más de cuatro años he desarrollado identidades visuales, experiencias de marca y espacios comerciales donde la estrategia, el diseño y la ejecución, trabajan como un solo sistema. 
@@ -196,15 +195,6 @@ import Navbar from './Navbar.astro';
 		-webkit-text-stroke: max(1px, 0.07vw) #000000;
 	}
 
-	/* The footer's invisible copy of the name is only used as a ruler for the
-	   JS alignment calc (offset = image left edge - this element's right edge).
-	   It must stay at the original width or that offset goes negative and the
-	   description loses its alignment with the image, so it's kept separate
-	   from the bigger visible title in the header. */
-	.about-footer-content .name-title[aria-hidden="true"] {
-		font-size: clamp(1.15rem, 10vw, 4.75rem);
-	}
-
 	.about-text {
 		font-family: var(--font-helvetica);
 		font-weight: 300;
@@ -222,10 +212,6 @@ import Navbar from './Navbar.astro';
 		.about-footer-content {
 			flex-direction: column;
 			gap: 0.75rem;
-		}
-
-		.about-footer-content .name-title[aria-hidden="true"] {
-			display: none;
 		}
 
 		.about-text {
@@ -251,15 +237,19 @@ import Navbar from './Navbar.astro';
 		if (!section) return;
 
 		const img = section.querySelector('.about-image');
-		const hiddenNameTitle = section.querySelector('.about-footer-content .name-title');
-		if (!img || !hiddenNameTitle || window.innerWidth <= 900) {
+		const aboutLabel = section.querySelector('.about-footer-content .about-title') as HTMLElement | null;
+		if (!img || !aboutLabel || window.innerWidth <= 900) {
 			section.style.removeProperty('--text-align-offset');
 			return;
 		}
 
 		const imgRect = img.getBoundingClientRect();
-		const nameRect = hiddenNameTitle.getBoundingClientRect();
-		const offset = imgRect.left - nameRect.right;
+		const labelRect = aboutLabel.getBoundingClientRect();
+		const labelMarginRight = parseFloat(getComputedStyle(aboutLabel).marginRight) || 0;
+		// Where .about-text would naturally start (margin-left: 0) is right after
+		// the "About" label + its margin, since it's the only sibling before it now.
+		const naturalTextStart = labelRect.right + labelMarginRight;
+		const offset = imgRect.left - naturalTextStart;
 
 		if (offset > 0) {
 			section.style.setProperty('--text-align-offset', `${offset}px`);
