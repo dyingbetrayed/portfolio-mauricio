@@ -93,8 +93,7 @@ import Navbar from './Navbar.astro';
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
-		padding: 0;
-		margin-top: clamp(2rem, 6vh, 6rem);
+		padding: 0 0 clamp(0.5rem, 1.2vw, 1.5rem) 0;
 	}
 
 	.about-image {
@@ -103,13 +102,13 @@ import Navbar from './Navbar.astro';
 		max-width: 100%;
 		object-fit: cover;
 		display: block;
-		--img-lift: clamp(2.5rem, 4vw, 3.5rem);
+		--img-lift: clamp(0.75rem, 1.8vw, 2.25rem);
 		transform: translateY(var(--img-lift));
 		transition: transform var(--dur-slow) var(--ease-out);
 	}
 
 	.about-slide.is-active .about-image {
-		--img-lift: clamp(1.5rem, 2.5vw, 2.2rem);
+		--img-lift: clamp(0.35rem, 1vw, 1.25rem);
 	}
 
 	@media (max-height: 500px) {
@@ -139,6 +138,8 @@ import Navbar from './Navbar.astro';
 		display: flex;
 		flex-direction: column;
 		width: 100%;
+		--footer-lift: clamp(0.2rem, 0.4vh, 0.4rem);
+		transform: translateY(calc(-1 * var(--footer-lift)));
 	}
 
 	.location-text {
@@ -195,14 +196,23 @@ import Navbar from './Navbar.astro';
 		-webkit-text-stroke: max(1px, 0.07vw) #000000;
 	}
 
+	/* The footer's invisible copy of the name is only used as a ruler for the
+	   JS alignment calc (offset = image left edge - this element's right edge).
+	   It must stay at the original width or that offset goes negative and the
+	   description loses its alignment with the image, so it's kept separate
+	   from the bigger visible title in the header. */
+	.about-footer-content .name-title[aria-hidden="true"] {
+		font-size: clamp(1.15rem, 10vw, 4.75rem);
+	}
+
 	.about-text {
 		font-family: var(--font-helvetica);
 		font-weight: 300;
 		font-size: clamp(0.7rem, 1.05vw, 1.55rem);
 		line-height: 1.2;
-		flex: 1 1 min(35rem, 40vw);
-		width: min(35rem, 40vw);
-		max-width: 32rem;
+		flex: 1 1 min(50rem, 42vw);
+		width: min(50rem, 42vw);
+		max-width: min(50rem, 48%);
 		min-width: min(16rem, 100%);
 		margin-left: var(--text-align-offset, auto);
 		text-align: justify;
