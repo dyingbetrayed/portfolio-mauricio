@@ -360,7 +360,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				if (!url) return;
 				event.preventDefault();
 				event.stopPropagation();
-				window.location.assign(url);
+				window.open(url, '_blank', 'noopener,noreferrer');
 				return;
 			}
 

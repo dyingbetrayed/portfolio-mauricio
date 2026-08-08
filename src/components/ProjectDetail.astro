@@ -62,40 +62,42 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 			))}
 		</div>
 
-		<nav class="project__bottom-nav" aria-label="Navegación de proyecto">
+		<div class="project__bottom-nav-wrap">
 			{project.note && <p class="project__note">{project.note}</p>}
-			<div class="project__bottom-nav-controls">
-				<button
-					type="button"
-					class="project__nav-btn project__nav-btn--back"
-					data-nav-back
-				>
-					<span class="project__nav-icon" aria-hidden="true">←</span>
-					<span>{categoryTitle ?? 'Volver'}</span>
-				</button>
+			<nav class="project__bottom-nav" aria-label="Navegación de proyecto">
+				<div class="project__bottom-nav-controls">
+					<button
+						type="button"
+						class="project__nav-btn project__nav-btn--back"
+						data-nav-back
+					>
+						<span class="project__nav-icon" aria-hidden="true">←</span>
+						<span>{categoryTitle ?? 'Volver'}</span>
+					</button>
 
-				{hasImages ? (
-					<button
-						type="button"
-						class="project__nav-btn project__nav-btn--next"
-						data-open-project-image={project.slug}
-						data-image-index="0"
-					>
-						<span>Siguiente</span>
-						<span class="project__nav-icon" aria-hidden="true">→</span>
-					</button>
-				) : (
-					<button
-						type="button"
-						class="project__nav-btn project__nav-btn--next"
-						data-open-project-next={project.slug}
-					>
-						<span>Siguiente</span>
-						<span class="project__nav-icon" aria-hidden="true">→</span>
-					</button>
-				)}
-			</div>
-		</nav>
+					{hasImages ? (
+						<button
+							type="button"
+							class="project__nav-btn project__nav-btn--next"
+							data-open-project-image={project.slug}
+							data-image-index="0"
+						>
+							<span>Siguiente</span>
+							<span class="project__nav-icon" aria-hidden="true">→</span>
+						</button>
+					) : (
+						<button
+							type="button"
+							class="project__nav-btn project__nav-btn--next"
+							data-open-project-next={project.slug}
+						>
+							<span>Siguiente</span>
+							<span class="project__nav-icon" aria-hidden="true">→</span>
+						</button>
+					)}
+				</div>
+			</nav>
+		</div>
 	</div>
 </article>
 
@@ -282,7 +284,7 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 
 	.project__note {
 		margin: 0;
-		padding: 0;
+		padding: 0 0 clamp(0.25rem, 0.75vh, 0.5rem);
 		font-family: var(--font-helvetica);
 		font-weight: 300;
 		font-size: clamp(0.5rem, 0.72vw, 0.9rem);
@@ -291,15 +293,18 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		flex-shrink: 0;
 	}
 
-	.project__bottom-nav {
+	.project__bottom-nav-wrap {
 		margin-top: auto;
+		flex-shrink: 0;
+	}
+
+	.project__bottom-nav {
 		padding-top: clamp(0.5rem, 1.5vh, 1.25rem);
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
 		gap: 1rem;
 		border-top: 1px solid var(--ink);
-		flex-shrink: 0;
 	}
 
 	.project__bottom-nav-controls {

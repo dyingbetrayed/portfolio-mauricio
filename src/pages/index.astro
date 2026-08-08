@@ -342,7 +342,7 @@ import ContactSection from '../components/ContactSection.astro';
 				const url = externalControl.getAttribute('data-external-url');
 				if (!url) return;
 				event.preventDefault();
-				window.location.assign(url);
+				window.open(url, '_blank', 'noopener,noreferrer');
 				return;
 			}
 			const link = target.closest('a[href^="#"]');
