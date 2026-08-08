@@ -222,7 +222,13 @@ import Navbar from './Navbar.astro';
 		}
 
 		.top-name-title {
-			font-size: clamp(1.5rem, min(10vw, 7dvh), 3.5rem);
+			font-size: clamp(1.5rem, 10vw, 3.5rem);
+		}
+
+		@supports (height: 1dvh) {
+			.top-name-title {
+				font-size: clamp(1.5rem, min(10vw, 7dvh), 3.5rem);
+			}
 		}
 
 		.about-footer-content {
@@ -272,13 +278,14 @@ function syncTextToImage() {
 	}
 }
 
-function syncTitleToNav() {
+	function syncTitleToNav() {
 	const header = document.querySelector('.about-header') as HTMLElement | null;
 	const title = document.querySelector('.top-name-title') as HTMLElement | null;
 	const firstNavLink = document.querySelector('.about-header .navbar a') as HTMLElement | null;
 	if (!header || !title || !firstNavLink) return;
 
-	title.style.fontSize = '';
+		title.style.fontSize = '';
+		if (window.matchMedia('(max-width: 900px)').matches) return;
 
 	const titleRect = title.getBoundingClientRect();
 	const navRect = firstNavLink.getBoundingClientRect();

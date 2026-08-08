@@ -337,6 +337,14 @@ import ContactSection from '../components/ContactSection.astro';
 		document.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
+			const externalControl = target.closest('[data-external-url]');
+			if (externalControl instanceof HTMLElement) {
+				const url = externalControl.getAttribute('data-external-url');
+				if (!url) return;
+				event.preventDefault();
+				window.location.assign(url);
+				return;
+			}
 			const link = target.closest('a[href^="#"]');
 			if (!(link instanceof HTMLAnchorElement)) return;
 			const href = link.getAttribute('href');

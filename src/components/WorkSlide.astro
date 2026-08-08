@@ -3,10 +3,15 @@ import Navbar from './Navbar.astro';
 import ProjectDetail from './ProjectDetail.astro';
 import ProjectImage from './ProjectImage.astro';
 import ProjectNext from './ProjectNext.astro';
-import { projectCategories } from '../data/projects';
+import { projectCategories, type ProjectCategory } from '../data/projects';
 
-const categories = Object.entries(projectCategories);
-const allProjects = categories.flatMap(([, group]) => group.projects);
+const tableCategories: Array<[string, ProjectCategory]> = [
+	['branding', projectCategories.branding],
+	['proyectos-retail', { title: 'PROYECTOS RETAIL', projects: [] }],
+	['flyers', { title: 'FLYERS', projects: [] }],
+	['merch', { title: 'MERCH', projects: [] }],
+];
+const allProjects = Object.values(projectCategories).flatMap((group) => group.projects);
 const projectsWithImages = allProjects.filter((project) => project.images?.length);
 ---
 
@@ -14,7 +19,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	{/* ── Capa 0: menú de categorías ── */}
 	<div class="work-layer work-layer--menu" data-layer="0">
 		<div class="work-grid" data-v-scroll>
-			<button type="button" class="work-link hover-all work-row work-row--cream" data-open-category="all">
+			<button type="button" class="work-link hover-all work-row work-row--cream">
 				<span class="work-txt work-txt--xl work-txt--dark">ALL</span>
 			</button>
 
@@ -35,7 +40,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				</button>
 			</div>
 
-			<button type="button" class="work-link hover-ikeneas work-row work-row--cream" data-open-category="ikeneas">
+			<button type="button" class="work-link hover-ikeneas work-row work-row--cream" data-external-url="https://ikeneas.com/">
 				<span class="work-txt work-txt--md work-txt--dark">IKENEAS</span>
 			</button>
 		</div>
@@ -49,7 +54,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 	{/* ── Capa 1: tablas de categoría (pre-renderizadas) ── */}
 	<div class="work-layer work-layer--category" data-layer="1" aria-hidden="true" inert>
-		{categories.map(([category, group]) => (
+		{tableCategories.map(([category, group]) => (
 			<div class="category-panel" data-category={category} id={category} data-v-scroll hidden>
 				<header class="category-nav">
 					<a href="/" class="category__name-title" aria-label="Ir al inicio">Mauricio Atencia</a>
@@ -348,6 +353,16 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		root.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
+
+			const externalControl = target.closest('[data-external-url]');
+			if (externalControl instanceof HTMLElement) {
+				const url = externalControl.getAttribute('data-external-url');
+				if (!url) return;
+				event.preventDefault();
+				event.stopPropagation();
+				window.location.assign(url);
+				return;
+			}
 
 			const openCategoryBtn = target.closest('[data-open-category]');
 			if (openCategoryBtn instanceof HTMLElement) {

@@ -13,10 +13,10 @@ interface Props {
 
 const { theme = 'light', active, showLogo = false } = Astro.props;
 
-const links: { id: NavSection; label: string }[] = [
+const links: { id: NavSection; label: string; externalUrl?: string }[] = [
 	{ id: 'about', label: 'About' },
 	{ id: 'work', label: 'Work' },
-	{ id: 'ikeneas', label: 'Ikeneas' },
+	{ id: 'ikeneas', label: 'Ikeneas', externalUrl: 'https://ikeneas.com/' },
 	{ id: 'contact', label: 'Contact' },
 ];
 ---
@@ -26,7 +26,11 @@ const links: { id: NavSection; label: string }[] = [
 	<ul>
 		{links.map((link) => (
 			<li>
-				<a href={`#${link.id}`} aria-current={active === link.id ? 'page' : undefined}>
+				<a
+					href={`#${link.id}`}
+					data-external-url={link.externalUrl}
+					aria-current={active === link.id ? 'page' : undefined}
+				>
 					{link.label}
 				</a>
 			</li>

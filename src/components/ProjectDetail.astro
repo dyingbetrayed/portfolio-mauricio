@@ -62,38 +62,39 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 			))}
 		</div>
 
-		{project.note && <p class="project__note">{project.note}</p>}
-
 		<nav class="project__bottom-nav" aria-label="Navegación de proyecto">
-			<button
-				type="button"
-				class="project__nav-btn project__nav-btn--back"
-				data-nav-back
-			>
-				<span class="project__nav-icon" aria-hidden="true">←</span>
-				<span>{categoryTitle ?? 'Volver'}</span>
-			</button>
+			{project.note && <p class="project__note">{project.note}</p>}
+			<div class="project__bottom-nav-controls">
+				<button
+					type="button"
+					class="project__nav-btn project__nav-btn--back"
+					data-nav-back
+				>
+					<span class="project__nav-icon" aria-hidden="true">←</span>
+					<span>{categoryTitle ?? 'Volver'}</span>
+				</button>
 
-			{hasImages ? (
-				<button
-					type="button"
-					class="project__nav-btn project__nav-btn--next"
-					data-open-project-image={project.slug}
-					data-image-index="0"
-				>
-					<span>Siguiente</span>
-					<span class="project__nav-icon" aria-hidden="true">→</span>
-				</button>
-			) : (
-				<button
-					type="button"
-					class="project__nav-btn project__nav-btn--next"
-					data-open-project-next={project.slug}
-				>
-					<span>Siguiente</span>
-					<span class="project__nav-icon" aria-hidden="true">→</span>
-				</button>
-			)}
+				{hasImages ? (
+					<button
+						type="button"
+						class="project__nav-btn project__nav-btn--next"
+						data-open-project-image={project.slug}
+						data-image-index="0"
+					>
+						<span>Siguiente</span>
+						<span class="project__nav-icon" aria-hidden="true">→</span>
+					</button>
+				) : (
+					<button
+						type="button"
+						class="project__nav-btn project__nav-btn--next"
+						data-open-project-next={project.slug}
+					>
+						<span>Siguiente</span>
+						<span class="project__nav-icon" aria-hidden="true">→</span>
+					</button>
+				)}
+			</div>
 		</nav>
 	</div>
 </article>
@@ -281,7 +282,7 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 
 	.project__note {
 		margin: 0;
-		padding-top: clamp(0.5rem, 2vh, 2rem);
+		padding: 0;
 		font-family: var(--font-helvetica);
 		font-weight: 300;
 		font-size: clamp(0.5rem, 0.72vw, 0.9rem);
@@ -294,11 +295,18 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		margin-top: auto;
 		padding-top: clamp(0.5rem, 1.5vh, 1.25rem);
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
+		flex-direction: column;
+		align-items: stretch;
 		gap: 1rem;
 		border-top: 1px solid var(--ink);
 		flex-shrink: 0;
+	}
+
+	.project__bottom-nav-controls {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
 	}
 
 	.project__nav-btn {
