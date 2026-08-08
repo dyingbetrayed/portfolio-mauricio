@@ -5,7 +5,8 @@ import ContactDrawer from './ContactDrawer.astro';
 
 <section class="slide contact-slide" id="contact">
 	<header class="slide-header contact-header reveal" style="--reveal-delay: 60ms">
-		<Navbar theme="dark" active="contact" showLogo />
+		<a href="/" class="contact__name-title" aria-label="Ir al inicio">Mauricio Atencia</a>
+		<Navbar theme="dark" active="contact" />
 	</header>
 	
 	<div class="contact-content-wrapper" data-v-scroll>
@@ -69,12 +70,39 @@ import ContactDrawer from './ContactDrawer.astro';
 	.contact-header {
 		position: relative;
 		z-index: 2;
+		flex: 0 0 auto;
 		padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		width: 100%;
 		box-sizing: border-box;
-		justify-content: flex-end;
+		justify-content: space-between;
+		gap: clamp(1rem, 2vw, 2rem);
+	}
+
+	.contact-header :global(.navbar) {
+		width: auto;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.contact__name-title {
+		position: absolute;
+		left: var(--pad-header-x-l);
+		top: var(--pad-header-y);
+		z-index: 1;
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(0.85rem, 1.5vw, 1.75rem);
+		line-height: 0.95;
+		letter-spacing: -0.022em;
+		-webkit-text-stroke: clamp(0.5px, 0.035vw, 1px) currentColor;
+	}
+
+	.contact__name-title:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 0.18em;
 	}
 
 	.contact-content-wrapper {
@@ -196,4 +224,5 @@ import ContactDrawer from './ContactDrawer.astro';
 			transition: none;
 		}
 	}
+
 </style>

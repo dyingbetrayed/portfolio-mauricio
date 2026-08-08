@@ -45,6 +45,7 @@ import ContactSection from '../components/ContactSection.astro';
 
 		let currentIndex = 0;
 		let isScrolling = false;
+		let navigationDirection = 0;
 		let navigationTimer = 0;
 		const NAVIGATION_FALLBACK = 950;
 		const WHEEL_THRESHOLD = 36;
@@ -82,6 +83,7 @@ import ContactSection from '../components/ContactSection.astro';
 			window.clearTimeout(navigationTimer);
 			navigationTimer = 0;
 			isScrolling = false;
+			navigationDirection = 0;
 			currentIndex = nearestIndex();
 			setActiveSlide(currentIndex);
 		}
@@ -111,11 +113,23 @@ import ContactSection from '../components/ContactSection.astro';
 		}
 
 		function go(delta) {
-			if (isScrolling) return;
+			if (isScrolling) {
+				/* Only a reversal can interrupt an in-flight transition. */
+				if (delta !== -navigationDirection) return;
+				const target = Math.min(slides().length - 1, Math.max(0, currentIndex + delta));
+				if (goToIndex(target)) {
+					navigationDirection = delta;
+					const id = slides()[target]?.id;
+					const url = id ? `#${id}` : `${location.pathname}${location.search}`;
+					history.replaceState(null, '', url);
+				}
+				return;
+			}
 			/* El DOM es la fuente de verdad tras cualquier gesto o animación. */
 			const source = nearestIndex();
 			const target = Math.min(slides().length - 1, Math.max(0, source + delta));
 			if (goToIndex(target)) {
+				navigationDirection = delta;
 				const id = slides()[target]?.id;
 				const url = id ? `#${id}` : `${location.pathname}${location.search}`;
 				history.replaceState(null, '', url);
@@ -199,6 +213,10 @@ import ContactSection from '../components/ContactSection.astro';
 						: 1;
 			const primaryDelta = rawDelta * deltaScale;
 			if (Math.abs(primaryDelta) < 2) return;
+			/* A direction change starts a fresh touchpad gesture immediately. */
+			if (wheelAccumulator && Math.sign(wheelAccumulator) !== Math.sign(primaryDelta)) {
+				resetWheelGesture();
+			}
 			const isVertical =
 				Math.abs(event.deltaY) >= Math.abs(event.deltaX);
 
@@ -218,10 +236,7 @@ import ContactSection from '../components/ContactSection.astro';
 			if (wheelGestureUsesNestedScroll) return;
 
 			/* La inercia completa del touchpad pertenece a un solo gesto. */
-			if (wheelGestureActive || isScrolling) return;
-			if (wheelAccumulator && Math.sign(wheelAccumulator) !== Math.sign(primaryDelta)) {
-				wheelAccumulator = 0;
-			}
+			if (wheelGestureActive) return;
 			wheelAccumulator += primaryDelta;
 			if (Math.abs(wheelAccumulator) < WHEEL_THRESHOLD) return;
 
