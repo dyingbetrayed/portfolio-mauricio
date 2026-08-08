@@ -101,10 +101,17 @@ import RotateDevice from '../components/RotateDevice.astro';
 
 	@media (hover: none) and (orientation: landscape) {
 		:root {
-			--sat: max(env(safe-area-inset-top, 0px), 12px);
+			/* En horizontal, la isla/notch queda en los laterales. El
+			   encabezado usa solo el inset superior real, no un mínimo
+			   artificial que desalineaba About del resto de secciones. */
+			--sat: env(safe-area-inset-top, 0px);
 			--sab: max(env(safe-area-inset-bottom, 0px), 12px);
 			--sal: max(env(safe-area-inset-left, 0px), 36px);
 			--sar: max(env(safe-area-inset-right, 0px), 36px);
+			/* Este es el ritmo vertical que ya tenía About en móvil.
+			   Al vivir aquí, inicio, Work y contacto resuelven el mismo
+			   --pad-header-y y sus navbars quedan alineadas. */
+			--pad-header-y-base: clamp(0.4rem, 2vh, 0.75rem);
 		}
 	}
 

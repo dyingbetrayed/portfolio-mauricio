@@ -668,14 +668,20 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.work-nav {
 		position: absolute;
 		top: 0;
+		left: 0;
 		right: 0;
 		z-index: 20;
 		padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
+		width: 100%;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: flex-end;
 		pointer-events: none;
 	}
 
 	.work-nav__inner {
 		pointer-events: auto;
+		width: 100%;
 	}
 
 	.work-link {

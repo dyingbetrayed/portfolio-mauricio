@@ -120,14 +120,6 @@ import Navbar from './Navbar.astro';
 			--img-lift: 0.5rem;
 		}
 
-		/* Viewports bajos (móvil en landscape): el título grande choca
-		   con el nav porque su altura ya no cabe en el header.
-		   Reducimos --pad-header-y (afecta a padding y al `top` del
-		   título absoluto a la vez) y bajamos el tamaño del título. */
-		.about-slide {
-			--pad-header-y: clamp(0.4rem, 2vh, 0.75rem);
-		}
-
 		.name-title {
 			font-size: clamp(1rem, 4.2vw, 1.7rem);
 			-webkit-text-stroke: 1px #000000;
