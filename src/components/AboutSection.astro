@@ -223,6 +223,16 @@ import Navbar from './Navbar.astro';
 	}
 
 	@media (max-width: 900px) {
+		/* El encabezado reserva el alto del nombre para que la foto nunca
+		   ascienda hasta alcanzarlo en pantallas tÃ¡ctiles. */
+		.about-header {
+			min-height: calc(var(--pad-header-y) + clamp(2.5rem, 10vw, 3.75rem));
+		}
+
+		.top-name-title {
+			font-size: clamp(1.5rem, min(10vw, 7dvh), 3.5rem);
+		}
+
 		.about-footer-content {
 			flex-direction: column;
 			gap: 0.75rem;
