@@ -1,6 +1,5 @@
 ---
 import Navbar from './Navbar.astro';
-import Logo from './Logo.astro';
 import ProjectDetail from './ProjectDetail.astro';
 import ProjectImage from './ProjectImage.astro';
 import ProjectNext from './ProjectNext.astro';
@@ -53,13 +52,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		{categories.map(([category, group]) => (
 			<div class="category-panel" data-category={category} id={category} data-v-scroll hidden>
 				<header class="category-nav">
-					<div class="category-nav__brand">
-						<Logo class="category-nav__logo" />
-						<button type="button" class="category-back" data-nav-back aria-label="Volver al menú Work">
-							<span class="category-back__icon" aria-hidden="true">←</span>
-							<span>Volver</span>
-						</button>
-					</div>
+					<a href="/" class="category__name-title" aria-label="Ir al inicio">Mauricio Atencia</a>
 					<Navbar theme="dark" active="work" />
 				</header>
 
@@ -752,41 +745,23 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		min-width: 0;
 	}
 
-	.category-nav__brand {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: clamp(0.35rem, 1vh, 0.75rem);
-		flex-shrink: 0;
-	}
-
-	.category-nav__logo :global(img) {
-		width: clamp(96px, 12vw, 200px);
-		height: auto;
-	}
-
-	.category-back {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		border: none;
-		background: transparent;
-		padding: 0;
-		cursor: pointer;
+	.category__name-title {
+		position: absolute;
+		left: var(--pad-header-x-l);
+		top: var(--pad-header-y);
+		z-index: 1;
+		margin: 0;
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: var(--nav-size);
-		letter-spacing: 0.03em;
-		color: #000000;
+		font-size: clamp(0.85rem, 1.5vw, 1.75rem);
+		line-height: 0.95;
+		letter-spacing: -0.022em;
+		-webkit-text-stroke: clamp(0.5px, 0.035vw, 1px) currentColor;
 	}
 
-	.category-back:hover {
-		opacity: 0.65;
-	}
-
-	.category-back__icon {
-		font-size: 1.1em;
-		line-height: 1;
+	.category__name-title:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 0.18em;
 	}
 
 	.category-content {
@@ -829,7 +804,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		flex: 0 0 auto;
 		justify-content: flex-start;
 		margin-left: 0.5rem;
-		--row-height: clamp(1.85rem, 4.2vh, 3.2rem);
+		--row-height: clamp(2.15rem, 4.8vh, 3.75rem);
 		overflow: visible;
 		min-height: 0;
 		padding-bottom: 0.25rem;
@@ -847,7 +822,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		text-decoration: none;
 		color: #000000;
 		font-family: var(--font-nav, 'Aptos', sans-serif);
-		font-size: clamp(0.8rem, 1.1vw + 0.35vh, 1.35rem);
+		font-size: clamp(0.95rem, 1.3vw + 0.4vh, 1.65rem);
 		font-weight: 500;
 		text-align: left;
 		cursor: pointer;
