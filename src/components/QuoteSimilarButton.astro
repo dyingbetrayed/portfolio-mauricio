@@ -12,7 +12,7 @@ const { projectName, color, class: className } = Astro.props;
 const ink = readableInk(color);
 
 const message = `Hola, me interesa cotizar un proyecto similar a ${projectName}.`;
-const href = `https://wa.me/573146253071?text=${encodeURIComponent(message)}`;
+const href = `https://api.whatsapp.com/send/?phone=573146253071&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
 ---
 
 <a
