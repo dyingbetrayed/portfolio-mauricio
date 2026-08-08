@@ -180,18 +180,27 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			imagePanels().forEach((el) => el.setAttribute('hidden', ''));
 		}
 
-		function showProjectImage(slug, index) {
+		function showProjectImage(slug, index, { animate = false, direction = 'forward' } = {}) {
 			const panels = imagePanels().filter(
 				(el) => el.getAttribute('data-project-image') === slug
 			);
+			const nextPanel = panels.find(
+				(el) => Number(el.getAttribute('data-image-index')) === Number(index)
+			);
+			if (!nextPanel) return false;
 			panels.forEach((el) => {
-				const match = Number(el.getAttribute('data-image-index')) === Number(index);
+				const match = el === nextPanel;
 				if (match) el.removeAttribute('hidden');
 				else el.setAttribute('hidden', '');
 			});
-			return panels.some(
-				(el) => Number(el.getAttribute('data-image-index')) === Number(index)
-			);
+			if (animate) {
+				nextPanel.classList.remove('is-entering-forward', 'is-entering-backward');
+				void nextPanel.offsetWidth;
+				nextPanel.classList.add(
+					direction === 'backward' ? 'is-entering-backward' : 'is-entering-forward'
+				);
+			}
+			return true;
 		}
 
 		function activeImageIndex(slug) {
@@ -233,7 +242,9 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		function openProjectImage(slug, index, opts) {
 			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
 			if (!projectPanel) return;
-			if (!showProjectImage(slug, index)) return;
+			const previousIndex = activeImageIndex(slug);
+			const direction = previousIndex > index ? 'backward' : 'forward';
+			if (!showProjectImage(slug, index, { animate: previousIndex >= 0, direction })) return;
 
 			const row = root.querySelector(`[data-open-project="${slug}"]`);
 			const category = row?.getAttribute('data-from-category');
@@ -302,7 +313,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				const index = slug ? activeImageIndex(slug) : -1;
 
 				if (slug && index > 0) {
-					showProjectImage(slug, index - 1);
+					showProjectImage(slug, index - 1, { animate: true, direction: 'backward' });
 					return;
 				}
 
@@ -804,7 +815,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		flex: 0 0 auto;
 		justify-content: flex-start;
 		margin-left: 0.5rem;
-		--row-height: clamp(2.15rem, 4.8vh, 3.75rem);
+		--row-height: clamp(2.45rem, 5.5vh, 4.2rem);
 		overflow: visible;
 		min-height: 0;
 		padding-bottom: 0.25rem;
@@ -822,7 +833,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		text-decoration: none;
 		color: #000000;
 		font-family: var(--font-nav, 'Aptos', sans-serif);
-		font-size: clamp(0.95rem, 1.3vw + 0.4vh, 1.65rem);
+		font-size: clamp(1.1rem, 1.6vw + 0.5vh, 2rem);
 		font-weight: 500;
 		text-align: left;
 		cursor: pointer;

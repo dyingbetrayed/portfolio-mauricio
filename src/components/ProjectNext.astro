@@ -15,10 +15,7 @@ const nextSlug = related[0]?.slug;
 
 <article class="project-next" data-project-next={project.slug} hidden>
 	<header class="project-next__nav">
-		<button type="button" class="project-next__back" data-nav-back aria-label="Volver al proyecto">
-			<span class="project-next__back-icon" aria-hidden="true">←</span>
-			<span>Volver</span>
-		</button>
+		<a href="/" class="project-next__name-title" aria-label="Ir al inicio">Mauricio Atencia</a>
 		<Navbar theme="dark" active="work" />
 	</header>
 
@@ -104,7 +101,7 @@ const nextSlug = related[0]?.slug;
 		padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
 		background: #ffffff;
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		justify-content: space-between;
 		gap: clamp(1rem, 2vw, 2rem);
 	}
@@ -115,29 +112,23 @@ const nextSlug = related[0]?.slug;
 		min-width: 0;
 	}
 
-	.project-next__back {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		border: none;
-		background: transparent;
-		padding: 0;
-		cursor: pointer;
+	.project-next__name-title {
+		position: absolute;
+		left: var(--pad-header-x-l);
+		top: var(--pad-header-y);
+		z-index: 1;
+		margin: 0;
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: var(--nav-size);
-		letter-spacing: 0.03em;
-		color: #000000;
-		flex-shrink: 0;
+		font-size: clamp(0.85rem, 1.5vw, 1.75rem);
+		line-height: 0.95;
+		letter-spacing: -0.022em;
+		-webkit-text-stroke: clamp(0.5px, 0.035vw, 1px) currentColor;
 	}
 
-	.project-next__back:hover {
-		opacity: 0.65;
-	}
-
-	.project-next__back-icon {
-		font-size: 1.1em;
-		line-height: 1;
+	.project-next__name-title:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 0.18em;
 	}
 
 	.project-next__grid {

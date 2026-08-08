@@ -78,6 +78,38 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		display: none;
 	}
 
+	.project-image.is-entering-forward {
+		animation: project-image-enter-forward 0.62s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+	}
+
+	.project-image.is-entering-backward {
+		animation: project-image-enter-backward 0.62s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+	}
+
+	@keyframes project-image-enter-forward {
+		from {
+			transform: translate3d(100%, 0, 0);
+			opacity: 0.72;
+		}
+
+		to {
+			transform: translate3d(0, 0, 0);
+			opacity: 1;
+		}
+	}
+
+	@keyframes project-image-enter-backward {
+		from {
+			transform: translate3d(-100%, 0, 0);
+			opacity: 0.72;
+		}
+
+		to {
+			transform: translate3d(0, 0, 0);
+			opacity: 1;
+		}
+	}
+
 	.project-image__nav {
 		position: absolute;
 		top: 0;
@@ -178,5 +210,12 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 	.project-image__next-icon {
 		font-size: 1.1em;
 		line-height: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.project-image.is-entering-forward,
+		.project-image.is-entering-backward {
+			animation: none;
+		}
 	}
 </style>
