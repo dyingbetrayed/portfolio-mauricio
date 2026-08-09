@@ -28,7 +28,14 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 	</header>
 
 	<figure class="project-image__figure">
-		<img class="project-image__img" src={src} alt={label} loading="lazy" decoding="async" />
+		<img
+			class="project-image__img"
+			src={src}
+			alt={label}
+			loading="eager"
+			decoding="async"
+			fetchpriority="high"
+		/>
 	</figure>
 
 	<div class="project-image__footer">
@@ -79,34 +86,30 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 	}
 
 	.project-image.is-entering-forward {
-		animation: project-image-enter-forward 0.62s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+		animation: project-image-enter-forward var(--dur-panel, 0.9s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
 	}
 
 	.project-image.is-entering-backward {
-		animation: project-image-enter-backward 0.62s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+		animation: project-image-enter-backward var(--dur-panel, 0.9s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
 	}
 
 	@keyframes project-image-enter-forward {
 		from {
-			transform: translate3d(100%, 0, 0);
-			opacity: 0.72;
+			transform: translate3d(104%, 0, 0);
 		}
 
 		to {
 			transform: translate3d(0, 0, 0);
-			opacity: 1;
 		}
 	}
 
 	@keyframes project-image-enter-backward {
 		from {
-			transform: translate3d(-100%, 0, 0);
-			opacity: 0.72;
+			transform: translate3d(-104%, 0, 0);
 		}
 
 		to {
 			transform: translate3d(0, 0, 0);
-			opacity: 1;
 		}
 	}
 

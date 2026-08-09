@@ -47,11 +47,14 @@ import ContactSection from '../components/ContactSection.astro';
 		let isScrolling = false;
 		let navigationDirection = 0;
 		let navigationTimer = 0;
-		const NAVIGATION_FALLBACK = 950;
-		const WHEEL_THRESHOLD = 36;
-		const WHEEL_IDLE = 180;
-		const TOUCH_INTENT_THRESHOLD = 8;
-		const SWIPE_THRESHOLD = 44;
+		let navigationFrame = 0;
+		const NAVIGATION_DURATION = 620;
+		const NAVIGATION_FALLBACK = NAVIGATION_DURATION + 260;
+		const WHEEL_THRESHOLD = 48;
+		const WHEEL_IDLE = 210;
+		const TOUCH_INTENT_THRESHOLD = 9;
+		const SWIPE_THRESHOLD = 50;
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		function nearestIndex() {
 			const left = container.scrollLeft;
@@ -80,12 +83,50 @@ import ContactSection from '../components/ContactSection.astro';
 		}
 
 		function finishNavigation() {
+			if (navigationFrame) {
+				window.cancelAnimationFrame(navigationFrame);
+				navigationFrame = 0;
+			}
 			window.clearTimeout(navigationTimer);
 			navigationTimer = 0;
+			container.style.removeProperty('scroll-snap-type');
 			isScrolling = false;
 			navigationDirection = 0;
 			currentIndex = nearestIndex();
 			setActiveSlide(currentIndex);
+		}
+
+		function animateToSlide(left, smooth) {
+			if (navigationFrame) {
+				window.cancelAnimationFrame(navigationFrame);
+				navigationFrame = 0;
+			}
+
+			const start = container.scrollLeft;
+			const distance = left - start;
+			if (!smooth || prefersReducedMotion || Math.abs(distance) <= 2) {
+				container.scrollLeft = left;
+				return false;
+			}
+
+			/* El snap se pausa durante la animaciÃ³n para que no salte entre slides. */
+			container.style.scrollSnapType = 'none';
+			const startedAt = performance.now();
+			const easeInOut = (progress) => -(Math.cos(Math.PI * progress) - 1) / 2;
+
+			const step = (now) => {
+				const progress = Math.min(1, (now - startedAt) / NAVIGATION_DURATION);
+				container.scrollLeft = start + distance * easeInOut(progress);
+				if (progress < 1) {
+					navigationFrame = window.requestAnimationFrame(step);
+					return;
+				}
+				navigationFrame = 0;
+				finishNavigation();
+			};
+
+			navigationFrame = window.requestAnimationFrame(step);
+			return true;
 		}
 
 		function goToIndex(index, { smooth = true } = {}) {
@@ -103,12 +144,12 @@ import ContactSection from '../components/ContactSection.astro';
 
 			currentIndex = next;
 			isScrolling = true;
-			container.scrollTo({
-				left: slide.offsetLeft,
-				behavior: smooth ? 'smooth' : 'instant',
-			});
 			window.clearTimeout(navigationTimer);
-			navigationTimer = window.setTimeout(finishNavigation, NAVIGATION_FALLBACK);
+			if (animateToSlide(slide.offsetLeft, smooth)) {
+				navigationTimer = window.setTimeout(finishNavigation, NAVIGATION_FALLBACK);
+			} else {
+				finishNavigation();
+			}
 			return true;
 		}
 
@@ -369,11 +410,12 @@ import ContactSection from '../components/ContactSection.astro';
 		}, { passive: true });
 
 		container.addEventListener('scrollend', () => {
-			if (isScrolling) finishNavigation();
-			else {
-				currentIndex = nearestIndex();
-				setActiveSlide(currentIndex);
+			if (isScrolling) {
+				if (!navigationFrame) finishNavigation();
+				return;
 			}
+			currentIndex = nearestIndex();
+			setActiveSlide(currentIndex);
 		}, { passive: true });
 
 		/* ── Scroll hint: hide on first interaction ── */
@@ -405,8 +447,7 @@ import ContactSection from '../components/ContactSection.astro';
 			slide.removeAttribute('data-active');
 		});
 
-		const preferReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		if (preferReduced) {
+		if (prefersReducedMotion) {
 			setActiveSlide(currentIndex);
 		} else {
 			requestAnimationFrame(() => {
@@ -428,7 +469,7 @@ import ContactSection from '../components/ContactSection.astro';
 		overflow-x: auto;
 		overflow-y: hidden;
 		scroll-snap-type: x mandatory;
-		scroll-behavior: smooth;
+		scroll-behavior: auto;
 		touch-action: pan-y;
 		overscroll-behavior: none;
 		-ms-overflow-style: none;
@@ -543,7 +584,7 @@ import ContactSection from '../components/ContactSection.astro';
 		font-size: clamp(0.7rem, 1vw, 1.1rem);
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
-		transition: opacity 0.6s var(--ease-out);
+		transition: opacity var(--dur-med) var(--ease-out);
 	}
 
 	.scroll-hint.is-hidden {
@@ -554,12 +595,12 @@ import ContactSection from '../components/ContactSection.astro';
 
 	.scroll-hint__arrow {
 		display: inline-block;
-		animation: hint-bounce 1.6s var(--ease-inout) infinite;
+		animation: hint-bounce 2.4s var(--ease-inout) infinite;
 	}
 
 	@keyframes hint-bounce {
 		0%, 100% { transform: translateX(0); }
-		50% { transform: translateX(8px); }
+		50% { transform: translateX(5px); }
 	}
 
 	@media (prefers-reduced-motion: reduce) {

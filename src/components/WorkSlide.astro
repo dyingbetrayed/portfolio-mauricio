@@ -134,6 +134,70 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			Array.from(root.querySelectorAll('[data-project-image]'));
 		const nextPanels = () =>
 			Array.from(root.querySelectorAll('[data-project-next]'));
+		const imagePreparation = new WeakMap();
+		let imageOpenRequest = 0;
+		let currentImagePanel = null;
+		let imageTransitionTimer = 0;
+
+		function imagePanelFor(slug, index) {
+			return imagePanels().find(
+				(el) =>
+					el.getAttribute('data-project-image') === slug &&
+					Number(el.getAttribute('data-image-index')) === Number(index)
+			);
+		}
+
+		/** Espera la descarga y la decodificaciÃ³n antes de hacer visible una imagen. */
+		function prepareProjectImage(panel) {
+			if (!(panel instanceof HTMLElement)) return Promise.resolve();
+			const cached = imagePreparation.get(panel);
+			if (cached) return cached;
+
+			const image = panel.querySelector('.project-image__img');
+			if (!(image instanceof HTMLImageElement)) return Promise.resolve();
+
+			const prepared = new Promise((resolve) => {
+				const decode = () => {
+					const decoded = image.decode?.();
+					if (decoded) {
+						decoded.catch(() => undefined).finally(resolve);
+					} else {
+						resolve();
+					}
+				};
+
+				if (image.complete) {
+					if (image.naturalWidth > 0) decode();
+					else resolve();
+					return;
+				}
+
+				const onDone = () => {
+					image.removeEventListener('load', onLoad);
+					image.removeEventListener('error', onError);
+					decode();
+				};
+				const onLoad = () => onDone();
+				const onError = () => {
+					image.removeEventListener('load', onLoad);
+					image.removeEventListener('error', onError);
+					resolve();
+				};
+
+				image.addEventListener('load', onLoad, { once: true });
+				image.addEventListener('error', onError, { once: true });
+				if (image.complete) onDone();
+			});
+
+			imagePreparation.set(panel, prepared);
+			return prepared;
+		}
+
+		function warmProjectImages() {
+			imagePanels().forEach((panel) => {
+				void prepareProjectImage(panel);
+			});
+		}
 
 		function setLayerState(layer, open) {
 			if (!layer) return;
@@ -182,7 +246,14 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		}
 
 		function hideAllImages() {
-			imagePanels().forEach((el) => el.setAttribute('hidden', ''));
+			window.clearTimeout(imageTransitionTimer);
+			imageTransitionTimer = 0;
+			currentImagePanel = null;
+			imagePanels().forEach((el) => {
+				el.classList.remove('is-entering-forward', 'is-entering-backward');
+				el.style.removeProperty('z-index');
+				el.setAttribute('hidden', '');
+			});
 		}
 
 		function showProjectImage(slug, index, { animate = false, direction = 'forward' } = {}) {
@@ -193,32 +264,81 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				(el) => Number(el.getAttribute('data-image-index')) === Number(index)
 			);
 			if (!nextPanel) return false;
-			panels.forEach((el) => {
-				const match = el === nextPanel;
-				if (match) el.removeAttribute('hidden');
-				else el.setAttribute('hidden', '');
-			});
-			if (animate) {
-				nextPanel.classList.remove('is-entering-forward', 'is-entering-backward');
-				void nextPanel.offsetWidth;
-				nextPanel.classList.add(
-					direction === 'backward' ? 'is-entering-backward' : 'is-entering-forward'
-				);
+			const currentPanel =
+				currentImagePanel?.getAttribute('data-project-image') === slug &&
+				!currentImagePanel.hasAttribute('hidden')
+					? currentImagePanel
+					: panels.find((el) => !el.hasAttribute('hidden'));
+			const canAnimate =
+				animate &&
+				currentPanel &&
+				currentPanel !== nextPanel &&
+				!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+			if (!canAnimate) {
+				window.clearTimeout(imageTransitionTimer);
+				imageTransitionTimer = 0;
+				panels.forEach((el) => {
+					el.classList.remove('is-entering-forward', 'is-entering-backward');
+					el.style.removeProperty('z-index');
+					if (el === nextPanel) el.removeAttribute('hidden');
+					else el.setAttribute('hidden', '');
+				});
+				currentImagePanel = nextPanel;
+				return true;
 			}
+
+			/* La imagen saliente se conserva hasta que la entrante termine de cubrirla. */
+			panels.forEach((el) => {
+				if (el !== currentPanel && el !== nextPanel) {
+					el.classList.remove('is-entering-forward', 'is-entering-backward');
+					el.style.removeProperty('z-index');
+					el.setAttribute('hidden', '');
+				}
+			});
+			currentPanel.classList.remove('is-entering-forward', 'is-entering-backward');
+			currentPanel.style.zIndex = '0';
+			nextPanel.removeAttribute('hidden');
+			nextPanel.classList.remove('is-entering-forward', 'is-entering-backward');
+			nextPanel.style.zIndex = '1';
+			void nextPanel.offsetWidth;
+			nextPanel.classList.add(
+				direction === 'backward' ? 'is-entering-backward' : 'is-entering-forward'
+			);
+			currentImagePanel = nextPanel;
+
+			const settle = () => {
+				if (currentImagePanel !== nextPanel) return;
+				window.clearTimeout(imageTransitionTimer);
+				imageTransitionTimer = 0;
+				currentPanel.classList.remove('is-entering-forward', 'is-entering-backward');
+				currentPanel.style.removeProperty('z-index');
+				currentPanel.setAttribute('hidden', '');
+				nextPanel.classList.remove('is-entering-forward', 'is-entering-backward');
+				nextPanel.style.removeProperty('z-index');
+			};
+			nextPanel.addEventListener('animationend', settle, { once: true });
+			window.clearTimeout(imageTransitionTimer);
+			imageTransitionTimer = window.setTimeout(settle, 1000);
 			return true;
 		}
 
 		function activeImageIndex(slug) {
-			const visible = imagePanels().find(
+			const visible =
+				currentImagePanel?.getAttribute('data-project-image') === slug &&
+				!currentImagePanel.hasAttribute('hidden')
+					? currentImagePanel
+					: imagePanels().find(
 				(el) =>
 					el.getAttribute('data-project-image') === slug &&
 					!el.hasAttribute('hidden')
-			);
+					);
 			if (!visible) return -1;
 			return Number(visible.getAttribute('data-image-index'));
 		}
 
 		function openCategory(id, opts) {
+			imageOpenRequest += 1;
 			const exists = categoryPanels().some((el) => el.getAttribute('data-category') === id);
 			if (!exists) return;
 			showOnly(categoryPanels(), 'data-category', id);
@@ -229,6 +349,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		}
 
 		function openProject(slug, opts) {
+			imageOpenRequest += 1;
 			const panel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
 			if (!panel) return;
 
@@ -244,7 +365,13 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			setDepth(2, opts);
 		}
 
-		function openProjectImage(slug, index, opts) {
+		async function openProjectImage(slug, index, opts) {
+			const imagePanel = imagePanelFor(slug, index);
+			if (!imagePanel) return;
+			const requestId = ++imageOpenRequest;
+			await prepareProjectImage(imagePanel);
+			if (requestId !== imageOpenRequest) return;
+
 			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
 			if (!projectPanel) return;
 			const previousIndex = activeImageIndex(slug);
@@ -262,7 +389,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			setDepth(3, opts);
 		}
 
-		function openProjectNext(slug, opts) {
+		async function openProjectNext(slug, opts) {
+			const requestId = ++imageOpenRequest;
 			const panel = nextPanels().find((el) => el.getAttribute('data-project-next') === slug);
 			if (!panel) return;
 
@@ -277,8 +405,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			);
 			if (images.length) {
 				const lastIndex = images.length - 1;
+				await prepareProjectImage(images[lastIndex]);
+				if (requestId !== imageOpenRequest) return;
 				showProjectImage(slug, lastIndex);
 			}
+			if (requestId !== imageOpenRequest) return;
 
 			showOnly(nextPanels(), 'data-project-next', slug);
 			setDepth(4, opts);
@@ -297,7 +428,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				if (event.target === layer && event.propertyName === 'transform') finish();
 			};
 			layer?.addEventListener('transitionend', onEnd);
-			const timer = setTimeout(finish, 750);
+			const timer = setTimeout(finish, 1000);
 			if (!layer) finish();
 		}
 
@@ -305,7 +436,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			return Number(root.dataset.depth || 0);
 		}
 
-		function goBack() {
+		async function goBack() {
 			const depth = currentDepth();
 			if (depth === 4) {
 				setDepth(3);
@@ -318,20 +449,27 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				const index = slug ? activeImageIndex(slug) : -1;
 
 				if (slug && index > 0) {
+					const previousPanel = imagePanelFor(slug, index - 1);
+					const requestId = ++imageOpenRequest;
+					await prepareProjectImage(previousPanel);
+					if (requestId !== imageOpenRequest) return;
 					showProjectImage(slug, index - 1, { animate: true, direction: 'backward' });
 					return;
 				}
 
+				imageOpenRequest += 1;
 				setDepth(2);
 				afterSlide(layerImages, () => {
 					if (currentDepth() < 3) hideAllImages();
 				});
 			} else if (depth === 2) {
+				imageOpenRequest += 1;
 				setDepth(1);
 				afterSlide(layerProject, () => {
 					if (currentDepth() < 2) showOnly(projectPanels(), 'data-project', null);
 				});
 			} else if (depth === 1) {
+				imageOpenRequest += 1;
 				setDepth(0);
 				afterSlide(layerCategory, () => {
 					if (currentDepth() < 1) showOnly(categoryPanels(), 'data-category', null);
@@ -340,6 +478,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		}
 
 		function closeAll(opts) {
+			imageOpenRequest += 1;
 			setDepth(0, opts);
 			afterSlide(layerCategory, () => {
 				if (currentDepth() > 0) return;
@@ -446,6 +585,12 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			}
 		}
 
+		if ('requestIdleCallback' in window) {
+			window.requestIdleCallback(warmProjectImages, { timeout: 1500 });
+		} else {
+			window.setTimeout(warmProjectImages, 150);
+		}
+
 		applyHash();
 		window.addEventListener('hashchange', applyHash);
 
@@ -482,11 +627,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.work-layer--images,
 	.work-layer--next {
 		z-index: 2;
-		transform: translate3d(100%, 0, 0);
-		opacity: 0.72;
+		transform: translate3d(104%, 0, 0);
+		opacity: 0;
 		transition:
-			transform 0.62s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
-			opacity 0.45s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+			transform var(--dur-panel, 0.9s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)),
+			opacity var(--dur-med, 0.72s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1));
 		pointer-events: none;
 		overflow: hidden;
 		will-change: transform, opacity;
@@ -665,15 +810,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.work-link:hover .work-txt--xl {
-		transform: translateY(var(--shift-xl)) scale(1.015);
+		transform: translateY(var(--shift-xl)) scale(1.01);
 	}
 
 	.work-link:hover .work-txt--branding {
-		transform: translateY(var(--shift-branding)) scale(1.015);
+		transform: translateY(var(--shift-branding)) scale(1.01);
 	}
 
 	.work-link:hover .work-txt--md {
-		transform: translateY(var(--shift-md)) scale(1.02);
+		transform: translateY(var(--shift-md)) scale(1.012);
 	}
 
 	.work-txt--dark {

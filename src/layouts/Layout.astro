@@ -1,5 +1,14 @@
 ---
 import RotateDevice from '../components/RotateDevice.astro';
+import { projectCategories } from '../data/projects';
+
+const projectImageSources = [
+	...new Set(
+		Object.values(projectCategories).flatMap((category) =>
+			category.projects.flatMap((project) => project.images ?? [])
+		)
+	),
+];
 ---
 
 <!doctype html>
@@ -14,6 +23,9 @@ import RotateDevice from '../components/RotateDevice.astro';
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
+		{projectImageSources.map((src) => (
+			<link rel="preload" as="image" href={src} fetchpriority="high" />
+		))}
 		<script is:inline>document.documentElement.classList.add('js');</script>
 	</head>
 	<body>
@@ -79,11 +91,12 @@ import RotateDevice from '../components/RotateDevice.astro';
 		--logo-w: clamp(96px, 14.75vw, 283px);
 
 		/* Motion */
-		--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-		--ease-inout: cubic-bezier(0.45, 0.05, 0.55, 0.95);
-		--dur-fast: 0.32s;
-		--dur-med: 0.55s;
-		--dur-slow: 0.9s;
+		--ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+		--ease-inout: cubic-bezier(0.45, 0, 0.55, 1);
+		--dur-fast: 0.36s;
+		--dur-med: 0.62s;
+		--dur-slow: 1.05s;
+		--dur-panel: 0.78s;
 	}
 
 	/*
@@ -170,7 +183,7 @@ import RotateDevice from '../components/RotateDevice.astro';
 	/* Revelado suave al activar un slide */
 	.reveal {
 		opacity: 0;
-		transform: translate3d(0, 1.15rem, 0);
+		transform: translate3d(0, 0.75rem, 0);
 		transition:
 			opacity var(--dur-med) var(--ease-out),
 			transform var(--dur-med) var(--ease-out);
