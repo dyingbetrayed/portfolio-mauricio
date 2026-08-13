@@ -48,8 +48,8 @@ import ContactSection from '../components/ContactSection.astro';
 		let navigationDirection = 0;
 		let navigationTimer = 0;
 		let navigationFrame = 0;
-		const NAVIGATION_DURATION = 620;
-		const NAVIGATION_FALLBACK = NAVIGATION_DURATION + 260;
+		const NAVIGATION_DURATION = 460;
+		const NAVIGATION_FALLBACK = NAVIGATION_DURATION + 180;
 		const WHEEL_THRESHOLD = 48;
 		/* Un touchpad puede seguir emitiendo inercia tras cambiar de slide. */
 		const WHEEL_IDLE = 360;
@@ -401,9 +401,12 @@ import ContactSection from '../components/ContactSection.astro';
 
 			const depth = workDepth();
 			if (depth > 0) {
-				if (isPrev) {
+				if (event.key === 'ArrowLeft') {
 					event.preventDefault();
 					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:back'));
+				} else if (event.key === 'ArrowRight') {
+					event.preventDefault();
+					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:forward'));
 				}
 				return;
 			}
@@ -600,8 +603,12 @@ import ContactSection from '../components/ContactSection.astro';
 
 	.hero-footer p {
 		font-family: var(--font-text);
-		font-weight: 300;
-		font-size: clamp(0.75rem, 1.35vh + 0.35vw, 1rem);
+		font-weight: 700;
+		font-size: clamp(
+			calc(0.75rem + 2px),
+			calc(1.35vh + 0.35vw + 2px),
+			calc(1rem + 2px)
+		);
 		max-width: min(70%, 52rem);
 		letter-spacing: 1px;
 		line-height: 1.6;

@@ -489,6 +489,106 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			});
 		}
 
+		function activeProjectPanel() {
+			return root.querySelector('[data-project]:not([hidden])');
+		}
+
+		function advanceWork() {
+			const depth = currentDepth();
+			const project = activeProjectPanel();
+			const slug = project?.getAttribute('data-project');
+			if (!slug) return false;
+
+			if (depth === 2) {
+				if (imagePanelFor(slug, 0)) {
+					void openProjectImage(slug, 0);
+				} else {
+					void openProjectNext(slug);
+				}
+				return true;
+			}
+
+			if (depth === 3) {
+				const index = activeImageIndex(slug);
+				const nextImage = imagePanelFor(slug, index + 1);
+				if (nextImage) {
+					void openProjectImage(slug, index + 1);
+				} else {
+					void openProjectNext(slug);
+				}
+				return true;
+			}
+
+			return false;
+		}
+
+		let deepWheelActive = false;
+		let deepWheelAccumulator = 0;
+		let deepWheelTimer = 0;
+		const DEEP_WHEEL_THRESHOLD = 36;
+		const DEEP_WHEEL_IDLE = 280;
+
+		function resetDeepWheel() {
+			deepWheelActive = false;
+			deepWheelAccumulator = 0;
+		}
+
+		function keepDeepWheelOpen() {
+			window.clearTimeout(deepWheelTimer);
+			deepWheelTimer = window.setTimeout(resetDeepWheel, DEEP_WHEEL_IDLE);
+		}
+
+		/*
+		 * El detalle conserva su scroll vertical. Al llegar al borde, el mismo
+		 * gesto avanza o retrocede por las pantallas superpuestas horizontalmente.
+		 */
+		root.addEventListener('wheel', (event) => {
+			const depth = currentDepth();
+			if (depth < 2) return;
+
+			const horizontalIntent = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+			const rawDelta = horizontalIntent ? event.deltaX : event.deltaY;
+			const deltaScale =
+				event.deltaMode === WheelEvent.DOM_DELTA_LINE
+					? 16
+					: event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+						? root.clientWidth
+						: 1;
+			const delta = rawDelta * deltaScale;
+			if (Math.abs(delta) < 2) return;
+
+			const project = activeProjectPanel();
+			const detailScroll = project?.querySelector('[data-v-scroll]');
+			if (
+				depth === 2 &&
+				!horizontalIntent &&
+				canScrollVertically(detailScroll, delta)
+			) {
+				return;
+			}
+
+			/* La pantalla final no tiene un destino automático hacia delante. */
+			if (depth === 4 && delta > 0) return;
+
+			event.preventDefault();
+			event.stopPropagation();
+			keepDeepWheelOpen();
+
+			if (deepWheelActive) return;
+			if (deepWheelAccumulator && Math.sign(deepWheelAccumulator) !== Math.sign(delta)) {
+				deepWheelAccumulator = 0;
+			}
+			deepWheelAccumulator += delta;
+			if (Math.abs(deepWheelAccumulator) < DEEP_WHEEL_THRESHOLD) return;
+
+			deepWheelActive = true;
+			if (deepWheelAccumulator > 0) {
+				if (!advanceWork()) resetDeepWheel();
+			} else {
+				void goBack();
+			}
+		}, { passive: false });
+
 		root.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
@@ -541,6 +641,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		});
 
 		root.addEventListener('work:back', () => goBack());
+		root.addEventListener('work:forward', () => advanceWork());
 		root.addEventListener('work:close', () => closeAll());
 
 		document.addEventListener('click', (event) => {
@@ -999,8 +1100,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		cursor: pointer;
 		transition:
 			background-color var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
-			color var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
-			padding-left var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+			color var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 		margin: 0;
 		width: 100%;
 	}
@@ -1008,7 +1108,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.project-row:hover {
 		background-color: var(--hover-bg);
 		color: #ffffff;
-		padding-left: 0.35rem;
 	}
 
 	.col-id {
