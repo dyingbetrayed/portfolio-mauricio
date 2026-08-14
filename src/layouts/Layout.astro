@@ -29,6 +29,12 @@ const projectImageSources = [
 		<script is:inline>document.documentElement.classList.add('js');</script>
 	</head>
 	<body>
+		<div class="site-loader" aria-hidden="true">
+			<div class="site-loader__title">
+				<span class="site-loader__line site-loader__line--mauricio">Mauricio</span>
+				<span class="site-loader__line site-loader__line--atencia">Atencia</span>
+			</div>
+		</div>
 		<a href="#about" class="skip-link">Saltar al contenido</a>
 		<RotateDevice />
 		<slot />
@@ -37,11 +43,63 @@ const projectImageSources = [
 </html>
 
 <script>
-	const cursor = document.querySelector('.site-cursor') as HTMLElement | null;
-	const supportsFinePointer = window.matchMedia('(any-pointer: fine)').matches;
+	const loader = document.querySelector('.site-loader') as HTMLElement | null;
 	const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-	if (cursor && supportsFinePointer && !prefersReducedMotion) {
+	if (loader) {
+		const completeLoader = () => {
+			loader.classList.add('is-complete');
+			loader.setAttribute('hidden', '');
+		};
+
+		/*
+		 * Secuencia completa (debe coincidir con las variables CSS de abajo):
+		 *   1) HOLD_MS      → el nombre se ve completo y quieto (se lee).
+		 *   2) --dur-split  → Mauricio/Atencia se separan hacia los lados.
+		 *   3) PAUSE_MS     → pausa con el nombre ya separado.
+		 *   4) --dur-panel  → el cuadrado se abre desde el centro hacia afuera.
+		 * Si algo se siente rápido/lento, ajustar estos 4 números Y las
+		 * variables --dur-split / --dur-panel en el <style> a la vez.
+		 */
+		const HOLD_MS = 500;
+		const SPLIT_MS = 1600; // debe igualar --dur-split
+		const PAUSE_MS = 700;
+		const PANEL_MS = 1400; // debe igualar --dur-panel
+
+		const playLoader = () => {
+			if (prefersReducedMotion) {
+				completeLoader();
+				return;
+			}
+
+			requestAnimationFrame(() => {
+				window.setTimeout(() => {
+					// 1) El nombre se separa (Mauricio a la izq, Atencia a la der).
+					loader.classList.add('is-splitting');
+					window.setTimeout(() => {
+						// 2) El cuadrado se abre desde el centro hacia los bordes.
+						loader.classList.add('is-leaving');
+						window.setTimeout(completeLoader, PANEL_MS);
+					}, SPLIT_MS + PAUSE_MS);
+				}, HOLD_MS);
+			});
+		};
+
+		/* Espera la fuente del titular, sin retener la primera vista demasiado tiempo. */
+		requestAnimationFrame(() => {
+			const fontReady = document.fonts?.load('600 1em Aptos') ?? Promise.resolve();
+			Promise.race([
+				fontReady,
+				new Promise<void>((resolve) => window.setTimeout(resolve, 450)),
+			]).then(playLoader);
+		});
+	}
+
+	const cursor = document.querySelector('.site-cursor') as HTMLElement | null;
+	const supportsFinePointer = window.matchMedia('(any-pointer: fine)').matches;
+	const prefersReducedCursorMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (cursor && supportsFinePointer && !prefersReducedCursorMotion) {
 		const root = document.documentElement;
 		const interactiveSelector = [
 			'a[href]',
@@ -156,9 +214,11 @@ const projectImageSources = [
 		--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 		--ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
 		--dur-fast: 0.28s;
+		--dur-split: 1.6s;  /* separación del nombre: debe coincidir con SPLIT_MS del script */
 		--dur-med: 0.72s;
 		--dur-slow: 1.2s;
-		--dur-panel: 0.9s;
+		--dur-panel: 1.4s;  /* apertura del cuadrado: debe coincidir con PANEL_MS del script */
+		--ease-square: cubic-bezier(0.76, 0, 0.24, 1); /* simétrica, movimiento repartido en todo el trayecto, no concentrado al inicio */
 	}
 
 	/*
@@ -275,6 +335,90 @@ const projectImageSources = [
 		transition: none;
 	}
 
+	.site-loader {
+		position: fixed;
+		inset: 0;
+		z-index: 20000;
+		display: grid;
+		place-items: center;
+		padding:
+			max(1rem, var(--sat))
+			max(1rem, var(--sar))
+			max(1rem, var(--sab))
+			max(1rem, var(--sal));
+		background: #050505;
+		color: #eeedec;
+		overflow: hidden;
+		/*
+		 * Cuadrado que se ABRE de adentro hacia afuera (no un rectángulo
+		 * que se achica desde los bordes). Truco: clip-path polygon con
+		 * fill-rule "evenodd" describe el rectángulo de pantalla completo
+		 * MÁS un segundo rectángulo interior (el "agujero"/zona revelada).
+		 * En reposo, ese agujero son 4 puntos superpuestos en el centro
+		 * exacto (50% 50%) → no se ve nada revelado, el panel está sólido.
+		 * Al agregar .is-leaving, cada uno de esos 4 puntos viaja hacia SU
+		 * esquina correspondiente de la pantalla → el agujero crece de
+		 * forma simétrica desde el centro hasta cubrir todo, revelando el
+		 * contenido de adentro hacia afuera.
+		 */
+		clip-path: polygon(
+			evenodd,
+			0% 0%, 100% 0%, 100% 100%, 0% 100%,
+			50% 50%, 50% 50%, 50% 50%, 50% 50%
+		);
+		transition: clip-path var(--dur-panel) var(--ease-square);
+	}
+
+	html:not(.js) .site-loader {
+		display: none;
+	}
+
+	.site-loader[hidden],
+	.site-loader.is-complete {
+		display: none;
+	}
+
+	.site-loader__title {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(3.5rem, 12vw, 14rem);
+		line-height: 0.79;
+		letter-spacing: -0.022em;
+		-webkit-text-stroke: clamp(1px, 0.07vw, 2px) currentColor;
+	}
+
+	.site-loader__line {
+		display: block;
+		/* --ease-square (en vez de --ease-out) reparte el movimiento a lo
+		   largo de todo el trayecto en vez de concentrarlo al arrancar,
+		   así se percibe como un desplazamiento y no como un salto. */
+		transition: transform var(--dur-split) var(--ease-square);
+		will-change: transform;
+	}
+
+	.site-loader.is-splitting .site-loader__line--mauricio {
+		transform: translate3d(-115vw, 0, 0);
+	}
+
+	.site-loader.is-splitting .site-loader__line--atencia {
+		transform: translate3d(115vw, 0, 0);
+	}
+
+	.site-loader.is-leaving {
+		/* Cada punto del agujero interior viaja del centro (50% 50%) a su
+		   esquina correspondiente (TL, TR, BR, BL) → el agujero termina
+		   siendo del mismo tamaño que la pantalla completa. */
+		clip-path: polygon(
+			evenodd,
+			0% 0%, 100% 0%, 100% 100%, 0% 100%,
+			0% 0%, 100% 0%, 100% 100%, 0% 100%
+		);
+		pointer-events: none;
+	}
+
 	.site-cursor {
 		--cursor-scale: 1;
 		position: fixed;
@@ -314,6 +458,10 @@ const projectImageSources = [
 	}
 
 	@media (prefers-reduced-motion: reduce) {
+		.site-loader {
+			display: none;
+		}
+
 		.reveal {
 			opacity: 1;
 			clip-path: none;
