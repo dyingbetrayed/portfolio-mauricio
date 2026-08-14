@@ -30,6 +30,10 @@ const projectImageSources = [
 	</head>
 	<body>
 		<div class="site-loader" aria-hidden="true">
+			<span class="site-loader__bar site-loader__bar--top"></span>
+			<span class="site-loader__bar site-loader__bar--bottom"></span>
+			<span class="site-loader__bar site-loader__bar--left"></span>
+			<span class="site-loader__bar site-loader__bar--right"></span>
 			<div class="site-loader__title">
 				<span class="site-loader__line site-loader__line--mauricio">Mauricio</span>
 				<span class="site-loader__line site-loader__line--atencia">Atencia</span>
@@ -56,15 +60,15 @@ const projectImageSources = [
 		 * Secuencia completa (debe coincidir con las variables CSS de abajo):
 		 *   1) HOLD_MS      → el nombre se ve completo y quieto (se lee).
 		 *   2) --dur-split  → Mauricio/Atencia se separan hacia los lados.
-		 *   3) PAUSE_MS     → pausa con el nombre ya separado.
-		 *   4) --dur-panel  → el cuadrado se abre desde el centro hacia afuera.
-		 * Si algo se siente rápido/lento, ajustar estos 4 números Y las
+		 *   3) --dur-panel  → apenas termina el split, arranca YA el
+		 *                      cuadrado abriéndose desde el centro (sin
+		 *                      pausa muerta en negro en el medio).
+		 * Si algo se siente rápido/lento, ajustar estos números Y las
 		 * variables --dur-split / --dur-panel en el <style> a la vez.
 		 */
-		const HOLD_MS = 500;
-		const SPLIT_MS = 1600; // debe igualar --dur-split
-		const PAUSE_MS = 700;
-		const PANEL_MS = 1400; // debe igualar --dur-panel
+		const HOLD_MS = 1200;  // el nombre se ve completo y quieto (antes 600, ahora más tiempo)
+		const SPLIT_MS = 1500; // debe igualar --dur-split
+		const PANEL_MS = 800;  // debe igualar --dur-panel
 
 		const playLoader = () => {
 			if (prefersReducedMotion) {
@@ -77,10 +81,10 @@ const projectImageSources = [
 					// 1) El nombre se separa (Mauricio a la izq, Atencia a la der).
 					loader.classList.add('is-splitting');
 					window.setTimeout(() => {
-						// 2) El cuadrado se abre desde el centro hacia los bordes.
+						// 2) Directo al cuadrado abriéndose, sin pausa en negro.
 						loader.classList.add('is-leaving');
 						window.setTimeout(completeLoader, PANEL_MS);
-					}, SPLIT_MS + PAUSE_MS);
+					}, SPLIT_MS);
 				}, HOLD_MS);
 			});
 		};
@@ -214,10 +218,10 @@ const projectImageSources = [
 		--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 		--ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
 		--dur-fast: 0.28s;
-		--dur-split: 1.6s;  /* separación del nombre: debe coincidir con SPLIT_MS del script */
+		--dur-split: 1.5s;  /* separación del nombre: debe coincidir con SPLIT_MS del script */
 		--dur-med: 0.72s;
 		--dur-slow: 1.2s;
-		--dur-panel: 1.4s;  /* apertura del cuadrado: debe coincidir con PANEL_MS del script */
+		--dur-panel: 0.8s;  /* apertura del cuadrado: debe coincidir con PANEL_MS del script */
 		--ease-square: cubic-bezier(0.76, 0, 0.24, 1); /* simétrica, movimiento repartido en todo el trayecto, no concentrado al inicio */
 	}
 
@@ -346,32 +350,82 @@ const projectImageSources = [
 			max(1rem, var(--sar))
 			max(1rem, var(--sab))
 			max(1rem, var(--sal));
-		background: #050505;
+		/* El negro ya no lo pone este contenedor: lo dan los 4
+		   .site-loader__bar de abajo, así se puede "abrir" un hueco
+		   real en el centro sin depender de clip-path con geometría
+		   auto-intersectada (eso causaba un destello de triángulo en
+		   algunos navegadores durante la transición). */
+		background: transparent;
 		color: #eeedec;
 		overflow: hidden;
-		/*
-		 * Cuadrado que se ABRE de adentro hacia afuera. Truco: un solo
-		 * clip-path polygon(evenodd) que traza el rectángulo exterior
-		 * (pantalla completa) Y un rectángulo interior (el agujero
-		 * revelado), unidos por un "puente" invisible.
-		 *
-		 * CLAVE para que el puente no deje un triángulo visible: cada
-		 * anillo debe cerrarse explícitamente sobre SU PROPIO punto de
-		 * inicio (repetirlo al final) antes de saltar al otro anillo.
-		 * Así el tramo de ida (borde exterior → borde interior) y el de
-		 * vuelta (borde interior → borde exterior, cierre implícito del
-		 * polygon) quedan exactamente superpuestos y se cancelan en
-		 * TODO momento de la transición, no solo al inicio/fin.
-		 *
-		 * En reposo, los 5 puntos del anillo interior son el mismo punto
-		 * central (50% 50%) → agujero de área cero, panel sólido.
-		 */
-		clip-path: polygon(
-			evenodd,
-			0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%,
-			50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%
-		);
-		transition: clip-path var(--dur-panel) var(--ease-square);
+	}
+
+	/*
+	 * Un ÚNICO cuadrado que se abre desde el centro hacia afuera, con 4
+	 * barras tipo "marco de foto" (arriba, abajo, izquierda, derecha).
+	 *
+	 * En reposo, la barra de arriba cubre la mitad superior de la
+	 * pantalla y la de abajo la mitad inferior (juntas = pantalla
+	 * completa, izquierda/derecha quedan con altura 0, invisibles).
+	 *
+	 * Al agregar .is-leaving, arriba/abajo encogen su altura hacia 0 (su
+	 * borde se aleja del centro) mientras izquierda/derecha crecen para
+	 * rellenar el hueco vertical y encogen su ancho hacia 0. El
+	 * resultado es que el hueco revelado es SIEMPRE un único rectángulo
+	 * centrado que crece parejo en las 4 direcciones — no 4 piezas
+	 * sueltas volando a las esquinas.
+	 */
+	.site-loader__bar {
+		position: absolute;
+		background: #050505;
+		transition:
+			top var(--dur-panel) var(--ease-square),
+			height var(--dur-panel) var(--ease-square),
+			width var(--dur-panel) var(--ease-square);
+	}
+
+	.site-loader__bar--top {
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 50%;
+	}
+
+	.site-loader__bar--bottom {
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 50%;
+	}
+
+	.site-loader__bar--left {
+		top: 50%;
+		left: 0;
+		width: 50%;
+		height: 0%;
+	}
+
+	.site-loader__bar--right {
+		top: 50%;
+		right: 0;
+		width: 50%;
+		height: 0%;
+	}
+
+	.site-loader.is-leaving .site-loader__bar--top,
+	.site-loader.is-leaving .site-loader__bar--bottom {
+		height: 0%;
+	}
+
+	.site-loader.is-leaving .site-loader__bar--left,
+	.site-loader.is-leaving .site-loader__bar--right {
+		top: 0%;
+		height: 100%;
+		width: 0%;
+	}
+
+	.site-loader.is-leaving {
+		pointer-events: none;
 	}
 
 	html:not(.js) .site-loader {
@@ -384,6 +438,8 @@ const projectImageSources = [
 	}
 
 	.site-loader__title {
+		position: relative;
+		z-index: 1;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
@@ -410,18 +466,6 @@ const projectImageSources = [
 
 	.site-loader.is-splitting .site-loader__line--atencia {
 		transform: translate3d(115vw, 0, 0);
-	}
-
-	.site-loader.is-leaving {
-		/* Cada punto del anillo interior viaja del centro a su esquina
-		   correspondiente (TL, TR, BR, BL) y ambos anillos terminan
-		   coincidiendo exactamente → el agujero ocupa toda la pantalla. */
-		clip-path: polygon(
-			evenodd,
-			0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%,
-			0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%
-		);
-		pointer-events: none;
 	}
 
 	.site-cursor {
