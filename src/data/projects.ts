@@ -32,91 +32,96 @@ export interface ProjectCategory {
 export const projectCategories: Record<string, ProjectCategory> = {
 	branding: {
 		title: 'BRANDING',
-		projects: [
-			{
-				id: '01',
-				slug: 'pitao',
-				name: 'Pitao',
-				year: '2026',
-				location: 'Medellín, CO',
-				color: '#ff5c0a',
-				tagline: 'Comida rápida, pensada\npara la inmediatez.',
-				services: ['Brand Strategy', 'Branding', 'Packaging', 'Retail Design'],
-				sections: [
-					{
-						label: 'Objetivo',
-						paragraphs: [
-							'Crear una marca capaz de transmitir rapidez sin perder calidad visual y ser acompañado por un sistema gráfico flexible aplicado a empaque, punto de venta y comunicación digital.',
-							'Pitao convierte la inmediatez en una experiencia con una estética bien cuidada y funcional. Es comida lista, bien pensada y presentada para seguir el ritmo de personas que van por la vida con intención.',
-						],
-					},
-				],
-				note: '*Proyecto diseñado a través de Enplanos, por lo tanto, todos los derechos de propiedad intelectual pertenecen a ellos.',
-				images: [
-					'/work/branding/pitao/2.jpg',
-					'/work/branding/pitao/3.jpg',
-				],
-			},
-			{
-				id: '02',
-				slug: 'level',
-				name: 'Level',
-				year: '2026',
-				location: 'Medellín, CO',
-				color: '#d70016',
-			},
-			{
-				id: '03',
-				slug: 'agua-de-kefir',
-				name: 'Agua de kéfir',
-				year: '2026',
-				location: 'Medellín, CO',
-				color: '#4a3c31',
-			},
-			{
-				id: '04',
-				slug: 'telegrama',
-				name: 'Telegrama',
-				year: '2026',
-				location: 'Medellín, CO',
-				color: '#000000',
-			},
-			{
-				id: '05',
-				slug: 'monsenor',
-				name: 'Monseñor',
-				year: '2026',
-				location: 'Medellín, CO',
-				color: '#006d44',
-			},
-			{
-				id: '06',
-				slug: 'artificio',
-				name: 'Artificio',
-				year: '2026',
-				location: 'Medellín, CO',
-				color: '#938c2a',
-			},
-			{
-				id: '07',
-				slug: 'salta',
-				name: 'Salta',
-				year: '2026',
-				location: 'Medellín, CO',
-				color: '#7f63d2',
-			},
-			{
-				id: '08',
-				slug: 'thc',
-				name: 'THC',
-				year: '2026',
-				location: 'Medellín, CO',
-				color: '#1d1a6a',
-			},
-		],
+		projects: []
 	},
 };
-
+// export const projectCategories: Record<string, ProjectCategory> = {
+// 	branding: {
+// 		title: 'BRANDING',
+// 		projects: [
+// 			{
+// 				id: '01',
+// 				slug: 'pitao',
+// 				name: 'Pitao',
+// 				year: '2026',
+// 				location: 'Medellín, CO',
+// 				color: '#ff5c0a',
+// 				tagline: 'Comida rápida, pensada\npara la inmediatez.',
+// 				services: ['Brand Strategy', 'Branding', 'Packaging', 'Retail Design'],
+// 				sections: [
+// 					{
+// 						label: 'Objetivo',
+// 						paragraphs: [
+// 							'Crear una marca capaz de transmitir rapidez sin perder calidad visual y ser acompañado por un sistema gráfico flexible aplicado a empaque, punto de venta y comunicación digital.',
+// 							'Pitao convierte la inmediatez en una experiencia con una estética bien cuidada y funcional. Es comida lista, bien pensada y presentada para seguir el ritmo de personas que van por la vida con intención.',
+// 						],
+// 					},
+// 				],
+// 				note: '*Proyecto diseñado a través de Enplanos, por lo tanto, todos los derechos de propiedad intelectual pertenecen a ellos.',
+// 				images: [
+// 					'/work/branding/pitao/2.jpg',
+// 					'/work/branding/pitao/3.jpg',
+// 				],
+// 			},
+// 			{
+// 				id: '02',
+// 				slug: 'level',
+// 				name: 'Level',
+// 				year: '2026',
+// 				location: 'Medellín, CO',
+// 				color: '#d70016',
+// 			},
+// 			{
+// 				id: '03',
+// 				slug: 'agua-de-kefir',
+// 				name: 'Agua de kéfir',
+// 				year: '2026',
+// 				location: 'Medellín, CO',
+// 				color: '#4a3c31',
+// 			},
+// 			{
+// 				id: '04',
+// 				slug: 'telegrama',
+// 				name: 'Telegrama',
+// 				year: '2026',
+// 				location: 'Medellín, CO',
+// 				color: '#000000',
+// 			},
+// 			{
+// 				id: '05',
+// 				slug: 'monsenor',
+// 				name: 'Monseñor',
+// 				year: '2026',
+// 				location: 'Medellín, CO',
+// 				color: '#006d44',
+// 			},
+// 			{
+// 				id: '06',
+// 				slug: 'artificio',
+// 				name: 'Artificio',
+// 				year: '2026',
+// 				location: 'Medellín, CO',
+// 				color: '#938c2a',
+// 			},
+// 			{
+// 				id: '07',
+// 				slug: 'salta',
+// 				name: 'Salta',
+// 				year: '2026',
+// 				location: 'Medellín, CO',
+// 				color: '#7f63d2',
+// 			},
+// 			{
+// 				id: '08',
+// 				slug: 'thc',
+// 				name: 'THC',
+// 				year: '2026',
+// 				location: 'Medellín, CO',
+// 				color: '#1d1a6a',
+// 			},
+// 		],
+// 	},
+// };
 export function getCategory(category: string): ProjectCategory | undefined {
 	return projectCategories[category];
 }
