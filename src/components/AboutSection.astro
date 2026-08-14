@@ -1,5 +1,10 @@
 ---
 import Navbar from './Navbar.astro';
+
+const aboutParagraphs = [
+	'Durante más de cuatro años he desarrollado identidades visuales, experiencias de marca y espacios comerciales donde la estrategia, el diseño y la ejecución, trabajan como un solo sistema.',
+	'Mi enfoque combina branding, retail y dirección de arte para crear marcas coherentes, memorables y listas para el mundo real. Todo esto a través de  diferentes empresas, agencias y la ficha studio, un proyecto personal que captura mi vision',
+];
 ---
 
 <section class="slide about-slide" id="about">
@@ -22,16 +27,19 @@ import Navbar from './Navbar.astro';
 			<div class="about-footer-content">
 				<div class="about-title">About</div>
 				<div class="about-text">
-					<p class="about-text__mask">
-						<span class="about-text__copy">
-							Durante más de cuatro años he desarrollado identidades visuales, experiencias de marca y espacios comerciales donde la estrategia, el diseño y la ejecución, trabajan como un solo sistema.
-						</span>
-					</p>
-					<p class="about-text__mask">
-						<span class="about-text__copy about-text__copy--delayed">
-							Mi enfoque combina branding, retail y dirección de arte para crear marcas coherentes, memorables y listas para el mundo real. Todo esto a través de  diferentes empresas, agencias y la ficha studio, un proyecto personal que captura mi vision
-						</span>
-					</p>
+					{aboutParagraphs.map((paragraph, paragraphIndex) => (
+						<p class="about-text__mask">
+							<span class="about-text__copy" aria-label={paragraph}>
+								{Array.from(paragraph).map((character, characterIndex) => (
+									<span
+										class="about-text__char"
+										aria-hidden="true"
+										style={`--char-delay: ${paragraphIndex * 1550 + characterIndex * 9}ms;`}
+									>{character === ' ' ? '\u00a0' : character}</span>
+								))}
+							</span>
+						</p>
+					))}
 				</div>
 			</div>
 		</div>
@@ -305,8 +313,6 @@ import Navbar from './Navbar.astro';
 
 	.about-text__mask {
 		margin: 0;
-		overflow: hidden;
-		padding: 0.08em 0;
 	}
 
 	.about-text__mask + .about-text__mask {
@@ -315,16 +321,20 @@ import Navbar from './Navbar.astro';
 
 	.about-text__copy {
 		display: block;
-		transform: translate3d(0, -115%, 0);
-		transition: transform var(--dur-med) var(--ease-out) 410ms;
-		will-change: transform;
 	}
 
-	.about-text__copy--delayed {
-		transition-delay: 500ms;
+	.about-text__char {
+		display: inline-block;
+		opacity: 0;
+		transform: translate3d(0, 0.12em, 0);
+		transition:
+			opacity 120ms linear var(--char-delay),
+			transform 220ms var(--ease-out) var(--char-delay);
+		will-change: opacity, transform;
 	}
 
-	.about-slide.is-active .about-text__copy {
+	.about-slide.is-active .about-text__char {
+		opacity: 1;
 		transform: translate3d(0, 0, 0);
 	}
 
@@ -334,7 +344,8 @@ import Navbar from './Navbar.astro';
 			transition: none;
 		}
 
-		.about-text__copy {
+		.about-text__char {
+			opacity: 1;
 			transform: none;
 			transition: none;
 		}

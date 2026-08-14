@@ -20,28 +20,28 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	<div class="work-layer work-layer--menu" data-layer="0">
 		<div class="work-grid" data-v-scroll>
 			<button type="button" class="work-link hover-all work-row work-row--cream">
-				<span class="work-txt work-txt--xl work-txt--dark">ALL</span>
+				<span class="work-txt work-txt--xl work-txt--dark" style="--work-reveal-delay: 40ms;">ALL</span>
 			</button>
 
 			<button type="button" class="work-link hover-branding work-row work-row--black work-row--branding" data-open-category="branding">
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--light">BRANDING</span>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 115ms;">BRANDING</span>
 			</button>
 
 			<button type="button" class="work-link hover-proyectos work-row work-row--cream" data-open-category="proyectos-retail">
-				<span class="work-txt work-txt--md work-txt--dark">PROYECTOS RETAIL</span>
+				<span class="work-txt work-txt--md work-txt--dark" style="--work-reveal-delay: 190ms;">PROYECTOS RETAIL</span>
 			</button>
 
 			<div class="work-split">
 				<button type="button" class="work-link hover-flyers work-row work-split__cell" data-open-category="flyers">
-					<span class="work-txt work-txt--md work-txt--light">FLYERS</span>
+					<span class="work-txt work-txt--md work-txt--light" style="--work-reveal-delay: 265ms;">FLYERS</span>
 				</button>
 				<button type="button" class="work-link hover-merch work-row" data-open-category="merch">
-					<span class="work-txt work-txt--md work-txt--light">MERCH</span>
+					<span class="work-txt work-txt--md work-txt--light" style="--work-reveal-delay: 325ms;">MERCH</span>
 				</button>
 			</div>
 
 			<button type="button" class="work-link hover-ikeneas work-row work-row--cream" data-external-url="https://ikeneas.com/">
-				<span class="work-txt work-txt--md work-txt--dark">IKENEAS</span>
+				<span class="work-txt work-txt--md work-txt--dark" style="--work-reveal-delay: 400ms;">IKENEAS</span>
 			</button>
 		</div>
 
@@ -918,6 +918,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.work-txt {
+		--work-text-y: 0px;
 		font-family: 'Acumin Variable Concept', sans-serif;
 		font-weight: 600;
 		line-height: 0.9;
@@ -925,39 +926,42 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		white-space: nowrap;
 		text-transform: uppercase;
 		opacity: 0;
+		transform: translate3d(0, calc(-115% + var(--work-text-y)), 0);
 		transition:
-			transform var(--dur-med) var(--ease-out),
-			opacity var(--dur-med) var(--ease-out);
+			transform var(--dur-med) var(--ease-out) var(--work-reveal-delay, 0ms),
+			opacity 80ms linear var(--work-reveal-delay, 0ms);
+		will-change: opacity, transform;
 	}
 
 	.work-slide.is-active .work-txt {
 		opacity: 1;
+		transform: translate3d(0, var(--work-text-y), 0);
 	}
 
 	.work-txt--xl {
 		font-size: 25vh;
-		transform: translateY(var(--shift-xl));
+		--work-text-y: var(--shift-xl);
 	}
 
 	.work-txt--branding {
-		transform: translateY(var(--shift-branding));
+		--work-text-y: var(--shift-branding);
 	}
 
 	.work-txt--md {
 		font-size: 17.5vh;
-		transform: translateY(var(--shift-md));
+		--work-text-y: var(--shift-md);
 	}
 
-	.work-link:hover .work-txt--xl {
-		transform: translateY(var(--shift-xl)) scale(1.01);
+	.work-slide.is-active .work-link:hover .work-txt--xl {
+		transform: translate3d(0, var(--work-text-y), 0) scale(1.01);
 	}
 
-	.work-link:hover .work-txt--branding {
-		transform: translateY(var(--shift-branding)) scale(1.01);
+	.work-slide.is-active .work-link:hover .work-txt--branding {
+		transform: translate3d(0, var(--work-text-y), 0) scale(1.01);
 	}
 
-	.work-link:hover .work-txt--md {
-		transform: translateY(var(--shift-md)) scale(1.012);
+	.work-slide.is-active .work-link:hover .work-txt--md {
+		transform: translate3d(0, var(--work-text-y), 0) scale(1.012);
 	}
 
 	.work-txt--dark {
