@@ -350,21 +350,26 @@ const projectImageSources = [
 		color: #eeedec;
 		overflow: hidden;
 		/*
-		 * Cuadrado que se ABRE de adentro hacia afuera (no un rectángulo
-		 * que se achica desde los bordes). Truco: clip-path polygon con
-		 * fill-rule "evenodd" describe el rectángulo de pantalla completo
-		 * MÁS un segundo rectángulo interior (el "agujero"/zona revelada).
-		 * En reposo, ese agujero son 4 puntos superpuestos en el centro
-		 * exacto (50% 50%) → no se ve nada revelado, el panel está sólido.
-		 * Al agregar .is-leaving, cada uno de esos 4 puntos viaja hacia SU
-		 * esquina correspondiente de la pantalla → el agujero crece de
-		 * forma simétrica desde el centro hasta cubrir todo, revelando el
-		 * contenido de adentro hacia afuera.
+		 * Cuadrado que se ABRE de adentro hacia afuera. Truco: un solo
+		 * clip-path polygon(evenodd) que traza el rectángulo exterior
+		 * (pantalla completa) Y un rectángulo interior (el agujero
+		 * revelado), unidos por un "puente" invisible.
+		 *
+		 * CLAVE para que el puente no deje un triángulo visible: cada
+		 * anillo debe cerrarse explícitamente sobre SU PROPIO punto de
+		 * inicio (repetirlo al final) antes de saltar al otro anillo.
+		 * Así el tramo de ida (borde exterior → borde interior) y el de
+		 * vuelta (borde interior → borde exterior, cierre implícito del
+		 * polygon) quedan exactamente superpuestos y se cancelan en
+		 * TODO momento de la transición, no solo al inicio/fin.
+		 *
+		 * En reposo, los 5 puntos del anillo interior son el mismo punto
+		 * central (50% 50%) → agujero de área cero, panel sólido.
 		 */
 		clip-path: polygon(
 			evenodd,
-			0% 0%, 100% 0%, 100% 100%, 0% 100%,
-			50% 50%, 50% 50%, 50% 50%, 50% 50%
+			0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%,
+			50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%
 		);
 		transition: clip-path var(--dur-panel) var(--ease-square);
 	}
@@ -408,13 +413,13 @@ const projectImageSources = [
 	}
 
 	.site-loader.is-leaving {
-		/* Cada punto del agujero interior viaja del centro (50% 50%) a su
-		   esquina correspondiente (TL, TR, BR, BL) → el agujero termina
-		   siendo del mismo tamaño que la pantalla completa. */
+		/* Cada punto del anillo interior viaja del centro a su esquina
+		   correspondiente (TL, TR, BR, BL) y ambos anillos terminan
+		   coincidiendo exactamente → el agujero ocupa toda la pantalla. */
 		clip-path: polygon(
 			evenodd,
-			0% 0%, 100% 0%, 100% 100%, 0% 100%,
-			0% 0%, 100% 0%, 100% 100%, 0% 100%
+			0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%,
+			0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%
 		);
 		pointer-events: none;
 	}
