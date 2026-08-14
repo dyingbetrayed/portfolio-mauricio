@@ -170,14 +170,17 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		-webkit-overflow-scrolling: touch;
 		touch-action: pan-y;
 		opacity: 0;
-		transform: translate3d(0, 0.75rem, 0);
+		clip-path: inset(0 0 100% 0);
+		transform: translate3d(0, 1.15rem, 0);
 		transition:
-			opacity var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) 80ms,
-			transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) 80ms;
+			opacity 80ms linear 90ms,
+			clip-path var(--dur-med) var(--ease-out) 90ms,
+			transform var(--dur-med) var(--ease-out) 90ms;
 	}
 
 	.project:not([hidden]) .project__content {
 		opacity: 1;
+		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
 	}
 

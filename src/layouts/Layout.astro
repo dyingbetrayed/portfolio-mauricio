@@ -32,8 +32,70 @@ const projectImageSources = [
 		<a href="#about" class="skip-link">Saltar al contenido</a>
 		<RotateDevice />
 		<slot />
+		<div class="site-cursor" aria-hidden="true"></div>
 	</body>
 </html>
+
+<script>
+	const cursor = document.querySelector('.site-cursor') as HTMLElement | null;
+	const supportsFinePointer = window.matchMedia('(any-pointer: fine)').matches;
+	const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (cursor && supportsFinePointer && !prefersReducedMotion) {
+		const root = document.documentElement;
+		const interactiveSelector = [
+			'a[href]',
+			'button:not([disabled])',
+			'input:not([disabled])',
+			'textarea:not([disabled])',
+			'select:not([disabled])',
+			'[role="button"]',
+			'[data-cursor-interactive]',
+		].join(',');
+
+		let x = -40;
+		let y = -40;
+		let targetX = x;
+		let targetY = y;
+		let frame = 0;
+
+		const paint = () => {
+			x += (targetX - x) * 0.24;
+			y += (targetY - y) * 0.24;
+			cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(var(--cursor-scale))`;
+
+			if (Math.abs(targetX - x) > 0.1 || Math.abs(targetY - y) > 0.1) {
+				frame = window.requestAnimationFrame(paint);
+			} else {
+				frame = 0;
+			}
+		};
+
+		const queuePaint = () => {
+			if (!frame) frame = window.requestAnimationFrame(paint);
+		};
+
+		const hideCursor = () => cursor.classList.remove('is-visible');
+
+		root.classList.add('has-custom-cursor');
+		document.addEventListener('pointermove', (event) => {
+			if (event.pointerType && event.pointerType !== 'mouse') return;
+			targetX = event.clientX;
+			targetY = event.clientY;
+			cursor.classList.add('is-visible');
+			cursor.classList.toggle(
+				'is-hovering',
+				event.target instanceof Element && Boolean(event.target.closest(interactiveSelector)),
+			);
+			queuePaint();
+		});
+
+		document.addEventListener('pointerdown', () => cursor.classList.add('is-pressing'));
+		document.addEventListener('pointerup', () => cursor.classList.remove('is-pressing'));
+		document.documentElement.addEventListener('mouseleave', hideCursor);
+		window.addEventListener('blur', hideCursor);
+	}
+</script>
 
 <style is:global>
 	@font-face {
@@ -90,13 +152,13 @@ const projectImageSources = [
 		--nav-size: clamp(0.8rem, 1.15vw, 1.7rem);
 		--logo-w: clamp(96px, 14.75vw, 283px);
 
-		/* Motion */
-		--ease-out: cubic-bezier(0.4, 0, 0.2, 1);
-		--ease-inout: cubic-bezier(0.45, 0, 0.55, 1);
-		--dur-fast: 0.36s;
-		--dur-med: 0.62s;
-		--dur-slow: 1.05s;
-		--dur-panel: 0.68s;
+		/* Motion — un mismo ritmo, con entradas firmes y salida suave. */
+		--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+		--ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+		--dur-fast: 0.28s;
+		--dur-med: 0.72s;
+		--dur-slow: 1.2s;
+		--dur-panel: 0.9s;
 	}
 
 	/*
@@ -159,6 +221,11 @@ const projectImageSources = [
 		overflow: hidden;
 	}
 
+	html.has-custom-cursor,
+	html.has-custom-cursor * {
+		cursor: none !important;
+	}
+
 	html.orientation-locked,
 	body.orientation-locked {
 		overflow: hidden;
@@ -180,12 +247,15 @@ const projectImageSources = [
 		opacity: 0.7;
 	}
 
-	/* Revelado suave al activar un slide */
+	/* Revelado editorial compartido: el contenido aparece desde una máscara,
+	   no únicamente por opacidad. */
 	.reveal {
 		opacity: 0;
-		transform: translate3d(0, 0.75rem, 0);
+		clip-path: inset(0 0 100% 0);
+		transform: translate3d(0, 1.15rem, 0);
 		transition:
-			opacity var(--dur-med) var(--ease-out),
+			opacity 80ms linear,
+			clip-path var(--dur-med) var(--ease-out),
 			transform var(--dur-med) var(--ease-out);
 		transition-delay: var(--reveal-delay, 0ms);
 		will-change: opacity, transform;
@@ -194,20 +264,65 @@ const projectImageSources = [
 	.is-active > .reveal,
 	.is-active .reveal {
 		opacity: 1;
+		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
 	}
 
 	html:not(.js) .reveal {
 		opacity: 1;
+		clip-path: none;
 		transform: none;
 		transition: none;
+	}
+
+	.site-cursor {
+		--cursor-scale: 1;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 10000;
+		width: 9px;
+		height: 9px;
+		border: 1px solid #ffffff;
+		border-radius: 999px;
+		background: #ffffff;
+		mix-blend-mode: difference;
+		pointer-events: none;
+		opacity: 0;
+		transform: translate3d(-40px, -40px, 0) translate(-50%, -50%) scale(var(--cursor-scale));
+		transition:
+			opacity 140ms ease,
+			width var(--dur-fast) var(--ease-out),
+			height var(--dur-fast) var(--ease-out),
+			background-color var(--dur-fast) var(--ease-out);
+		will-change: transform, width, height;
+	}
+
+	.site-cursor.is-visible {
+		opacity: 1;
+	}
+
+	.site-cursor.is-hovering {
+		--cursor-scale: 1.65;
+		width: 12px;
+		height: 12px;
+		background: transparent;
+	}
+
+	.site-cursor.is-pressing {
+		--cursor-scale: 0.72;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.reveal {
 			opacity: 1;
+			clip-path: none;
 			transform: none;
 			transition: none;
+		}
+
+		.site-cursor {
+			display: none;
 		}
 	}
 	

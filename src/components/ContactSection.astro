@@ -80,6 +80,16 @@ import ContactDrawer from './ContactDrawer.astro';
 		gap: clamp(1rem, 2vw, 2rem);
 	}
 
+	.contact-header.reveal {
+		clip-path: inset(0 0 100% 0);
+		transform: translate3d(0, -1.5rem, 0);
+	}
+
+	.contact-slide.is-active .contact-header.reveal {
+		clip-path: inset(0 0 0 0);
+		transform: translate3d(0, 0, 0);
+	}
+
 	.contact-header :global(.navbar) {
 		width: auto;
 		flex: 1;
@@ -147,7 +157,7 @@ import ContactDrawer from './ContactDrawer.astro';
 	.contact-title span {
 		display: inline-block;
 		opacity: 0;
-		transform: translate3d(0, 0.35em, 0);
+		transform: translate3d(0, -0.55em, 0);
 		transition:
 			opacity var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
 			transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));

@@ -95,21 +95,29 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 
 	@keyframes project-image-enter-forward {
 		from {
-			transform: translate3d(104%, 0, 0);
+			clip-path: inset(0 0 0 100%);
+			transform: translate3d(1.5rem, 0, 0);
+			opacity: 0;
 		}
 
 		to {
+			clip-path: inset(0 0 0 0);
 			transform: translate3d(0, 0, 0);
+			opacity: 1;
 		}
 	}
 
 	@keyframes project-image-enter-backward {
 		from {
-			transform: translate3d(-104%, 0, 0);
+			clip-path: inset(0 100% 0 0);
+			transform: translate3d(-1.5rem, 0, 0);
+			opacity: 0;
 		}
 
 		to {
+			clip-path: inset(0 0 0 0);
 			transform: translate3d(0, 0, 0);
+			opacity: 1;
 		}
 	}
 

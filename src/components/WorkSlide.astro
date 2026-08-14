@@ -544,7 +544,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		 */
 		root.addEventListener('wheel', (event) => {
 			const depth = currentDepth();
-			if (depth < 2) return;
+			if (depth < 1) return;
 
 			const horizontalIntent = Math.abs(event.deltaX) > Math.abs(event.deltaY);
 			const rawDelta = horizontalIntent ? event.deltaX : event.deltaY;
@@ -556,6 +556,27 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 						: 1;
 			const delta = rawDelta * deltaScale;
 			if (Math.abs(delta) < 2) return;
+
+			/* En las tablas de categoría, solo se vuelve al menú al llegar arriba. */
+			if (depth === 1) {
+				const categoryScroll = root.querySelector('[data-category]:not([hidden])');
+				if (
+					!horizontalIntent &&
+					canScrollVertically(categoryScroll, delta)
+				) {
+					return;
+				}
+				if (delta >= 0) return;
+
+				event.preventDefault();
+				event.stopPropagation();
+				keepDeepWheelOpen();
+				if (!deepWheelActive) {
+					deepWheelActive = true;
+					void goBack();
+				}
+				return;
+			}
 
 			const project = activeProjectPanel();
 			const detailScroll = project?.querySelector('[data-v-scroll]');
@@ -728,14 +749,16 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.work-layer--images,
 	.work-layer--next {
 		z-index: 2;
-		transform: translate3d(104%, 0, 0);
+		clip-path: inset(0 0 0 100%);
+		transform: translate3d(1.5rem, 0, 0);
 		opacity: 0;
 		transition:
-			transform var(--dur-panel, 0.9s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)),
-			opacity var(--dur-med, 0.72s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1));
+			clip-path var(--dur-panel) var(--ease-out),
+			transform var(--dur-panel) var(--ease-out),
+			opacity 100ms linear;
 		pointer-events: none;
 		overflow: hidden;
-		will-change: transform, opacity;
+		will-change: clip-path, transform;
 	}
 
 	.work-layer--project {
@@ -754,6 +777,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.work-slide[data-depth='2'] .work-layer--category,
 	.work-slide[data-depth='3'] .work-layer--category,
 	.work-slide[data-depth='4'] .work-layer--category {
+		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
 		opacity: 1;
 		pointer-events: auto;
@@ -762,6 +786,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.work-slide[data-depth='2'] .work-layer--project,
 	.work-slide[data-depth='3'] .work-layer--project,
 	.work-slide[data-depth='4'] .work-layer--project {
+		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
 		opacity: 1;
 		pointer-events: auto;
@@ -769,12 +794,14 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 	.work-slide[data-depth='3'] .work-layer--images,
 	.work-slide[data-depth='4'] .work-layer--images {
+		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
 		opacity: 1;
 		pointer-events: auto;
 	}
 
 	.work-slide[data-depth='4'] .work-layer--next {
+		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
 		opacity: 1;
 		pointer-events: auto;
@@ -784,21 +811,25 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.work-layer--menu {
 		overflow: hidden;
 		opacity: 0;
+		clip-path: inset(0 0 100% 0);
 		transform: translate3d(0, 1rem, 0);
 		transition:
-			opacity var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
-			transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
-		will-change: opacity, transform;
+			opacity 80ms linear,
+			clip-path var(--dur-med) var(--ease-out),
+			transform var(--dur-med) var(--ease-out);
+		will-change: clip-path, transform;
 	}
 
 	.work-slide.is-active .work-layer--menu {
 		opacity: 1;
+		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.work-layer--menu {
 			opacity: 1;
+			clip-path: none;
 			transform: none;
 			transition: none;
 		}
@@ -893,7 +924,14 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		letter-spacing: clamp(-3px, -0.25vw, -1.5px);
 		white-space: nowrap;
 		text-transform: uppercase;
-		transition: transform var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+		opacity: 0;
+		transition:
+			transform var(--dur-med) var(--ease-out),
+			opacity var(--dur-med) var(--ease-out);
+	}
+
+	.work-slide.is-active .work-txt {
+		opacity: 1;
 	}
 
 	.work-txt--xl {
@@ -942,6 +980,16 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		display: flex;
 		justify-content: flex-end;
 		pointer-events: none;
+		opacity: 0;
+		transform: translate3d(0, -1.35rem, 0);
+		transition:
+			opacity 80ms linear 120ms,
+			transform var(--dur-med) var(--ease-out) 120ms;
+	}
+
+	.work-slide.is-active .work-nav {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
 	}
 
 	.work-nav__inner {

@@ -9,6 +9,7 @@ import ContactSection from '../components/ContactSection.astro';
 <Layout>
 	<main class="horizontal-scroll-container">
 		<section class="slide hero-slide">
+			<div class="hero-media" aria-hidden="true"></div>
 			<div class="overlay"></div>
 			<header class="slide-header hero-header reveal" style="--reveal-delay: 80ms">
 				<Navbar theme="light" />
@@ -17,8 +18,10 @@ import ContactSection from '../components/ContactSection.astro';
 			<div class="hero-content">
 			</div>
 
-			<footer class="hero-footer reveal" style="--reveal-delay: 220ms">
-				<p>SI TIENES UNA IDEA EN MENTE Y QUIERES DESARROLLAR TU IDEA, PODEMOS TRABAJAR EN TU IDENTIDAD, PACKAGING, FLYER O MERCH.</p>
+			<footer class="hero-footer">
+				<p class="hero-description">
+					<span class="hero-description__copy">SI TIENES UNA IDEA EN MENTE Y QUIERES DESARROLLAR TU IDEA, PODEMOS TRABAJAR EN TU IDENTIDAD, PACKAGING, FLYER O MERCH.</span>
+				</p>
 			</footer>
 
 			<div class="scroll-hint reveal" style="--reveal-delay: 420ms" aria-hidden="true">
@@ -560,16 +563,23 @@ import ContactSection from '../components/ContactSection.astro';
 	}
 
 	.hero-slide {
-		background-image: url('/index/1.jpg');
-		background-size: 112%;
-		background-position: center;
-		background-repeat: no-repeat;
+		background-color: #050505;
 		justify-content: space-between;
-		transition: background-size var(--dur-slow) var(--ease-out);
 	}
 
-	.hero-slide.is-active {
-		background-size: 100%;
+	.hero-media {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		background: url('/index/1.jpg') center / cover no-repeat;
+		/* Parte de un cuadrado central y crece hacia los cuatro bordes. */
+		clip-path: inset(50% 50% 50% 50%);
+		will-change: clip-path;
+		transition: clip-path var(--dur-slow) var(--ease-out);
+	}
+
+	.hero-slide.is-active .hero-media {
+		clip-path: inset(0 0 0 0);
 	}
 
 	.hero-slide .overlay {
@@ -581,12 +591,24 @@ import ContactSection from '../components/ContactSection.astro';
 		background: rgba(0, 0, 0, 0.15);
 		z-index: 1;
 		pointer-events: none;
-		opacity: 0.55;
-		transition: opacity var(--dur-slow) var(--ease-out);
+		opacity: 0.25;
+		transition: opacity var(--dur-slow) var(--ease-out) 90ms;
 	}
 
 	.hero-slide.is-active .overlay {
-		opacity: 1;
+		opacity: 0.82;
+	}
+
+	/* La navegación cae desde el borde superior una vez que el fondo abre. */
+	.hero-header.reveal {
+		clip-path: inset(0 0 100% 0);
+		transform: translate3d(0, -2.25rem, 0);
+		transition-delay: 260ms;
+	}
+
+	.hero-slide.is-active .hero-header.reveal {
+		clip-path: inset(0 0 0 0);
+		transform: translate3d(0, 0, 0);
 	}
 
 	.hero-content, .hero-footer {
@@ -601,7 +623,15 @@ import ContactSection from '../components/ContactSection.astro';
 		text-align: center;
 	}
 
-	.hero-footer p {
+	.hero-description {
+		margin: 0;
+		width: min(70%, 52rem);
+		overflow: hidden;
+		padding: 0.08em 0;
+	}
+
+	.hero-description__copy {
+		display: block;
 		font-family: var(--font-text);
 		font-weight: 700;
 		font-size: clamp(
@@ -609,10 +639,22 @@ import ContactSection from '../components/ContactSection.astro';
 			calc(1.35vh + 0.35vw + 2px),
 			calc(1rem + 2px)
 		);
-		max-width: min(70%, 52rem);
+		max-width: none;
 		letter-spacing: 1px;
 		line-height: 1.6;
 		color: #f4f4f4;
+		transform: translate3d(0, -112%, 0);
+		transition: transform var(--dur-med) var(--ease-out) 460ms;
+		will-change: transform;
+	}
+
+	.hero-slide.is-active .hero-description__copy {
+		transform: translate3d(0, 0, 0);
+	}
+
+	:global(html:not(.js)) .hero-description__copy {
+		transform: none;
+		transition: none;
 	}
 
 	.scroll-hint {
@@ -649,13 +691,18 @@ import ContactSection from '../components/ContactSection.astro';
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.hero-slide {
-			background-size: 100%;
+		.hero-media {
+			clip-path: none;
 			transition: none;
 		}
 
 		.scroll-hint__arrow {
 			animation: none;
+		}
+
+		.hero-description__copy {
+			transform: none;
+			transition: none;
 		}
 	}
 </style>
