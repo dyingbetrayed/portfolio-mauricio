@@ -32,7 +32,22 @@ export interface ProjectCategory {
 export const projectCategories: Record<string, ProjectCategory> = {
 	branding: {
 		title: 'BRANDING',
-		projects: []
+		projects: [
+			{
+				id: '01',
+				slug: 'artificio',
+				name: 'Artificio',
+				year: '2024',
+				location: 'Medellín, CO',
+				color: '#938c2a',
+				images: [
+					'/work/branding/artificio/Artificio-x-BQQ.jpg.jpeg',
+					'/work/branding/artificio/Artificio-x-KB.jpeg',
+					'/work/branding/artificio/Artificio-x-PK.jpg.jpeg',
+					'/work/branding/artificio/Artificio-x-TOUR.jpg.jpeg',
+				]
+			}
+		]
 	},
 };
 // export const projectCategories: Record<string, ProjectCategory> = {
