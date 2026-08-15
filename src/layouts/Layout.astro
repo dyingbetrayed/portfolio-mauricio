@@ -86,10 +86,12 @@ const projectImageSources = [
 			targetX = event.clientX;
 			targetY = event.clientY;
 			cursor.classList.add('is-visible');
-			cursor.classList.toggle(
-				'is-hovering',
-				event.target instanceof Element && Boolean(event.target.closest(interactiveSelector)),
-			);
+			const target = event.target;
+			const isInteractive = target instanceof Element && Boolean(target.closest(interactiveSelector));
+			const isNav = target instanceof Element && Boolean(target.closest('.navbar a'));
+			
+			cursor.classList.toggle('is-hovering', isInteractive && !isNav);
+			cursor.classList.toggle('is-hovering-nav', isNav);
 			queuePaint();
 		});
 
@@ -439,9 +441,12 @@ const projectImageSources = [
 	}
 
 	.site-cursor.is-hovering {
+		--cursor-scale: 1.5;
+	}
+
+	.site-cursor.is-hovering-nav {
 		width: 50px;
 		height: 50px;
-		/* Reset the scale to 1 so the element renders sharply at its native 50x50 size */
 		--cursor-scale: 1;
 	}
 
