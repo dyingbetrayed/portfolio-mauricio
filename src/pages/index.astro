@@ -56,7 +56,7 @@ import ContactSection from '../components/ContactSection.astro';
 		const WHEEL_THRESHOLD = 80;
 		/* Un touchpad puede seguir emitiendo inercia tras cambiar de slide. */
 		const WHEEL_IDLE = 700;
-		const TOUCH_INTENT_THRESHOLD = 9;
+		const TOUCH_INTENT_THRESHOLD = 5;
 		const SWIPE_THRESHOLD = 80;
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -300,7 +300,7 @@ import ContactSection from '../components/ContactSection.astro';
 		let touchGesture = null;
 
 		container.addEventListener('touchstart', (event) => {
-			if (workDepth() > 0 || event.touches.length !== 1) {
+			if (event.touches.length !== 1) {
 				touchGesture = null;
 				return;
 			}
@@ -317,27 +317,37 @@ import ContactSection from '../components/ContactSection.astro';
 		}, { passive: true });
 
 		container.addEventListener('touchmove', (event) => {
-			if (!touchGesture || workDepth() > 0 || event.touches.length !== 1) return;
+			if (!touchGesture || event.touches.length !== 1) return;
 			const touch = event.touches[0];
 			const dx = touch.clientX - touchGesture.startX;
 			const dy = touch.clientY - touchGesture.startY;
+			const depth = workDepth();
 
 			if (!touchGesture.axis) {
-				if (Math.max(Math.abs(dx), Math.abs(dy)) < TOUCH_INTENT_THRESHOLD) return;
+				if (Math.max(Math.abs(dx), Math.abs(dy)) < TOUCH_INTENT_THRESHOLD) {
+					/* Even before determining axis, prevent default on horizontal moves to block the browser gesture */
+					if (Math.abs(dx) > Math.abs(dy) && event.cancelable) event.preventDefault();
+					return;
+				}
 				touchGesture.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
 				if (touchGesture.axis === 'x') {
-					touchGesture.navigates = true;
+					touchGesture.navigates = depth === 0;
 				} else {
-					/* Dedo arriba equivale a scroll positivo; al llegar al borde cambia de sección. */
-					touchGesture.navigates = !canScrollVertically(touchGesture.scrollTarget, -dy);
+					touchGesture.navigates = depth === 0 && !canScrollVertically(touchGesture.scrollTarget, -dy);
 				}
 			}
 
-			if (touchGesture.navigates && event.cancelable) event.preventDefault();
+			/* Always block horizontal touches globally to prevent browser history navigation */
+			if (touchGesture.axis === 'x' && event.cancelable) event.preventDefault();
+			else if (touchGesture.navigates && event.cancelable) event.preventDefault();
 		}, { passive: false });
 
 		container.addEventListener('touchend', (event) => {
-			if (!touchGesture || workDepth() > 0) {
+			if (!touchGesture) {
+				return;
+			}
+			const depth = workDepth();
+			if (depth > 0) {
 				touchGesture = null;
 				return;
 			}
