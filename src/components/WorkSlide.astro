@@ -744,21 +744,97 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		z-index: 1;
 	}
 
+		root.addEventListener('work:close', () => closeAll());
+
+		document.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const link = target.closest('a[href^="#"]');
+			if (!(link instanceof HTMLAnchorElement)) return;
+			const hash = link.getAttribute('href');
+			if (!hash || hash === '#work') {
+				if (hash === '#work' && Number(root.dataset.depth || 0) > 0) {
+					closeAll();
+				}
+				return;
+			}
+			if (hash === '#about' || hash === '#contact' || hash === '#ikeneas') {
+				if (Number(root.dataset.depth || 0) > 0) closeAll();
+			}
+		});
+
+		function ensureWorkVisible() {
+			const container = document.querySelector('.horizontal-scroll-container');
+			if (container instanceof HTMLElement) {
+				container.scrollTo({ left: root.offsetLeft, behavior: 'instant' });
+			}
+		}
+
+		function applyHash() {
+			const id = location.hash.replace(/^#/, '');
+			if (!id || id === 'work') {
+				if (id === 'work') ensureWorkVisible();
+				closeAll({ syncHash: false });
+				return;
+			}
+			if (categoryPanels().some((el) => el.getAttribute('data-category') === id)) {
+				ensureWorkVisible();
+				openCategory(id, { syncHash: false });
+				return;
+			}
+			if (projectPanels().some((el) => el.getAttribute('data-project') === id)) {
+				ensureWorkVisible();
+				openProject(id, { syncHash: false });
+			}
+		}
+
+		if ('requestIdleCallback' in window) {
+			window.requestIdleCallback(warmProjectImages, { timeout: 1500 });
+		} else {
+			window.setTimeout(warmProjectImages, 150);
+		}
+
+		applyHash();
+		window.addEventListener('hashchange', applyHash);
+
+		window.__workGoBack = goBack;
+		window.__workDepth = () => Number(root.dataset.depth || 0);
+	}
+</script>
+
+<style>
+	.work-slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh;
+		scroll-snap-align: start;
+		position: relative;
+		overflow: hidden;
+		background-color: #eeedec;
+	}
+
+	.work-layer {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.work-layer--menu {
+		z-index: 1;
+	}
+
 	.work-layer--category,
 	.work-layer--project,
 	.work-layer--images,
 	.work-layer--next {
 		z-index: 2;
-		clip-path: inset(0 0 0 100%);
-		transform: translate3d(1.5rem, 0, 0);
-		opacity: 0;
-		transition:
-			clip-path var(--dur-panel) var(--ease-out),
-			transform var(--dur-panel) var(--ease-out),
-			opacity 100ms linear;
+		transform: translate3d(100%, 0, 0);
+		transition: transform var(--dur-panel) var(--ease-out);
 		pointer-events: none;
 		overflow: hidden;
-		will-change: clip-path, transform;
+		will-change: transform;
 	}
 
 	.work-layer--project {
@@ -777,33 +853,25 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.work-slide[data-depth='2'] .work-layer--category,
 	.work-slide[data-depth='3'] .work-layer--category,
 	.work-slide[data-depth='4'] .work-layer--category {
-		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
-		opacity: 1;
 		pointer-events: auto;
 	}
 
 	.work-slide[data-depth='2'] .work-layer--project,
 	.work-slide[data-depth='3'] .work-layer--project,
 	.work-slide[data-depth='4'] .work-layer--project {
-		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
-		opacity: 1;
 		pointer-events: auto;
 	}
 
 	.work-slide[data-depth='3'] .work-layer--images,
 	.work-slide[data-depth='4'] .work-layer--images {
-		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
-		opacity: 1;
 		pointer-events: auto;
 	}
 
 	.work-slide[data-depth='4'] .work-layer--next {
-		clip-path: inset(0 0 0 0);
 		transform: translate3d(0, 0, 0);
-		opacity: 1;
 		pointer-events: auto;
 	}
 
