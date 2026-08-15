@@ -73,7 +73,7 @@ const links: { id: NavSection; label: string; externalUrl?: string }[] = [
 		font-size: var(--nav-size);
 		letter-spacing: 0.03em;
 		text-transform: capitalize;
-		transition: opacity var(--dur-fast) var(--ease-out), letter-spacing var(--dur-med) var(--ease-out);
+		transition: opacity var(--dur-fast) var(--ease-out);
 	}
 
 	.navbar a::before {
@@ -92,7 +92,6 @@ const links: { id: NavSection; label: string; externalUrl?: string }[] = [
 	.navbar a:hover,
 	.navbar a:focus-visible {
 		opacity: 0.75;
-		letter-spacing: 0.05em;
 	}
 
 	.navbar a:hover .navbar-link__label,
