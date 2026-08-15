@@ -29,16 +29,7 @@ const projectImageSources = [
 		<script is:inline>document.documentElement.classList.add('js');</script>
 	</head>
 	<body>
-		<div class="site-loader" aria-hidden="true">
-			<span class="site-loader__bar site-loader__bar--top"></span>
-			<span class="site-loader__bar site-loader__bar--bottom"></span>
-			<span class="site-loader__bar site-loader__bar--left"></span>
-			<span class="site-loader__bar site-loader__bar--right"></span>
-			<div class="site-loader__title">
-				<span class="site-loader__line site-loader__line--mauricio">Mauricio</span>
-				<span class="site-loader__line site-loader__line--atencia">Atencia</span>
-			</div>
-		</div>
+
 		<a href="#about" class="skip-link">Saltar al contenido</a>
 		<RotateDevice />
 		<slot />
@@ -47,57 +38,7 @@ const projectImageSources = [
 </html>
 
 <script>
-	const loader = document.querySelector('.site-loader') as HTMLElement | null;
 	const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-	if (loader) {
-		const completeLoader = () => {
-			loader.classList.add('is-complete');
-			loader.setAttribute('hidden', '');
-		};
-
-		/*
-		 * Secuencia completa (debe coincidir con las variables CSS de abajo):
-		 *   1) HOLD_MS      → el nombre se ve completo y quieto (se lee).
-		 *   2) --dur-split  → Mauricio/Atencia se separan hacia los lados.
-		 *   3) --dur-panel  → apenas termina el split, arranca YA el
-		 *                      cuadrado abriéndose desde el centro (sin
-		 *                      pausa muerta en negro en el medio).
-		 * Si algo se siente rápido/lento, ajustar estos números Y las
-		 * variables --dur-split / --dur-panel en el <style> a la vez.
-		 */
-		const HOLD_MS = 1200;  // el nombre se ve completo y quieto (antes 600, ahora más tiempo)
-		const SPLIT_MS = 1500; // debe igualar --dur-split
-		const PANEL_MS = 800;  // debe igualar --dur-panel
-
-		const playLoader = () => {
-			if (prefersReducedMotion) {
-				completeLoader();
-				return;
-			}
-
-			requestAnimationFrame(() => {
-				window.setTimeout(() => {
-					// 1) El nombre se separa (Mauricio a la izq, Atencia a la der).
-					loader.classList.add('is-splitting');
-					window.setTimeout(() => {
-						// 2) Directo al cuadrado abriéndose, sin pausa en negro.
-						loader.classList.add('is-leaving');
-						window.setTimeout(completeLoader, PANEL_MS);
-					}, SPLIT_MS);
-				}, HOLD_MS);
-			});
-		};
-
-		/* Espera la fuente del titular, sin retener la primera vista demasiado tiempo. */
-		requestAnimationFrame(() => {
-			const fontReady = document.fonts?.load('600 1em Aptos') ?? Promise.resolve();
-			Promise.race([
-				fontReady,
-				new Promise<void>((resolve) => window.setTimeout(resolve, 450)),
-			]).then(playLoader);
-		});
-	}
 
 	const cursor = document.querySelector('.site-cursor') as HTMLElement | null;
 	const supportsFinePointer = window.matchMedia('(any-pointer: fine)').matches;
@@ -496,10 +437,7 @@ const projectImageSources = [
 	}
 
 	.site-cursor.is-hovering {
-		--cursor-scale: 1.65;
-		width: 12px;
-		height: 12px;
-		background: transparent;
+		--cursor-scale: 1.5;
 	}
 
 	.site-cursor.is-pressing {

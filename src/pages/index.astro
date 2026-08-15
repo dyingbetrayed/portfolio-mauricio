@@ -51,13 +51,13 @@ import ContactSection from '../components/ContactSection.astro';
 		let navigationDirection = 0;
 		let navigationTimer = 0;
 		let navigationFrame = 0;
-		const NAVIGATION_DURATION = 460;
+		const NAVIGATION_DURATION = 620;
 		const NAVIGATION_FALLBACK = NAVIGATION_DURATION + 180;
-		const WHEEL_THRESHOLD = 48;
+		const WHEEL_THRESHOLD = 80;
 		/* Un touchpad puede seguir emitiendo inercia tras cambiar de slide. */
 		const WHEEL_IDLE = 700;
 		const TOUCH_INTENT_THRESHOLD = 9;
-		const SWIPE_THRESHOLD = 50;
+		const SWIPE_THRESHOLD = 80;
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		function nearestIndex() {

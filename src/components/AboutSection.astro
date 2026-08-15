@@ -21,7 +21,7 @@ const aboutParagraphs = [
 			<img src="/about/image.png" alt="Mauricio Atencia" class="about-image" />
 		</div>
 
-		<div class="about-footer-container reveal" style="--reveal-delay: 280ms">
+		<div class="about-footer-container reveal" style="--reveal-delay: 600ms">
 			<div class="location-text">Medellín, Colombia</div>
 			<hr class="about-divider" />
 			<div class="about-footer-content">
@@ -34,7 +34,7 @@ const aboutParagraphs = [
 									<span
 										class="about-text__char"
 										aria-hidden="true"
-										style={`--char-delay: ${paragraphIndex * 1550 + characterIndex * 9}ms;`}
+										style={`--char-delay: ${700 + paragraphIndex * 1550 + characterIndex * 9}ms;`}
 									>{character === ' ' ? '\u00a0' : character}</span>
 								))}
 							</span>
@@ -160,8 +160,8 @@ const aboutParagraphs = [
 		clip-path: inset(100% 0 0 0);
 		transform: translateY(var(--img-lift));
 		transition:
-			clip-path var(--dur-slow) var(--ease-out) 80ms,
-			transform var(--dur-slow) var(--ease-out) 80ms;
+			clip-path var(--dur-slow) var(--ease-out) 120ms,
+			transform var(--dur-slow) var(--ease-out) 120ms;
 		will-change: clip-path, transform;
 	}
 
@@ -328,8 +328,8 @@ const aboutParagraphs = [
 		opacity: 0;
 		transform: translate3d(0, 0.12em, 0);
 		transition:
-			opacity 120ms linear var(--char-delay),
-			transform 220ms var(--ease-out) var(--char-delay);
+			opacity 180ms ease-out var(--char-delay),
+			transform 320ms var(--ease-out) var(--char-delay);
 		will-change: opacity, transform;
 	}
 
