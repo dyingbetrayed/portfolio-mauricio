@@ -327,15 +327,20 @@ const aboutParagraphs = [
 		display: inline-block;
 		opacity: 0;
 		transform: translate3d(0, 0.12em, 0);
+		/* Reverse / exit: instant reset so re-entering replays cleanly */
 		transition:
-			opacity 180ms ease-out var(--char-delay),
-			transform 320ms var(--ease-out) var(--char-delay);
+			opacity 0ms linear 0ms,
+			transform 0ms linear 0ms;
 		will-change: opacity, transform;
 	}
 
 	.about-slide.is-active .about-text__char {
 		opacity: 1;
 		transform: translate3d(0, 0, 0);
+		/* Forward / enter: staggered character-by-character reveal */
+		transition:
+			opacity 180ms ease-out var(--char-delay),
+			transform 320ms var(--ease-out) var(--char-delay);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
