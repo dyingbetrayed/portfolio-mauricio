@@ -44,27 +44,6 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 			color={project.color}
 			class="project-image__quote"
 		/>
-
-		{isLast ? (
-			<button
-				type="button"
-				class="project-image__next"
-				data-open-project-next={project.slug}
-			>
-				<span>Siguiente</span>
-				<span class="project-image__next-icon" aria-hidden="true">→</span>
-			</button>
-		) : (
-			<button
-				type="button"
-				class="project-image__next"
-				data-open-project-image={project.slug}
-				data-image-index={String(index + 1)}
-			>
-				<span>Siguiente</span>
-				<span class="project-image__next-icon" aria-hidden="true">→</span>
-			</button>
-		)}
 	</div>
 </article>
 
@@ -95,13 +74,11 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 
 	@keyframes project-image-enter-forward {
 		from {
-			clip-path: inset(0 0 0 100%);
-			transform: translate3d(1.5rem, 0, 0);
+			transform: translate3d(3%, 0, 0);
 			opacity: 0;
 		}
 
 		to {
-			clip-path: inset(0 0 0 0);
 			transform: translate3d(0, 0, 0);
 			opacity: 1;
 		}
@@ -109,13 +86,11 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 
 	@keyframes project-image-enter-backward {
 		from {
-			clip-path: inset(0 100% 0 0);
-			transform: translate3d(-1.5rem, 0, 0);
+			transform: translate3d(-3%, 0, 0);
 			opacity: 0;
 		}
 
 		to {
-			clip-path: inset(0 0 0 0);
 			transform: translate3d(0, 0, 0);
 			opacity: 1;
 		}
@@ -195,33 +170,6 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 
 	.project-image__footer > :global(*) {
 		pointer-events: auto;
-	}
-
-	.project-image__next {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4em;
-		border: none;
-		background: transparent;
-		color: #ffffff;
-		cursor: pointer;
-		font-family: var(--font-nav);
-		font-weight: 600;
-		font-size: clamp(0.8rem, 1.05vw, 1.45rem);
-		letter-spacing: 0.03em;
-		padding: 0;
-		margin-left: auto;
-		text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-		transition: opacity 0.2s ease;
-	}
-
-	.project-image__next:hover {
-		opacity: 0.7;
-	}
-
-	.project-image__next-icon {
-		font-size: 1.1em;
-		line-height: 1;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
