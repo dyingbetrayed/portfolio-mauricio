@@ -362,12 +362,23 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			showOnly(projectPanels(), 'data-project', slug);
 
 			if (currentDepth() >= 3) {
-				setDepth(2, opts);
-				afterSlide(layerNext, () => {
-					if (currentDepth() < 3) {
-						hideAllImages();
-						showOnly(nextPanels(), 'data-project-next', null);
-					}
+				layerProject.style.transition = 'none';
+				layerProject.style.transform = 'translate3d(100%, 0, 0)';
+				layerProject.style.zIndex = '6';
+
+				void layerProject.offsetWidth;
+
+				layerProject.style.transition = 'transform var(--dur-panel) var(--ease-out)';
+				layerProject.style.transform = 'translate3d(0, 0, 0)';
+
+				afterSlide(layerProject, () => {
+					layerProject.style.transition = '';
+					layerProject.style.transform = '';
+					layerProject.style.zIndex = '';
+					
+					hideAllImages();
+					showOnly(nextPanels(), 'data-project-next', null);
+					setDepth(2, opts);
 				});
 				return;
 			}
