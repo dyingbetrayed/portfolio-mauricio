@@ -19,28 +19,28 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	{/* ── Capa 0: menú de categorías ── */}
 	<div class="work-layer work-layer--menu" data-layer="0">
 		<div class="work-grid" data-v-scroll>
-			<button type="button" class="work-link hover-all work-row work-row--cream">
+			<button type="button" class="work-link hover-all work-row work-row--cream" data-cursor-nav>
 				<span class="work-txt work-txt--xl work-txt--dark" style="--work-reveal-delay: 40ms;">ALL</span>
 			</button>
 
-			<button type="button" class="work-link hover-branding work-row work-row--black work-row--branding" data-open-category="branding">
+			<button type="button" class="work-link hover-branding work-row work-row--black work-row--branding" data-open-category="branding" data-cursor-nav>
 				<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 115ms;">BRANDING</span>
 			</button>
 
-			<button type="button" class="work-link hover-proyectos work-row work-row--cream" data-open-category="proyectos-retail">
+			<button type="button" class="work-link hover-proyectos work-row work-row--cream" data-open-category="proyectos-retail" data-cursor-nav>
 				<span class="work-txt work-txt--md work-txt--dark" style="--work-reveal-delay: 190ms;">PROYECTOS RETAIL</span>
 			</button>
 
 			<div class="work-split">
-				<button type="button" class="work-link hover-flyers work-row work-split__cell" data-open-category="flyers">
+				<button type="button" class="work-link hover-flyers work-row work-split__cell" data-open-category="flyers" data-cursor-nav>
 					<span class="work-txt work-txt--md work-txt--light" style="--work-reveal-delay: 265ms;">FLYERS</span>
 				</button>
-				<button type="button" class="work-link hover-merch work-row" data-open-category="merch">
+				<button type="button" class="work-link hover-merch work-row" data-open-category="merch" data-cursor-nav>
 					<span class="work-txt work-txt--md work-txt--light" style="--work-reveal-delay: 325ms;">MERCH</span>
 				</button>
 			</div>
 
-			<button type="button" class="work-link hover-ikeneas work-row work-row--cream" data-external-url="https://ikeneas.com/">
+			<button type="button" class="work-link hover-ikeneas work-row work-row--cream" data-external-url="https://ikeneas.com/" data-cursor-nav>
 				<span class="work-txt work-txt--md work-txt--dark" style="--work-reveal-delay: 400ms;">IKENEAS</span>
 			</button>
 		</div>
@@ -1192,10 +1192,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.project-list {
 		display: flex;
 		flex-direction: column;
-		width: calc(100% - 0.5rem + 2 * clamp(0.5rem, 1vw, 1rem));
+		width: calc(100% + 0.5rem);
 		flex: 0 0 auto;
 		justify-content: flex-start;
-		margin-left: calc(0.5rem - clamp(0.5rem, 1vw, 1rem));
+		margin-left: 0;
 		--row-height: clamp(2.45rem, 5.5vh, 4.2rem);
 		overflow: visible;
 		min-height: 0;
@@ -1206,7 +1206,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		display: grid;
 		grid-template-columns: clamp(40px, 5vw, 80px) 3fr 1fr 1fr;
 		align-items: center;
-		padding: 0 clamp(0.5rem, 1vw, 1rem);
+		padding: 0 0.5rem;
 		flex: 0 0 var(--row-height);
 		height: var(--row-height);
 		border: none;
