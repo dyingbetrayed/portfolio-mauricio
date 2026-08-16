@@ -46,6 +46,39 @@ export const projectCategories: Record<string, ProjectCategory> = {
 					'/work/branding/artificio/Artificio-x-PK.jpg.jpeg',
 					'/work/branding/artificio/Artificio-x-TOUR.jpg.jpeg',
 				]
+			},
+			{
+				id: '02',
+				slug: 'neas',
+				name: 'Neas',
+				year: '2024',
+				location: 'Medellín, CO',
+				color: '#7aff5c',
+				images: [
+					'/work/branding/neas/image.png',
+				]
+			},
+			{
+				id: '03',
+				slug: 'lafichastudio',
+				name: 'La Ficha Studio',
+				year: '2024',
+				location: 'Medellín, CO',
+				color: '#e6c200',
+				images: [
+					'/work/branding/lafichastudio/image.png',
+				]
+			},
+			{
+				id: '04',
+				slug: 'combuses',
+				name: 'Combuses',
+				year: '2024',
+				location: 'Medellín, CO',
+				color: '#e85f00',
+				images: [
+					'/work/branding/combuses/image.png',
+				]
 			}
 		]
 	},

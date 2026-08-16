@@ -1206,7 +1206,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		display: grid;
 		grid-template-columns: clamp(40px, 5vw, 80px) 3fr 1fr 1fr;
 		align-items: center;
-		padding: 0;
+		padding: 0 clamp(0.5rem, 1vw, 1rem);
 		flex: 0 0 var(--row-height);
 		height: var(--row-height);
 		border: none;

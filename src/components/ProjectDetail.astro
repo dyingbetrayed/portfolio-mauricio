@@ -99,7 +99,35 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 			</nav>
 		</div>
 	</div>
+
+	<div class="project__scroll-hint reveal" style="--reveal-delay: 600ms" aria-hidden="true">
+		<span class="project__scroll-hint-text">Scroll</span>
+		<div class="project__scroll-hint-arrow">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M12 5v14M19 12l-7 7-7-7"/>
+			</svg>
+		</div>
+	</div>
 </article>
+
+<script>
+	// Astro hoists this script, runs once.
+	document.addEventListener('DOMContentLoaded', () => {
+		const projects = document.querySelectorAll('.project');
+		projects.forEach(project => {
+			const content = project.querySelector('.project__content');
+			const hint = project.querySelector('.project__scroll-hint');
+			
+			if (content && hint) {
+				const hideHint = () => {
+					hint.classList.add('is-hidden');
+					content.removeEventListener('scroll', hideHint);
+				};
+				content.addEventListener('scroll', hideHint, { once: true });
+			}
+		});
+	});
+</script>
 
 <style>
 	.project {
@@ -117,7 +145,6 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		flex-direction: column;
 		overflow: hidden;
 		box-sizing: border-box;
-		touch-action: pan-y;
 	}
 
 	.project[hidden] {
@@ -168,7 +195,6 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		overflow-y: auto;
 		overscroll-behavior: contain;
 		-webkit-overflow-scrolling: touch;
-		touch-action: pan-y;
 		opacity: 0;
 		clip-path: inset(0 0 100% 0);
 		transform: translate3d(0, 1.15rem, 0);
@@ -340,6 +366,49 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 	.project__nav-icon {
 		font-size: 1.1em;
 		line-height: 1;
+	}
+
+	.project__scroll-hint {
+		position: absolute;
+		top: 50%;
+		right: var(--pad-x-r);
+		transform: translateY(-50%);
+		z-index: 10;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+		color: var(--ink);
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(0.7rem, 1vw, 1.1rem);
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		transition: opacity var(--dur-med) var(--ease-out);
+		opacity: 0.7;
+	}
+
+	.project__scroll-hint-text {
+		writing-mode: vertical-rl;
+		transform: rotate(180deg);
+	}
+
+	.project__scroll-hint.is-hidden {
+		opacity: 0 !important;
+		pointer-events: none;
+		transform: translateY(-50%) !important;
+	}
+
+	.project__scroll-hint-arrow {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		animation: project-hint-bounce 2.4s var(--ease-inout) infinite;
+	}
+
+	@keyframes project-hint-bounce {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(5px); }
 	}
 
 	@media (min-width: 1200px) and (min-height: 700px) {
