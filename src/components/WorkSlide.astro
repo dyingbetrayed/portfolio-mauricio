@@ -360,6 +360,18 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			}
 
 			showOnly(projectPanels(), 'data-project', slug);
+
+			if (currentDepth() >= 3) {
+				setDepth(2, opts);
+				afterSlide(layerNext, () => {
+					if (currentDepth() < 3) {
+						hideAllImages();
+						showOnly(nextPanels(), 'data-project-next', null);
+					}
+				});
+				return;
+			}
+
 			hideAllImages();
 			showOnly(nextPanels(), 'data-project-next', null);
 			setDepth(2, opts);
