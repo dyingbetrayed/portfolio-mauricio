@@ -40,8 +40,9 @@ const nextSlug = related[0]?.slug;
 					class="project-next__card"
 					data-open-project={item.slug}
 					aria-label={`Abrir ${item.name}`}
+					data-cursor-nav
 				>
-					<div class="project-next__media" aria-hidden="true">
+					<div class="project-next__media" aria-hidden="true" style={`background-color: ${item.color};`}>
 						{image && <img src={image} alt="" loading="lazy" decoding="async" />}
 					</div>
 					<div
@@ -60,6 +61,7 @@ const nextSlug = related[0]?.slug;
 				class="project-next__forward"
 				data-open-project={nextSlug}
 				aria-label="Siguiente proyecto"
+				data-cursor-nav
 			>
 				<span class="project-next__forward-label">NEXT</span>
 				<img
@@ -183,7 +185,8 @@ const nextSlug = related[0]?.slug;
 		inset: 0;
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
+		object-fit: contain;
+		object-position: center;
 	}
 
 	.project-next__bar {
