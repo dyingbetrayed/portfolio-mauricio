@@ -100,13 +100,20 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		</div>
 	</div>
 
-	<div class="project__scroll-hint reveal" style="--reveal-delay: 600ms" aria-hidden="true">
+	<button
+		type="button"
+		class="project__scroll-hint reveal"
+		style="--reveal-delay: 600ms"
+		aria-label="Continuar al siguiente contenido del proyecto"
+		data-work-forward
+		data-cursor-nav
+	>
 		<div class="project__scroll-hint-arrow">
 			<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
 				<path d="M5 12h14M12 5l7 7-7 7"/>
 			</svg>
 		</div>
-	</div>
+	</button>
 </article>
 
 <script>
@@ -379,6 +386,15 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		color: var(--ink);
 		transition: opacity var(--dur-med) var(--ease-out);
 		opacity: 0.7;
+		padding: 0;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.project__scroll-hint:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 0.35rem;
 	}
 
 	.project__scroll-hint.is-hidden {

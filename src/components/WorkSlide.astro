@@ -561,10 +561,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			deepWheelTimer = window.setTimeout(resetDeepWheel, DEEP_WHEEL_IDLE);
 		}
 
-		/*
-		 * El detalle conserva su scroll vertical. Al llegar al borde, el mismo
-		 * gesto avanza o retrocede por las pantallas superpuestas horizontalmente.
-		 */
+		/* El wheel vertical navega horizontalmente también dentro del detalle. */
 		root.addEventListener('wheel', (event) => {
 			const depth = currentDepth();
 			if (depth < 1) return;
@@ -601,16 +598,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				return;
 			}
 
-			const project = activeProjectPanel();
-			const detailScroll = project?.querySelector('[data-v-scroll]');
-			if (
-				depth === 2 &&
-				!horizontalIntent &&
-				canScrollVertically(detailScroll, delta)
-			) {
-				return;
-			}
-
 			/* La pantalla final no tiene un destino automático hacia delante. */
 			if (depth === 4 && delta > 0) return;
 
@@ -636,6 +623,12 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		root.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
+
+			if (target.closest('[data-work-forward]')) {
+				event.preventDefault();
+				advanceWork();
+				return;
+			}
 
 			const externalControl = target.closest('[data-external-url]');
 			if (externalControl instanceof HTMLElement) {

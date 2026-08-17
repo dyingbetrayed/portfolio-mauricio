@@ -24,13 +24,20 @@ import ContactSection from '../components/ContactSection.astro';
 				</p>
 			</footer>
 
-			<div class="scroll-hint reveal" style="--reveal-delay: 420ms" aria-hidden="true">
+			<button
+				type="button"
+				class="scroll-hint reveal"
+				style="--reveal-delay: 420ms"
+				aria-label="Ir a la siguiente sección"
+				data-next-slide
+				data-cursor-nav
+			>
 				<div class="scroll-hint__arrow">
 					<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M5 12h14M12 5l7 7-7 7"/>
 					</svg>
 				</div>
-			</div>
+			</button>
 		</section>
 
 		<AboutSection />
@@ -483,6 +490,7 @@ import ContactSection from '../components/ContactSection.astro';
 				container.removeEventListener('scroll', hideHint);
 				window.removeEventListener('keydown', hideHint);
 			};
+			scrollHint.addEventListener('click', () => go(1));
 			container.addEventListener('scroll', hideHint, { once: true });
 			window.addEventListener('keydown', hideHint, { once: true });
 		}
@@ -681,6 +689,15 @@ import ContactSection from '../components/ContactSection.astro';
 		justify-content: center;
 		color: rgba(255, 255, 255, 0.8);
 		transition: opacity var(--dur-med) var(--ease-out);
+		padding: 0;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.scroll-hint:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 0.35rem;
 	}
 
 	.scroll-hint.is-hidden {
