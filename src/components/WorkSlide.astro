@@ -28,7 +28,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			</button>
 
 			<button type="button" class="work-link hover-proyectos work-row work-row--cream" data-open-category="proyectos-retail" data-cursor-nav>
-				<span class="work-txt work-txt--md work-txt--dark" style="--work-reveal-delay: 190ms;">PROYECTOS RETAIL</span>
+				<span class="work-txt work-txt--md work-txt--dark" style="--work-reveal-delay: 190ms;"><span class="hide-mobile">PROYECTOS </span>RETAIL</span>
 			</button>
 
 			<div class="work-split">
@@ -927,12 +927,12 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.work-grid {
-		--row-xl: 25vh;
-		--row-branding: 26vh;
-		--row-md: 16.33vh;
-		--shift-xl: 4.5vh;
-		--shift-branding: 3vh;
-		--shift-md: 1.6vh;
+		--row-xl: 25dvh;
+		--row-branding: 26dvh;
+		--row-md: 16.33dvh;
+		--shift-xl: 0.18em;
+		--shift-branding: 0.12em;
+		--shift-md: 0.09em;
 
 		position: absolute;
 		inset: 0;
@@ -949,24 +949,20 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	   para que el total pase de 100% y se pueda hacer scroll vertical. */
 	@media (hover: none) and (max-height: 520px) {
 		.work-grid {
-			--shift-xl: 1.25rem;
-			--shift-branding: 0.85rem;
-			--shift-md: 0.45rem;
-
 			grid-template-rows:
-				minmax(6rem, 25vh)
-				minmax(6rem, 26vh)
-				minmax(4.75rem, 16.5vh)
-				minmax(4.75rem, 16.5vh)
-				minmax(4.75rem, 16.5vh);
+				minmax(6rem, 25dvh)
+				minmax(6rem, 26dvh)
+				minmax(4.75rem, 16.5dvh)
+				minmax(4.75rem, 16.5dvh)
+				minmax(4.75rem, 16.5dvh);
 		}
 
 		.work-txt--xl {
-			font-size: clamp(2.75rem, 20vh, 25vh);
+			font-size: clamp(2.75rem, 20dvh, 25dvh);
 		}
 
 		.work-txt--md {
-			font-size: clamp(1.85rem, 13vh, 17.5vh);
+			font-size: clamp(1.85rem, 13dvh, 17.5dvh);
 		}
 	}
 
@@ -983,6 +979,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		width: 100%;
 		font: inherit;
 		color: inherit;
+		container-type: inline-size;
 	}
 
 	.work-row--cream {
@@ -1030,7 +1027,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.work-txt--xl {
-		font-size: 25vh;
+		font-size: min(25dvh, 19cqi);
 		--work-text-y: var(--shift-xl);
 	}
 
@@ -1039,8 +1036,23 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.work-txt--md {
-		font-size: 17.5vh;
+		font-size: min(17.5dvh, 21cqi);
 		--work-text-y: var(--shift-md);
+	}
+
+	@media (max-width: 900px) {
+		.work-grid {
+			--row-xl: 16dvh;
+		}
+
+		.work-row, .work-row--branding {
+			padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
+			padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
+		}
+
+		.hide-mobile {
+			display: none !important;
+		}
 	}
 
 	.work-slide.is-active .work-link:hover .work-txt--xl {
@@ -1177,6 +1189,21 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	.category__name-title:focus-visible {
 		outline: 2px solid currentColor;
 		outline-offset: 0.18em;
+	}
+
+	@media (max-width: 900px) {
+		.category__name-title {
+			font-size: clamp(1.5rem, 10vw, 3.5rem);
+			-webkit-text-stroke: clamp(1px, 0.07vw, 2px) currentColor;
+		}
+		.work-split .work-txt--md {
+		font-size: clamp(2rem, 11vw, 3.2rem);
+	}
+		@supports (height: 1dvh) {
+			.category__name-title {
+				font-size: clamp(1.5rem, min(10vw, 7dvh), 3.5rem);
+			}
+		}
 	}
 
 	.category-content {

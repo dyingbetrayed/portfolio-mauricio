@@ -69,14 +69,32 @@ import ContactSection from '../components/ContactSection.astro';
 		const TOUCH_INTENT_THRESHOLD = 5;
 		const SWIPE_THRESHOLD = 80;
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const mobileLayoutQuery = window.matchMedia('(max-width: 700px)');
+
+		function isVerticalLayout() {
+			return mobileLayoutQuery.matches;
+		}
+
+		function scrollPosition() {
+			return isVerticalLayout() ? container.scrollTop : container.scrollLeft;
+		}
+
+		function setScrollPosition(position) {
+			if (isVerticalLayout()) container.scrollTop = position;
+			else container.scrollLeft = position;
+		}
+
+		function slidePosition(slide) {
+			return isVerticalLayout() ? slide.offsetTop : slide.offsetLeft;
+		}
 
 		function nearestIndex() {
-			const left = container.scrollLeft;
+			const position = scrollPosition();
 			const list = slides();
 			let best = 0;
 			let bestDist = Infinity;
 			list.forEach((slide, i) => {
-				const dist = Math.abs(slide.offsetLeft - left);
+				const dist = Math.abs(slidePosition(slide) - position);
 				if (dist < bestDist) {
 					bestDist = dist;
 					best = i;
@@ -112,16 +130,16 @@ import ContactSection from '../components/ContactSection.astro';
 			if (wheelGestureActive) keepWheelGestureOpen();
 		}
 
-		function animateToSlide(left, smooth) {
+		function animateToSlide(targetPosition, smooth) {
 			if (navigationFrame) {
 				window.cancelAnimationFrame(navigationFrame);
 				navigationFrame = 0;
 			}
 
-			const start = container.scrollLeft;
-			const distance = left - start;
+			const start = scrollPosition();
+			const distance = targetPosition - start;
 			if (!smooth || prefersReducedMotion || Math.abs(distance) <= 2) {
-				container.scrollLeft = left;
+				setScrollPosition(targetPosition);
 				return false;
 			}
 
@@ -132,7 +150,7 @@ import ContactSection from '../components/ContactSection.astro';
 
 			const step = (now) => {
 				const progress = Math.min(1, (now - startedAt) / NAVIGATION_DURATION);
-				container.scrollLeft = start + distance * easeInOut(progress);
+				setScrollPosition(start + distance * easeInOut(progress));
 				if (progress < 1) {
 					navigationFrame = window.requestAnimationFrame(step);
 					return;
@@ -151,7 +169,8 @@ import ContactSection from '../components/ContactSection.astro';
 			const slide = list[next];
 			if (!slide) return false;
 
-			const alreadyThere = Math.abs(container.scrollLeft - slide.offsetLeft) <= 2;
+			const targetPosition = slidePosition(slide);
+			const alreadyThere = Math.abs(scrollPosition() - targetPosition) <= 2;
 			if (alreadyThere) {
 				currentIndex = next;
 				setActiveSlide(next);
@@ -161,7 +180,7 @@ import ContactSection from '../components/ContactSection.astro';
 			currentIndex = next;
 			isScrolling = true;
 			window.clearTimeout(navigationTimer);
-			if (animateToSlide(slide.offsetLeft, smooth)) {
+			if (animateToSlide(targetPosition, smooth)) {
 				navigationTimer = window.setTimeout(finishNavigation, NAVIGATION_FALLBACK);
 			} else {
 				finishNavigation();
@@ -196,6 +215,15 @@ import ContactSection from '../components/ContactSection.astro';
 		function workDepth() {
 			const work = document.getElementById('work');
 			return Number(work?.dataset.depth || 0);
+		}
+
+		function isWorkExitWheelGuardActive() {
+			const work = document.getElementById('work');
+			const until = Number(work?.dataset.wheelExitGuardUntil || 0);
+			if (!until) return false;
+			if (performance.now() < until) return true;
+			work?.removeAttribute('data-wheel-exit-guard-until');
+			return false;
 		}
 
 		function indexForHash(hash) {
@@ -261,6 +289,13 @@ import ContactSection from '../components/ContactSection.astro';
 		}
 
 		container.addEventListener('wheel', (event) => {
+			/* Al cerrar una categoría, absorbe la inercia que antes saltaba a About. */
+			if (isWorkExitWheelGuardActive()) {
+				event.preventDefault();
+				keepWheelGestureOpen();
+				return;
+			}
+
 			if (workDepth() > 0) return;
 
 			const rawDelta =
@@ -339,11 +374,19 @@ import ContactSection from '../components/ContactSection.astro';
 					if (Math.abs(dx) > Math.abs(dy) && event.cancelable) event.preventDefault();
 					return;
 				}
-				touchGesture.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-				if (touchGesture.axis === 'x') {
-					touchGesture.navigates = depth === 0;
+				if (isVerticalLayout()) {
+					touchGesture.axis = Math.abs(dy) >= Math.abs(dx) ? 'y' : 'x';
+					touchGesture.navigates =
+						touchGesture.axis === 'y' &&
+						depth === 0 &&
+						!canScrollVertically(touchGesture.scrollTarget, -dy);
 				} else {
-					touchGesture.navigates = depth === 0 && !canScrollVertically(touchGesture.scrollTarget, -dy);
+					touchGesture.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+					if (touchGesture.axis === 'x') {
+						touchGesture.navigates = depth === 0;
+					} else {
+						touchGesture.navigates = depth === 0 && !canScrollVertically(touchGesture.scrollTarget, -dy);
+					}
 				}
 			}
 
@@ -365,7 +408,9 @@ import ContactSection from '../components/ContactSection.astro';
 			const touch = event.changedTouches[0];
 			const dx = touch.clientX - gesture.startX;
 			const dy = touch.clientY - gesture.startY;
-			const distance = gesture.axis === 'x' ? dx : dy;
+			const distance = isVerticalLayout()
+				? dy
+				: gesture.axis === 'x' ? dx : dy;
 			const shouldNavigate =
 				gesture.navigates &&
 				!isScrolling &&
@@ -388,7 +433,7 @@ import ContactSection from '../components/ContactSection.astro';
 			if (!startSlide || targetIndex === gesture.startIndex) return;
 
 			container.style.scrollSnapType = 'none';
-			container.scrollLeft = startSlide.offsetLeft;
+			setScrollPosition(slidePosition(startSlide));
 			currentIndex = gesture.startIndex;
 			setActiveSlide(currentIndex);
 
@@ -502,9 +547,20 @@ import ContactSection from '../components/ContactSection.astro';
 			const slide = list[initialHash];
 			if (slide) {
 				currentIndex = initialHash;
-				container.scrollTo({ left: slide.offsetLeft, behavior: 'instant' });
+				if (isVerticalLayout()) {
+					container.scrollTo({ top: slide.offsetTop, behavior: 'instant' });
+				} else {
+					container.scrollTo({ left: slide.offsetLeft, behavior: 'instant' });
+				}
 			}
 		}
+
+		mobileLayoutQuery.addEventListener('change', () => {
+			requestAnimationFrame(() => {
+				const slide = slides()[currentIndex];
+				if (slide) setScrollPosition(slidePosition(slide));
+			});
+		});
 
 		/* Primero pinta el estado inicial (opacity 0), luego activa el fade-up */
 		slides().forEach((slide) => {
@@ -567,6 +623,25 @@ import ContactSection from '../components/ContactSection.astro';
 		flex-direction: column;
 		box-sizing: border-box;
 		overflow: hidden;
+	}
+
+	@media (max-width: 700px) {
+		.horizontal-scroll-container {
+			flex-direction: column;
+			width: 100%;
+			overflow-x: hidden;
+			overflow-y: auto;
+			scroll-snap-type: y mandatory;
+		}
+
+		.horizontal-scroll-container.is-v-nested {
+			overflow-y: hidden;
+		}
+
+		.slide {
+			flex: 0 0 100dvh;
+			width: 100%;
+		}
 	}
 
 	.slide-header {

@@ -138,6 +138,18 @@ const nextSlug = related[0]?.slug;
 		outline-offset: 0.18em;
 	}
 
+	@media (max-width: 900px) {
+		.project-next__name-title {
+			font-size: clamp(1.5rem, 10vw, 3.5rem);
+			-webkit-text-stroke: clamp(1px, 0.07vw, 2px) currentColor;
+		}
+		@supports (height: 1dvh) {
+			.project-next__name-title {
+				font-size: clamp(1.5rem, min(10vw, 7dvh), 3.5rem);
+			}
+		}
+	}
+
 	.project-next__grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;

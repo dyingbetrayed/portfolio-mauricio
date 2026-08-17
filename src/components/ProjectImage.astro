@@ -178,4 +178,38 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 			animation: none;
 		}
 	}
+
+	@media (max-width: 700px) {
+		.project-image.is-entering-forward {
+			animation-name: project-image-enter-up;
+		}
+
+		.project-image.is-entering-backward {
+			animation-name: project-image-enter-down;
+		}
+
+		@keyframes project-image-enter-up {
+			from {
+				transform: translate3d(0, 3%, 0);
+				opacity: 0;
+			}
+
+			to {
+				transform: translate3d(0, 0, 0);
+				opacity: 1;
+			}
+		}
+
+		@keyframes project-image-enter-down {
+			from {
+				transform: translate3d(0, -3%, 0);
+				opacity: 0;
+			}
+
+			to {
+				transform: translate3d(0, 0, 0);
+				opacity: 1;
+			}
+		}
+	}
 </style>

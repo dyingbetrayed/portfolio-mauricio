@@ -229,6 +229,46 @@ import ContactDrawer from './ContactDrawer.astro';
 		opacity: 0.6;
 	}
 
+	@media (max-width: 900px) {
+		.contact__name-title {
+			font-size: clamp(1.5rem, 10vw, 3.5rem);
+			-webkit-text-stroke: clamp(1px, 0.07vw, 2px) currentColor;
+		}
+		@supports (height: 1dvh) {
+			.contact__name-title {
+				font-size: clamp(1.5rem, min(10vw, 7dvh), 3.5rem);
+			}
+		}
+	}
+
+	@media (max-width: 700px) {
+		.contact-slide {
+			flex: 0 0 100dvh;
+			width: 100%;
+		}
+
+		.contact-content-wrapper {
+			justify-content: center;
+		}
+
+		.contact-title {
+			font-size: min(16cqw, 4.25rem);
+		}
+
+		.contact-footer {
+			align-items: flex-start;
+			flex-direction: column;
+			gap: 0.85rem;
+			font-size: clamp(0.85rem, 3.6vw, 1rem);
+		}
+
+		.center-col,
+		.right-col {
+			align-items: flex-start;
+			text-align: left;
+		}
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		.contact-title span {
 			opacity: 1;

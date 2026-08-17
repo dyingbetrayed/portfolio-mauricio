@@ -311,6 +311,36 @@ const aboutParagraphs = [
 		}
 	}
 
+	@media (max-width: 700px) {
+		.about-slide {
+			flex: 0 0 100dvh;
+			width: 100%;
+		}
+
+		.about-header {
+			min-height: 0;
+		}
+
+		.about-header :global(.navbar) {
+			margin-top: 0;
+		}
+
+		.about-content-wrapper {
+			justify-content: center;
+		}
+
+		.about-center {
+			flex: 0 0 auto;
+			min-height: 0;
+			margin-bottom: 2rem;
+			align-items: center;
+		}
+
+		.about-image {
+			height: clamp(150px, 25vh, 350px);
+		}
+	}
+
 	.about-text__mask {
 		margin: 0;
 	}
