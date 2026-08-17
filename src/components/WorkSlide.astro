@@ -147,7 +147,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			);
 		}
 
-		/** Espera la descarga y la decodificaciÃ³n antes de hacer visible una imagen. */
+		/** Espera la descarga y la decodificación antes de hacer visible una imagen. */
 		function prepareProjectImage(panel) {
 			if (!(panel instanceof HTMLElement)) return Promise.resolve();
 			const cached = imagePreparation.get(panel);
@@ -375,7 +375,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					layerProject.style.transition = '';
 					layerProject.style.transform = '';
 					layerProject.style.zIndex = '';
-					
+
 					hideAllImages();
 					showOnly(nextPanels(), 'data-project-next', null);
 					setDepth(2, opts);
@@ -767,87 +767,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		z-index: 1;
 	}
 
-		root.addEventListener('work:close', () => closeAll());
-
-		document.addEventListener('click', (event) => {
-			const target = event.target;
-			if (!(target instanceof Element)) return;
-			const link = target.closest('a[href^="#"]');
-			if (!(link instanceof HTMLAnchorElement)) return;
-			const hash = link.getAttribute('href');
-			if (!hash || hash === '#work') {
-				if (hash === '#work' && Number(root.dataset.depth || 0) > 0) {
-					closeAll();
-				}
-				return;
-			}
-			if (hash === '#about' || hash === '#contact' || hash === '#ikeneas') {
-				if (Number(root.dataset.depth || 0) > 0) closeAll();
-			}
-		});
-
-		function ensureWorkVisible() {
-			const container = document.querySelector('.horizontal-scroll-container');
-			if (container instanceof HTMLElement) {
-				container.scrollTo({ left: root.offsetLeft, behavior: 'instant' });
-			}
-		}
-
-		function applyHash() {
-			const id = location.hash.replace(/^#/, '');
-			if (!id || id === 'work') {
-				if (id === 'work') ensureWorkVisible();
-				closeAll({ syncHash: false });
-				return;
-			}
-			if (categoryPanels().some((el) => el.getAttribute('data-category') === id)) {
-				ensureWorkVisible();
-				openCategory(id, { syncHash: false });
-				return;
-			}
-			if (projectPanels().some((el) => el.getAttribute('data-project') === id)) {
-				ensureWorkVisible();
-				openProject(id, { syncHash: false });
-			}
-		}
-
-		if ('requestIdleCallback' in window) {
-			window.requestIdleCallback(warmProjectImages, { timeout: 1500 });
-		} else {
-			window.setTimeout(warmProjectImages, 150);
-		}
-
-		applyHash();
-		window.addEventListener('hashchange', applyHash);
-
-		window.__workGoBack = goBack;
-		window.__workDepth = () => Number(root.dataset.depth || 0);
-	}
-</script>
-
-<style>
-	.work-slide {
-		flex: 0 0 100vw;
-		width: 100vw;
-		height: 100vh;
-		height: 100dvh;
-		scroll-snap-align: start;
-		position: relative;
-		overflow: hidden;
-		background-color: #eeedec;
-	}
-
-	.work-layer {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-	}
-
-	.work-layer--menu {
-		z-index: 1;
-	}
-
 	.work-layer--category,
 	.work-layer--project,
 	.work-layer--images,
@@ -1046,8 +965,23 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		}
 
 		.work-row, .work-row--branding {
-			padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
-			padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
+			padding-left: max(0.35rem, env(safe-area-inset-left, 0px));
+			padding-right: max(0.35rem, env(safe-area-inset-right, 0px));
+		}
+
+		.work-txt--xl {
+			font-size: min(25dvh, 19cqi);
+		}
+
+		.work-txt--md {
+			font-size: min(17.5dvh, 24cqi);
+		}
+
+		/* FLYERS/MERCH están en columnas de mitad de ancho: si usan cqi
+		   (relativo a su propio contenedor) quedan mucho más chicas que
+		   RETAIL, así que se fijan con vw en vez de heredar el cqi. */
+		.work-split .work-txt--md {
+			font-size: clamp(2.6rem, 13vw, 3.6rem);
 		}
 
 		.hide-mobile {
@@ -1196,9 +1130,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			font-size: clamp(1.5rem, 10vw, 3.5rem);
 			-webkit-text-stroke: clamp(1px, 0.07vw, 2px) currentColor;
 		}
-		.work-split .work-txt--md {
-		font-size: clamp(2rem, 11vw, 3.2rem);
-	}
 		@supports (height: 1dvh) {
 			.category__name-title {
 				font-size: clamp(1.5rem, min(10vw, 7dvh), 3.5rem);
