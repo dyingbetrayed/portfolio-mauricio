@@ -95,25 +95,25 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 							<span class="project__nav-icon" aria-hidden="true">→</span>
 						</button>
 					))}
+
+					<button
+						type="button"
+						class="project__scroll-hint reveal"
+						style="--reveal-delay: 600ms"
+						aria-label="Continuar al siguiente contenido del proyecto"
+						data-work-forward
+						data-cursor-nav
+					>
+						<div class="project__scroll-hint-arrow">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M5 12h14M12 5l7 7-7 7"/>
+							</svg>
+						</div>
+					</button>
 				</div>
 			</nav>
 		</div>
 	</div>
-
-	<button
-		type="button"
-		class="project__scroll-hint reveal"
-		style="--reveal-delay: 600ms"
-		aria-label="Continuar al siguiente contenido del proyecto"
-		data-work-forward
-		data-cursor-nav
-	>
-		<div class="project__scroll-hint-arrow">
-			<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M5 12h14M12 5l7 7-7 7"/>
-			</svg>
-		</div>
-	</button>
 </article>
 
 <script>
@@ -375,21 +375,23 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 	}
 
 	.project__scroll-hint {
-		position: absolute;
-		top: 50%;
-		right: var(--pad-x-r);
-		transform: translateY(-50%);
-		z-index: 10;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		flex-shrink: 0;
 		color: var(--ink);
 		transition: opacity var(--dur-med) var(--ease-out);
 		opacity: 0.7;
-		padding: 0;
+		padding: clamp(0.45rem, 1.2vh, 1rem) 14px clamp(0.45rem, 1.2vh, 1rem) 0;
+		margin-right: -14px;
 		border: none;
 		background: transparent;
 		cursor: pointer;
+		overflow: visible;
+	}
+
+	.project__scroll-hint:hover {
+		opacity: 1;
 	}
 
 	.project__scroll-hint:focus-visible {
@@ -400,7 +402,6 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 	.project__scroll-hint.is-hidden {
 		opacity: 0 !important;
 		pointer-events: none;
-		transform: translateY(-50%) !important;
 	}
 
 	.project__scroll-hint-arrow {
