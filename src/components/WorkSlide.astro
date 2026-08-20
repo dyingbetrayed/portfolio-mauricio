@@ -540,21 +540,32 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			return false;
 		}
 
-		let deepWheelActive = false;
 		let deepWheelAccumulator = 0;
 		let deepWheelTimer = 0;
 		const DEEP_WHEEL_THRESHOLD = 36;
-		const DEEP_WHEEL_IDLE = 280;
-		const WORK_EXIT_WHEEL_GUARD = 560;
+		const DEEP_WHEEL_IDLE = 180;
+		/* Las imágenes y capas del detalle usan --dur-panel: 0.8s. */
+		const DEEP_WHEEL_COOLDOWN = 840;
+		const WORK_EXIT_WHEEL_GUARD = DEEP_WHEEL_COOLDOWN;
+		let deepWheelBlockedUntil = 0;
 
-		function resetDeepWheel() {
-			deepWheelActive = false;
+		function clearDeepWheelAccumulator() {
+			window.clearTimeout(deepWheelTimer);
+			deepWheelTimer = 0;
 			deepWheelAccumulator = 0;
 		}
 
 		function keepDeepWheelOpen() {
 			window.clearTimeout(deepWheelTimer);
-			deepWheelTimer = window.setTimeout(resetDeepWheel, DEEP_WHEEL_IDLE);
+			deepWheelTimer = window.setTimeout(
+				clearDeepWheelAccumulator,
+				DEEP_WHEEL_IDLE,
+			);
+		}
+
+		function blockDeepWheel() {
+			clearDeepWheelAccumulator();
+			deepWheelBlockedUntil = performance.now() + DEEP_WHEEL_COOLDOWN;
 		}
 
 		function guardWorkExitWheel() {
@@ -590,13 +601,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 				event.preventDefault();
 				event.stopPropagation();
-				keepDeepWheelOpen();
-				if (!deepWheelActive) {
-					deepWheelActive = true;
-					/* La inercia restante no debe hacer retroceder el carrusel padre. */
-					guardWorkExitWheel();
-					void goBack();
-				}
+				if (performance.now() < deepWheelBlockedUntil) return;
+				/* La inercia restante no debe hacer retroceder el carrusel padre. */
+				blockDeepWheel();
+				guardWorkExitWheel();
+				void goBack();
 				return;
 			}
 
@@ -605,18 +614,22 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 			event.preventDefault();
 			event.stopPropagation();
-			keepDeepWheelOpen();
 
-			if (deepWheelActive) return;
+			/* No queda un booleano de gesto retenido. La transición visible es
+			   quien define el periodo de protección contra su propia inercia. */
+			if (performance.now() < deepWheelBlockedUntil) return;
 			if (deepWheelAccumulator && Math.sign(deepWheelAccumulator) !== Math.sign(delta)) {
 				deepWheelAccumulator = 0;
 			}
 			deepWheelAccumulator += delta;
+			keepDeepWheelOpen();
 			if (Math.abs(deepWheelAccumulator) < DEEP_WHEEL_THRESHOLD) return;
 
-			deepWheelActive = true;
-			if (deepWheelAccumulator > 0) {
-				if (!advanceWork()) resetDeepWheel();
+			const direction = Math.sign(deepWheelAccumulator);
+			clearDeepWheelAccumulator();
+			blockDeepWheel();
+			if (direction > 0) {
+				if (!advanceWork()) deepWheelBlockedUntil = 0;
 			} else {
 				void goBack();
 			}

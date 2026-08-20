@@ -329,10 +329,9 @@ import ContactSection from '../components/ContactSection.astro';
 			const isVertical =
 				Math.abs(event.deltaY) >= Math.abs(event.deltaX);
 
-			/* Al cerrar una categoría, absorbe únicamente la inercia vertical que
-			   antes saltaba a About. El pan horizontal conserva su comportamiento
-			   nativo y no queda retenido por este guard. */
-			if (isWorkExitWheelGuardActive() && isVertical) {
+			/* Al cerrar una categoría, absorbe su inercia completa para que no
+			   dispare una navegación del carrusel padre. */
+			if (isWorkExitWheelGuardActive()) {
 				event.preventDefault();
 				keepWheelGestureOpen();
 				return;
