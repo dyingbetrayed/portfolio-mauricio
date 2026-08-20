@@ -574,6 +574,20 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			root.dataset.wheelExitGuardUntil = String(performance.now() + WORK_EXIT_WHEEL_GUARD);
 		}
 
+		function canScrollVertically(el, deltaY) {
+			if (!(el instanceof Element)) return false;
+			const style = getComputedStyle(el);
+			const overflowY = style.overflowY;
+			if (overflowY !== 'auto' && overflowY !== 'scroll' && overflowY !== 'overlay') {
+				return false;
+			}
+			const max = el.scrollHeight - el.clientHeight;
+			if (max <= 1) return false;
+			if (deltaY < 0) return el.scrollTop > 0;
+			if (deltaY > 0) return el.scrollTop < max - 1;
+			return true;
+		}
+
 		/* El wheel vertical navega horizontalmente también dentro del detalle. */
 		root.addEventListener('wheel', (event) => {
 			const depth = currentDepth();

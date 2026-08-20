@@ -430,8 +430,8 @@ import ContactSection from '../components/ContactSection.astro';
 			keepVerticalWheelGestureOpen();
 			if (Math.abs(verticalWheelAccumulator) < WHEEL_THRESHOLD) return;
 
-			/* Hacia arriba (delta negativo) avanza; hacia abajo retrocede. */
-			const targetDirection = verticalWheelAccumulator > 0 ? -1 : 1;
+			/* Hacia abajo (delta positivo) avanza; hacia arriba retrocede. */
+			const targetDirection = verticalWheelAccumulator > 0 ? 1 : -1;
 			clearVerticalWheelAccumulator();
 			const source = nearestIndex();
 			const target = Math.min(
