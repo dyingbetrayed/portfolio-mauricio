@@ -66,7 +66,7 @@ import ContactSection from '../components/ContactSection.astro';
 		const WHEEL_THRESHOLD = 80;
 		/* Un touchpad puede seguir emitiendo inercia tras cambiar de slide. */
 		const WHEEL_IDLE = 700;
-		const HORIZONTAL_WHEEL_IDLE = 140;
+		const HORIZONTAL_WHEEL_IDLE = 180;
 		const TOUCH_INTENT_THRESHOLD = 5;
 		const SWIPE_THRESHOLD = 80;
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -274,6 +274,9 @@ import ContactSection from '../components/ContactSection.astro';
 		let wheelGestureAxis = null;
 		let wheelIdleTimer = 0;
 		let horizontalWheelActive = false;
+		let horizontalWheelCommitted = false;
+		let horizontalWheelAccumulator = 0;
+		let horizontalWheelDirection = 0;
 		let horizontalWheelIdleTimer = 0;
 
 		function clearWheelGesture() {
@@ -297,20 +300,19 @@ import ContactSection from '../components/ContactSection.astro';
 			wheelIdleTimer = window.setTimeout(resetWheelGesture, WHEEL_IDLE);
 		}
 
-		function finishHorizontalWheelGesture() {
+		function clearHorizontalWheelGesture() {
 			window.clearTimeout(horizontalWheelIdleTimer);
 			horizontalWheelIdleTimer = 0;
-			if (!horizontalWheelActive) return;
 			horizontalWheelActive = false;
-			container.style.removeProperty('scroll-snap-type');
-			currentIndex = nearestIndex();
-			setActiveSlide(currentIndex);
+			horizontalWheelCommitted = false;
+			horizontalWheelAccumulator = 0;
+			horizontalWheelDirection = 0;
 		}
 
 		function keepHorizontalWheelGestureOpen() {
 			window.clearTimeout(horizontalWheelIdleTimer);
 			horizontalWheelIdleTimer = window.setTimeout(
-				finishHorizontalWheelGesture,
+				clearHorizontalWheelGesture,
 				HORIZONTAL_WHEEL_IDLE,
 			);
 		}
@@ -342,10 +344,9 @@ import ContactSection from '../components/ContactSection.astro';
 
 			if (workDepth() > 0) return;
 
-			/* El desplazamiento manual horizontal debe terminar antes de procesar
-			   una nueva navegación vertical. */
+			/* Un gesto vertical inicia una interacción independiente. */
 			if (isVertical && horizontalWheelActive) {
-				finishHorizontalWheelGesture();
+				clearHorizontalWheelGesture();
 			}
 
 			const axis = isVertical ? 'y' : 'x';
@@ -361,18 +362,39 @@ import ContactSection from '../components/ContactSection.astro';
 			wheelGestureAxis = axis;
 
 			/* About y otros slides tienen capas internas con
-			   overscroll-behavior: contain. Eso corta el encadenamiento del scroll
-			   nativo hacia el carrusel. Aplicamos el delta al contenedor raíz: se
-			   mantiene la respuesta 1:1 del touchpad, sin interpretar eventos como
-			   "siguiente slide". El snap se restaura al acabar el gesto. */
+			   overscroll-behavior: contain, por lo que el pan nativo no llega al
+			   carrusel. En lugar de escribir scrollLeft (que deja posiciones a
+			   medias), convertimos el gesto completo en una sola transición con un
+			   destino inequívoco. */
 			if (!isVertical && !isVerticalLayout()) {
 				event.preventDefault();
-				if (isScrolling) finishNavigation();
 				clearWheelGesture();
 				horizontalWheelActive = true;
-				container.style.scrollSnapType = 'none';
-				setScrollPosition(scrollPosition() + primaryDelta);
 				keepHorizontalWheelGestureOpen();
+
+				const direction = Math.sign(primaryDelta);
+				if (horizontalWheelCommitted) {
+					/* Solo una inversión deliberada puede interrumpir la transición;
+					   los deltas restantes de la inercia se consumen aquí. */
+					if (direction !== horizontalWheelDirection) {
+						horizontalWheelDirection = direction;
+						go(direction);
+					}
+					return;
+				}
+
+				if (
+					horizontalWheelAccumulator &&
+					Math.sign(horizontalWheelAccumulator) !== direction
+				) {
+					horizontalWheelAccumulator = 0;
+				}
+				horizontalWheelAccumulator += primaryDelta;
+				if (Math.abs(horizontalWheelAccumulator) < WHEEL_THRESHOLD) return;
+
+				horizontalWheelCommitted = true;
+				horizontalWheelDirection = Math.sign(horizontalWheelAccumulator);
+				go(horizontalWheelDirection);
 				return;
 			}
 
