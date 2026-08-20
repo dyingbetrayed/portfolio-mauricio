@@ -5,6 +5,20 @@ const aboutParagraphs = [
 	'Durante más de cuatro años he desarrollado identidades visuales, experiencias de marca y espacios comerciales donde la estrategia, el diseño y la ejecución, trabajan como un solo sistema.',
 	'Mi enfoque combina branding, retail y dirección de arte para crear marcas coherentes, memorables y listas para el mundo real. Todo esto a través de  diferentes empresas, agencias y la ficha studio, un proyecto personal que captura mi visión',
 ];
+
+const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
+	let globalCharIndex = 0;
+	const words = paragraph.split(' ').map((word) => {
+		const chars = Array.from(word).map((char) => {
+			const delay = 700 + pIndex * 1550 + globalCharIndex * 9;
+			globalCharIndex++;
+			return { char, delay };
+		});
+		globalCharIndex++; // advance for the space
+		return chars;
+	});
+	return { text: paragraph, words };
+});
 ---
 
 <section class="slide about-slide" id="about">
@@ -27,15 +41,15 @@ const aboutParagraphs = [
 			<div class="about-footer-content">
 				<div class="about-title">About</div>
 				<div class="about-text">
-					{aboutParagraphs.map((paragraph, paragraphIndex) => (
-						<p class="about-text__mask">
-							<span class="about-text__copy" aria-label={paragraph}>
-								{Array.from(paragraph).map((character, characterIndex) => (
-									<span
-										class="about-text__char"
-										aria-hidden="true"
-										style={`--char-delay: ${700 + paragraphIndex * 1550 + characterIndex * 9}ms;`}
-									>{character === ' ' ? '\u00a0' : character}</span>
+					{processedParagraphs.map((paragraph, paragraphIndex) => (
+						<p class="about-text__mask" style={`word-spacing: ${paragraphIndex === 0 ? '0.28em' : '0.12em'};`}>
+							<span class="about-text__copy" aria-label={paragraph.text}>
+								{paragraph.words.map((word, wordIndex, wordsArray) => (
+									<><span class="about-text__word" aria-hidden="true">{
+										word.map((c) => (
+											<span class="about-text__char" style={`--char-delay: ${c.delay}ms;`}>{c.char}</span>
+										))
+									}</span>{wordIndex < wordsArray.length - 1 ? ' ' : ''}</>
 								))}
 							</span>
 						</p>
@@ -267,9 +281,9 @@ const aboutParagraphs = [
 		font-weight: 300;
 		font-size: clamp(0.7rem, 1.05vw, 1.55rem);
 		line-height: 1.2;
-		flex: 1 1 min(46rem, 38vw);
-		width: min(46rem, 38vw);
-		max-width: min(46rem, 44%);
+		flex: 0 1 37.5em;
+		width: 100%;
+		max-width: 37.5em;
 		min-width: min(16rem, 100%);
 		margin-left: var(--text-align-offset, auto);
 		text-align: justify;
@@ -305,7 +319,6 @@ const aboutParagraphs = [
 
 		.about-text {
 			width: 100%;
-			max-width: 100%;
 			margin-left: 0;
 			flex: 1 1 auto;
 		}
@@ -351,6 +364,11 @@ const aboutParagraphs = [
 
 	.about-text__copy {
 		display: block;
+	}
+
+	.about-text__word {
+		display: inline-block;
+		white-space: nowrap;
 	}
 
 	.about-text__char {

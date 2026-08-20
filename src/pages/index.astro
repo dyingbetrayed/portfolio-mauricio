@@ -479,6 +479,7 @@ import ContactSection from '../components/ContactSection.astro';
 					return;
 				}
 				const scrollTarget = findScrollableParent(touchGesture.scrollStartTarget, -dy);
+				touchGesture.hasScrollTarget = !!scrollTarget;
 				if (isVerticalLayout()) {
 					touchGesture.axis = Math.abs(dy) >= Math.abs(dx) ? 'y' : 'x';
 					touchGesture.navigates =
@@ -506,7 +507,28 @@ import ContactSection from '../components/ContactSection.astro';
 			}
 			const depth = workDepth();
 			if (depth > 0) {
+				const gesture = touchGesture;
 				touchGesture = null;
+				const touch = event.changedTouches[0];
+				const dx = touch.clientX - gesture.startX;
+				const dy = touch.clientY - gesture.startY;
+				
+				let shouldForward = false;
+				let shouldBack = false;
+
+				if (gesture.axis === 'x' && Math.abs(dx) >= SWIPE_THRESHOLD) {
+					if (dx < 0) shouldForward = true;
+					else shouldBack = true;
+				} else if (gesture.axis === 'y' && !gesture.hasScrollTarget && Math.abs(dy) >= SWIPE_THRESHOLD) {
+					if (dy < 0) shouldForward = true;
+					else shouldBack = true;
+				}
+
+				if (shouldForward) {
+					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:forward'));
+				} else if (shouldBack) {
+					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:back'));
+				}
 				return;
 			}
 			const gesture = touchGesture;
