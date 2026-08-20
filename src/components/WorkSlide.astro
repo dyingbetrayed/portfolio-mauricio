@@ -19,29 +19,24 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	{/* ── Capa 0: menú de categorías ── */}
 	<div class="work-layer work-layer--menu" data-layer="0">
 		<div class="work-grid" data-v-scroll>
-			<button type="button" class="work-link hover-all work-row work-row--cream" data-cursor-nav>
-				<span class="work-txt work-txt--xl work-txt--dark" style="--work-reveal-delay: 40ms;">ALL</span>
+			<button type="button" class="work-link hover-branding work-row work-row--white work-row--branding" data-open-category="branding" data-cursor-nav>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 40ms;">BRANDING</span>
 			</button>
 
-			<button type="button" class="work-link hover-branding work-row work-row--black work-row--branding" data-open-category="branding" data-cursor-nav>
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 115ms;">BRANDING</span>
+			<button type="button" class="work-link hover-proyectos work-row work-row--cream work-row--branding" data-open-category="proyectos-retail" data-cursor-nav aria-label="Proyectos retail">
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 115ms;">RETAIL</span>
 			</button>
 
-			<button type="button" class="work-link hover-proyectos work-row work-row--cream" data-open-category="proyectos-retail" data-cursor-nav>
-				<span class="work-txt work-txt--md work-txt--dark" style="--work-reveal-delay: 190ms;"><span class="hide-mobile">PROYECTOS </span>RETAIL</span>
+			<button type="button" class="work-link hover-flyers work-row work-row--black work-row--branding" data-open-category="flyers" data-cursor-nav>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 190ms;">FLYERS</span>
 			</button>
 
-			<div class="work-split">
-				<button type="button" class="work-link hover-flyers work-row work-split__cell" data-open-category="flyers" data-cursor-nav>
-					<span class="work-txt work-txt--md work-txt--light" style="--work-reveal-delay: 265ms;">FLYERS</span>
-				</button>
-				<button type="button" class="work-link hover-merch work-row" data-open-category="merch" data-cursor-nav>
-					<span class="work-txt work-txt--md work-txt--light" style="--work-reveal-delay: 325ms;">MERCH</span>
-				</button>
-			</div>
+			<button type="button" class="work-link hover-merch work-row work-row--black work-row--branding" data-open-category="merch" data-cursor-nav>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 265ms;">MERCH</span>
+			</button>
 
-			<button type="button" class="work-link hover-ikeneas work-row work-row--cream" data-external-url="https://ikeneas.com/" data-cursor-nav>
-				<span class="work-txt work-txt--md work-txt--dark" style="--work-reveal-delay: 400ms;">IKENEAS</span>
+			<button type="button" class="work-link hover-ikeneas work-row work-row--cream work-row--branding" data-external-url="https://ikeneas.com/" data-cursor-nav>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">IKENEAS</span>
 			</button>
 		</div>
 
@@ -846,17 +841,13 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.work-grid {
-		--row-xl: 25dvh;
-		--row-branding: 26dvh;
-		--row-md: 16.33dvh;
-		--shift-xl: 0.18em;
+		--row-size: 20dvh;
 		--shift-branding: 0.12em;
-		--shift-md: 0.09em;
 
 		position: absolute;
 		inset: 0;
 		display: grid;
-		grid-template-rows: var(--row-xl) var(--row-branding) var(--row-md) var(--row-md) 1fr;
+		grid-template-rows: repeat(5, minmax(0, 1fr));
 		overflow-x: hidden;
 		overflow-y: auto;
 		overscroll-behavior: contain;
@@ -864,24 +855,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		touch-action: pan-y;
 	}
 
-	/* En móvil landscape el viewport es bajo: filas con mínimo fijo
-	   para que el total pase de 100% y se pueda hacer scroll vertical. */
+	/* En móvil landscape el viewport es bajo: mantenemos la tipografía
+	   dentro de la altura disponible de cada fila. */
 	@media (hover: none) and (max-height: 520px) {
 		.work-grid {
-			grid-template-rows:
-				minmax(6rem, 25dvh)
-				minmax(6rem, 26dvh)
-				minmax(4.75rem, 16.5dvh)
-				minmax(4.75rem, 16.5dvh)
-				minmax(4.75rem, 16.5dvh);
+			grid-template-rows: repeat(5, minmax(0, 1fr));
 		}
 
 		.work-txt--xl {
-			font-size: clamp(2.75rem, 20dvh, 25dvh);
-		}
-
-		.work-txt--md {
-			font-size: clamp(1.85rem, 13dvh, 17.5dvh);
+			font-size: clamp(2.75rem, var(--row-size), 25dvh);
 		}
 	}
 
@@ -897,12 +879,17 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		position: relative;
 		width: 100%;
 		font: inherit;
+		font-style: normal;
 		color: inherit;
 		container-type: inline-size;
 	}
 
 	.work-row--cream {
 		background-color: #eeedec;
+	}
+
+	.work-row--white {
+		background-color: #ffffff;
 	}
 
 	.work-row--black {
@@ -913,21 +900,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		padding: 0 max(clamp(1rem, 2vw, 2rem), var(--sar)) 0 max(clamp(0.85rem, 1.5vw, 1.5rem), var(--sal));
 	}
 
-	.work-split {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		background-color: #000000;
-		overflow: hidden;
-	}
-
-	.work-split__cell {
-		border-right: 1.5px solid rgba(255, 255, 255, 0.3);
-	}
-
 	.work-txt {
 		--work-text-y: 0px;
 		font-family: 'Acumin Variable Concept', sans-serif;
 		font-weight: 600;
+		font-style: normal;
+		font-synthesis: none;
+		/* Acumin incluye el eje de inclinación `slnt`. Safari móvil puede
+		   activarlo al resolver la fuente variable, así que lo fijamos a 0°. */
+		font-variation-settings: 'wght' 600, 'wdth' 100, 'slnt' 0;
 		line-height: 0.9;
 		letter-spacing: clamp(-3px, -0.25vw, -1.5px);
 		white-space: nowrap;
@@ -946,46 +927,21 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.work-txt--xl {
-		font-size: min(25dvh, 19cqi);
-		--work-text-y: var(--shift-xl);
+		font-size: min(var(--row-size), 19cqi);
 	}
 
 	.work-txt--branding {
 		--work-text-y: var(--shift-branding);
 	}
 
-	.work-txt--md {
-		font-size: min(17.5dvh, 21cqi);
-		--work-text-y: var(--shift-md);
-	}
-
 	@media (max-width: 900px) {
-		.work-grid {
-			--row-xl: 16dvh;
-		}
-
 		.work-row, .work-row--branding {
 			padding-left: max(0.35rem, env(safe-area-inset-left, 0px));
 			padding-right: max(0.35rem, env(safe-area-inset-right, 0px));
 		}
 
 		.work-txt--xl {
-			font-size: min(25dvh, 19cqi);
-		}
-
-		.work-txt--md {
-			font-size: min(17.5dvh, 24cqi);
-		}
-
-		/* FLYERS/MERCH están en columnas de mitad de ancho: si usan cqi
-		   (relativo a su propio contenedor) quedan mucho más chicas que
-		   RETAIL, así que se fijan con vw en vez de heredar el cqi. */
-		.work-split .work-txt--md {
-			font-size: clamp(2.6rem, 13vw, 3.6rem);
-		}
-
-		.hide-mobile {
-			display: none !important;
+			font-size: min(var(--row-size), 19cqi);
 		}
 	}
 
@@ -995,10 +951,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 	.work-slide.is-active .work-link:hover .work-txt--branding {
 		transform: translate3d(0, var(--work-text-y), 0) scale(1.01);
-	}
-
-	.work-slide.is-active .work-link:hover .work-txt--md {
-		transform: translate3d(0, var(--work-text-y), 0) scale(1.012);
 	}
 
 	.work-txt--dark {
@@ -1197,6 +1149,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		font-family: var(--font-nav, 'Aptos', sans-serif);
 		font-size: clamp(1.1rem, 1.6vw + 0.5vh, 2rem);
 		font-weight: 500;
+		font-style: normal;
+		font-synthesis: none;
 		text-align: left;
 		cursor: pointer;
 		transition:
@@ -1259,10 +1213,32 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		}
 
 		.project-row {
-			grid-template-columns: 40px 1fr;
+			grid-template-columns: 40px minmax(0, 1fr) auto;
 			gap: 10px;
+			padding-left: 0;
+			padding-right: 0;
 		}
-		.col-year,
+
+		/* En móvil, título, separador y tabla comparten el borde del
+		   título de navegación. En escritorio se conserva el ajuste óptico. */
+		.category-title {
+			margin-left: calc(-1 * var(--title-ink-lsb));
+		}
+
+		.category-separator {
+			width: 100%;
+			margin-left: 0;
+		}
+
+		.project-list {
+			width: 100%;
+		}
+		.col-year {
+			display: block;
+			text-align: right;
+			white-space: nowrap;
+		}
+
 		.col-location {
 			display: none;
 		}

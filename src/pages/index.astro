@@ -707,6 +707,18 @@ import ContactSection from '../components/ContactSection.astro';
 		transform: translate3d(0, 0, 0);
 	}
 
+	@media (max-width: 700px) {
+		/* El clip-path de la entrada del header crea un contexto que recorta
+		   el panel fixed de navegación en iOS. En móvil lo desactivamos para
+		   que el menú pueda desplegarse por encima de la portada. */
+		.hero-header.reveal,
+		.hero-slide.is-active .hero-header.reveal {
+			clip-path: none;
+			transform: none;
+			transition: opacity 80ms linear 260ms;
+		}
+	}
+
 	.hero-content, .hero-footer {
 		position: relative;
 		z-index: 2;
@@ -786,6 +798,13 @@ import ContactSection from '../components/ContactSection.astro';
 		align-items: center;
 		justify-content: center;
 		animation: hint-bounce-x 2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+	}
+
+	@media (max-width: 700px) {
+		/* El avance entre secciones queda disponible con gesto vertical. */
+		.scroll-hint {
+			display: none;
+		}
 	}
 
 	@keyframes hint-bounce-x {
