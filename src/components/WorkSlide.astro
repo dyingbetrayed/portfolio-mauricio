@@ -27,13 +27,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 115ms;">SOCIAL MEDIA</span>
 			</button>
 
-			<button type="button" class="work-link hover-flyers work-row work-row--black work-row--branding" data-open-category="flyers" data-cursor-nav>
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 190ms;">FLYERS</span>
-			</button>
+			<div class="work-row-pair">
+				<button type="button" class="work-link hover-flyers work-row work-row--black work-row--branding" data-open-category="flyers" data-cursor-nav>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 190ms;">FLYERS</span>
+				</button>
 
-			<button type="button" class="work-link hover-merch work-row work-row--black work-row--branding" data-open-category="merch" data-cursor-nav>
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 265ms;">MERCH</span>
-			</button>
+				<button type="button" class="work-link hover-merch work-row work-row--black work-row--branding" data-open-category="merch" data-cursor-nav>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--light" style="--work-reveal-delay: 265ms;">MERCH</span>
+				</button>
+			</div>
 
 			<button type="button" class="work-link hover-ikeneas work-row work-row--cream work-row--branding" data-external-url="https://ikeneas.com/" data-cursor-nav>
 				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">IKENEAS</span>
@@ -860,12 +862,25 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		position: absolute;
 		inset: 0;
 		display: grid;
-		grid-template-rows: repeat(5, minmax(0, 1fr));
+		grid-template-rows: repeat(4, minmax(0, 1fr));
 		overflow-x: hidden;
 		overflow-y: auto;
 		overscroll-behavior: contain;
 		-webkit-overflow-scrolling: touch;
 		touch-action: pan-y;
+	}
+
+	.work-row-pair {
+		display: flex;
+		flex-direction: row;
+		min-height: 0;
+		gap: 2px;
+		background-color: #ffffff;
+	}
+
+	.work-row-pair > .work-row {
+		flex: 1 1 50%;
+		min-height: 0;
 	}
 
 	/* En móvil landscape el viewport es bajo: mantenemos la tipografía
@@ -877,6 +892,20 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 		.work-txt--xl {
 			font-size: clamp(2.75rem, var(--row-size), 25dvh);
+		}
+	}
+
+	@media (max-width: 700px) {
+		.work-grid {
+			grid-template-rows: repeat(5, minmax(0, 1fr));
+		}
+
+		.work-row-pair {
+			flex-direction: column;
+		}
+
+		.work-row-pair > .work-row {
+			flex: 1 1 auto;
 		}
 	}
 
