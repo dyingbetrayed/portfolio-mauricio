@@ -67,6 +67,7 @@ import ContactSection from '../components/ContactSection.astro';
 		/* Un touchpad puede seguir emitiendo inercia tras cambiar de slide. */
 		const WHEEL_IDLE = 700;
 		const HORIZONTAL_WHEEL_IDLE = 180;
+		const HORIZONTAL_WHEEL_COOLDOWN = NAVIGATION_DURATION + 40;
 		const TOUCH_INTENT_THRESHOLD = 5;
 		const SWIPE_THRESHOLD = 80;
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -273,11 +274,9 @@ import ContactSection from '../components/ContactSection.astro';
 		let wheelAccumulator = 0;
 		let wheelGestureAxis = null;
 		let wheelIdleTimer = 0;
-		let horizontalWheelActive = false;
-		let horizontalWheelCommitted = false;
 		let horizontalWheelAccumulator = 0;
-		let horizontalWheelDirection = 0;
 		let horizontalWheelIdleTimer = 0;
+		let horizontalWheelBlockedUntil = 0;
 
 		function clearWheelGesture() {
 			wheelGestureActive = false;
@@ -300,19 +299,16 @@ import ContactSection from '../components/ContactSection.astro';
 			wheelIdleTimer = window.setTimeout(resetWheelGesture, WHEEL_IDLE);
 		}
 
-		function clearHorizontalWheelGesture() {
+		function clearHorizontalWheelAccumulator() {
 			window.clearTimeout(horizontalWheelIdleTimer);
 			horizontalWheelIdleTimer = 0;
-			horizontalWheelActive = false;
-			horizontalWheelCommitted = false;
 			horizontalWheelAccumulator = 0;
-			horizontalWheelDirection = 0;
 		}
 
 		function keepHorizontalWheelGestureOpen() {
 			window.clearTimeout(horizontalWheelIdleTimer);
 			horizontalWheelIdleTimer = window.setTimeout(
-				clearHorizontalWheelGesture,
+				clearHorizontalWheelAccumulator,
 				HORIZONTAL_WHEEL_IDLE,
 			);
 		}
@@ -345,8 +341,8 @@ import ContactSection from '../components/ContactSection.astro';
 			if (workDepth() > 0) return;
 
 			/* Un gesto vertical inicia una interacción independiente. */
-			if (isVertical && horizontalWheelActive) {
-				clearHorizontalWheelGesture();
+			if (isVertical && horizontalWheelAccumulator) {
+				clearHorizontalWheelAccumulator();
 			}
 
 			const axis = isVertical ? 'y' : 'x';
@@ -369,19 +365,20 @@ import ContactSection from '../components/ContactSection.astro';
 			if (!isVertical && !isVerticalLayout()) {
 				event.preventDefault();
 				clearWheelGesture();
-				horizontalWheelActive = true;
-				keepHorizontalWheelGestureOpen();
 
 				const direction = Math.sign(primaryDelta);
-				if (horizontalWheelCommitted) {
-					/* Solo una inversión deliberada puede interrumpir la transición;
-					   los deltas restantes de la inercia se consumen aquí. */
-					if (direction !== horizontalWheelDirection) {
-						horizontalWheelDirection = direction;
-						go(direction);
-					}
+				/* La animación es el único bloqueo persistente. Durante ella solo
+				   una inversión puede cambiar el destino; los demás deltas son
+				   inercia y se descartan sin dejar estado retenido. */
+				if (isScrolling) {
+					if (direction === -navigationDirection) go(direction);
 					return;
 				}
+
+				/* Tras una transición terminada, una ventana mínima absorbe su cola
+				   de inercia. A diferencia del antiguo gesto "committed", vence por
+				   tiempo absoluto y nunca requiere mover el cursor para liberarse. */
+				if (performance.now() < horizontalWheelBlockedUntil) return;
 
 				if (
 					horizontalWheelAccumulator &&
@@ -390,11 +387,21 @@ import ContactSection from '../components/ContactSection.astro';
 					horizontalWheelAccumulator = 0;
 				}
 				horizontalWheelAccumulator += primaryDelta;
+				keepHorizontalWheelGestureOpen();
 				if (Math.abs(horizontalWheelAccumulator) < WHEEL_THRESHOLD) return;
 
-				horizontalWheelCommitted = true;
-				horizontalWheelDirection = Math.sign(horizontalWheelAccumulator);
-				go(horizontalWheelDirection);
+				const targetDirection = Math.sign(horizontalWheelAccumulator);
+				clearHorizontalWheelAccumulator();
+				const source = nearestIndex();
+				const target = Math.min(
+					slides().length - 1,
+					Math.max(0, source + targetDirection),
+				);
+				if (target === source) return;
+
+				horizontalWheelBlockedUntil =
+					performance.now() + HORIZONTAL_WHEEL_COOLDOWN;
+				go(targetDirection);
 				return;
 			}
 
