@@ -53,8 +53,15 @@ const links: { id: NavSection; label: string; externalUrl?: string }[] = [
 
 <script>
 	// Astro hoists this script, runs once for every rendered Navbar.
+	const syncHeroMenuLayer = (navbar: Element, isOpen: boolean) => {
+		/* El panel mobile es fixed, pero necesita que el header de portada
+		   gane la pila frente al texto del hero mientras está abierto. */
+		navbar.closest('.hero-header')?.classList.toggle('is-menu-open', isOpen);
+	};
+
 	const closeNavbar = (navbar: Element) => {
 		navbar.classList.remove('is-open');
+		syncHeroMenuLayer(navbar, false);
 		const toggle = navbar.querySelector('.navbar__toggle');
 		if (toggle) {
 			toggle.setAttribute('aria-expanded', 'false');
@@ -82,6 +89,7 @@ const links: { id: NavSection; label: string; externalUrl?: string }[] = [
 			document.querySelectorAll('.navbar.is-open').forEach(closeNavbar);
 			if (willOpen) {
 				navbar.classList.add('is-open');
+				syncHeroMenuLayer(navbar, true);
 				toggle.setAttribute('aria-expanded', 'true');
 				toggle.setAttribute('aria-label', 'Cerrar menú de navegación');
 			}

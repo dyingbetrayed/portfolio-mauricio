@@ -66,6 +66,7 @@ import ContactSection from '../components/ContactSection.astro';
 		const WHEEL_THRESHOLD = 80;
 		/* Un touchpad puede seguir emitiendo inercia tras cambiar de slide. */
 		const WHEEL_IDLE = 700;
+		const HORIZONTAL_WHEEL_IDLE = 140;
 		const TOUCH_INTENT_THRESHOLD = 5;
 		const SWIPE_THRESHOLD = 80;
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -270,7 +271,17 @@ import ContactSection from '../components/ContactSection.astro';
 		let wheelGestureActive = false;
 		let wheelGestureUsesNestedScroll = false;
 		let wheelAccumulator = 0;
+		let wheelGestureAxis = null;
 		let wheelIdleTimer = 0;
+		let horizontalWheelActive = false;
+		let horizontalWheelIdleTimer = 0;
+
+		function clearWheelGesture() {
+			wheelGestureActive = false;
+			wheelGestureUsesNestedScroll = false;
+			wheelAccumulator = 0;
+			wheelGestureAxis = null;
+		}
 
 		function resetWheelGesture() {
 			/* No liberar un gesto mientras su navegación aún está en curso. */
@@ -278,9 +289,7 @@ import ContactSection from '../components/ContactSection.astro';
 				keepWheelGestureOpen();
 				return;
 			}
-			wheelGestureActive = false;
-			wheelGestureUsesNestedScroll = false;
-			wheelAccumulator = 0;
+			clearWheelGesture();
 		}
 
 		function keepWheelGestureOpen() {
@@ -288,16 +297,25 @@ import ContactSection from '../components/ContactSection.astro';
 			wheelIdleTimer = window.setTimeout(resetWheelGesture, WHEEL_IDLE);
 		}
 
+		function finishHorizontalWheelGesture() {
+			window.clearTimeout(horizontalWheelIdleTimer);
+			horizontalWheelIdleTimer = 0;
+			if (!horizontalWheelActive) return;
+			horizontalWheelActive = false;
+			container.style.removeProperty('scroll-snap-type');
+			currentIndex = nearestIndex();
+			setActiveSlide(currentIndex);
+		}
+
+		function keepHorizontalWheelGestureOpen() {
+			window.clearTimeout(horizontalWheelIdleTimer);
+			horizontalWheelIdleTimer = window.setTimeout(
+				finishHorizontalWheelGesture,
+				HORIZONTAL_WHEEL_IDLE,
+			);
+		}
+
 		container.addEventListener('wheel', (event) => {
-			/* Al cerrar una categoría, absorbe la inercia que antes saltaba a About. */
-			if (isWorkExitWheelGuardActive()) {
-				event.preventDefault();
-				keepWheelGestureOpen();
-				return;
-			}
-
-			if (workDepth() > 0) return;
-
 			const rawDelta =
 				Math.abs(event.deltaY) >= Math.abs(event.deltaX)
 					? event.deltaY
@@ -310,12 +328,53 @@ import ContactSection from '../components/ContactSection.astro';
 						: 1;
 			const primaryDelta = rawDelta * deltaScale;
 			if (Math.abs(primaryDelta) < 2) return;
-			/* A direction change starts a fresh touchpad gesture immediately. */
-			if (wheelAccumulator && Math.sign(wheelAccumulator) !== Math.sign(primaryDelta)) {
-				resetWheelGesture();
-			}
 			const isVertical =
 				Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+
+			/* Al cerrar una categoría, absorbe únicamente la inercia vertical que
+			   antes saltaba a About. El pan horizontal conserva su comportamiento
+			   nativo y no queda retenido por este guard. */
+			if (isWorkExitWheelGuardActive() && isVertical) {
+				event.preventDefault();
+				keepWheelGestureOpen();
+				return;
+			}
+
+			if (workDepth() > 0) return;
+
+			/* El desplazamiento manual horizontal debe terminar antes de procesar
+			   una nueva navegación vertical. */
+			if (isVertical && horizontalWheelActive) {
+				finishHorizontalWheelGesture();
+			}
+
+			const axis = isVertical ? 'y' : 'x';
+			/* Un cambio de eje o de dirección es un gesto nuevo. Esto libera
+			   de inmediato el estado del scroll vertical interno y permite
+			   también invertir una transición que todavía está en marcha. */
+			if (
+				(wheelGestureAxis && wheelGestureAxis !== axis) ||
+				(wheelAccumulator && Math.sign(wheelAccumulator) !== Math.sign(primaryDelta))
+			) {
+				clearWheelGesture();
+			}
+			wheelGestureAxis = axis;
+
+			/* About y otros slides tienen capas internas con
+			   overscroll-behavior: contain. Eso corta el encadenamiento del scroll
+			   nativo hacia el carrusel. Aplicamos el delta al contenedor raíz: se
+			   mantiene la respuesta 1:1 del touchpad, sin interpretar eventos como
+			   "siguiente slide". El snap se restaura al acabar el gesto. */
+			if (!isVertical && !isVerticalLayout()) {
+				event.preventDefault();
+				if (isScrolling) finishNavigation();
+				clearWheelGesture();
+				horizontalWheelActive = true;
+				container.style.scrollSnapType = 'none';
+				setScrollPosition(scrollPosition() + primaryDelta);
+				keepHorizontalWheelGestureOpen();
+				return;
+			}
 
 			if (
 				isVertical &&
@@ -332,7 +391,7 @@ import ContactSection from '../components/ContactSection.astro';
 			/* No encadenar el final de un scroll vertical con otro salto horizontal. */
 			if (wheelGestureUsesNestedScroll) return;
 
-			/* La inercia completa del touchpad pertenece a un solo gesto. */
+			/* La inercia completa del touchpad pertenece a un solo gesto vertical. */
 			if (wheelGestureActive) return;
 			wheelAccumulator += primaryDelta;
 			if (Math.abs(wheelAccumulator) < WHEEL_THRESHOLD) return;
@@ -357,7 +416,7 @@ import ContactSection from '../components/ContactSection.astro';
 				startIndex: nearestIndex(),
 				axis: null,
 				navigates: false,
-				scrollTarget: target instanceof Element ? target.closest('[data-v-scroll]') : null,
+				scrollStartTarget: target instanceof Element ? target : null,
 			};
 		}, { passive: true });
 
@@ -374,18 +433,19 @@ import ContactSection from '../components/ContactSection.astro';
 					if (Math.abs(dx) > Math.abs(dy) && event.cancelable) event.preventDefault();
 					return;
 				}
+				const scrollTarget = findScrollableParent(touchGesture.scrollStartTarget, -dy);
 				if (isVerticalLayout()) {
 					touchGesture.axis = Math.abs(dy) >= Math.abs(dx) ? 'y' : 'x';
 					touchGesture.navigates =
 						touchGesture.axis === 'y' &&
 						depth === 0 &&
-						!canScrollVertically(touchGesture.scrollTarget, -dy);
+						!scrollTarget;
 				} else {
 					touchGesture.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
 					if (touchGesture.axis === 'x') {
 						touchGesture.navigates = depth === 0;
 					} else {
-						touchGesture.navigates = depth === 0 && !canScrollVertically(touchGesture.scrollTarget, -dy);
+						touchGesture.navigates = depth === 0 && !scrollTarget;
 					}
 				}
 			}
@@ -413,7 +473,6 @@ import ContactSection from '../components/ContactSection.astro';
 				: gesture.axis === 'x' ? dx : dy;
 			const shouldNavigate =
 				gesture.navigates &&
-				!isScrolling &&
 				Math.abs(distance) >= SWIPE_THRESHOLD;
 			touchGesture = null;
 			if (!shouldNavigate) return;
@@ -424,6 +483,13 @@ import ContactSection from '../components/ContactSection.astro';
 			 * gesto para que animateToSlide siempre tenga distancia que recorrer.
 			 */
 			const delta = distance < 0 ? 1 : -1;
+			/* Durante una transición, go() acepta una inversión y descarta la
+			   inercia en la misma dirección; así el touch no queda bloqueado. */
+			if (isScrolling) {
+				go(delta);
+				return;
+			}
+
 			const list = slides();
 			const startSlide = list[gesture.startIndex];
 			const targetIndex = Math.min(
@@ -656,6 +722,12 @@ import ContactSection from '../components/ContactSection.astro';
 
 	.hero-header {
 		justify-content: flex-end;
+	}
+
+	@media (max-width: 700px) {
+		.hero-header.is-menu-open {
+			z-index: 10;
+		}
 	}
 
 	.hero-slide {
