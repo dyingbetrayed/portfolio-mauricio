@@ -253,6 +253,13 @@ import ContactDrawer from './ContactDrawer.astro';
 			width: 100%;
 		}
 
+		.contact-header.reveal,
+		.contact-slide.is-active .contact-header.reveal {
+			clip-path: none;
+			transform: none;
+			transition: opacity 80ms linear 60ms;
+		}
+
 		.contact-content-wrapper {
 			justify-content: center;
 		}
