@@ -308,6 +308,7 @@ const nextSlug = related[0]?.slug;
 	.project-next__name {
 		font-family: var(--font-helvetica);
 		font-weight: 700;
+		font-synthesis: weight;
 		font-style: normal;
 		font-size: clamp(1.5rem, 2.3vw, 2.8rem);
 		letter-spacing: 0.02em;
@@ -316,6 +317,14 @@ const nextSlug = related[0]?.slug;
 		display: inline-block;
 		transform-origin: left center;
 		max-width: 100%;
+	}
+
+	@media (max-width: 900px) {
+		.project-next__name {
+			font-weight: 700;
+			font-synthesis: weight;
+			-webkit-text-stroke: clamp(0.5px, 0.1vw, 1px) currentColor;
+		}
 	}
 
 	.project-next__forward,

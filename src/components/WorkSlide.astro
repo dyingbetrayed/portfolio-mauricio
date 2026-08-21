@@ -733,25 +733,39 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		function ensureWorkVisible() {
 			const container = document.querySelector('.horizontal-scroll-container');
 			if (container instanceof HTMLElement) {
-				container.scrollTo({ left: root.offsetLeft, behavior: 'instant' });
+				if (window.matchMedia('(max-width: 700px)').matches) {
+					container.scrollTo({ top: root.offsetTop, behavior: 'instant' });
+				} else {
+					container.scrollTo({ left: root.offsetLeft, behavior: 'instant' });
+				}
 			}
 		}
 
+		let isInitialLoad = true;
 		function applyHash() {
+			if (isInitialLoad) {
+				root.classList.add('no-transition');
+			}
+
 			const id = location.hash.replace(/^#/, '');
 			if (!id || id === 'work') {
 				if (id === 'work') ensureWorkVisible();
 				closeAll({ syncHash: false });
-				return;
-			}
-			if (categoryPanels().some((el) => el.getAttribute('data-category') === id)) {
+			} else if (categoryPanels().some((el) => el.getAttribute('data-category') === id)) {
 				ensureWorkVisible();
 				openCategory(id, { syncHash: false });
-				return;
-			}
-			if (projectPanels().some((el) => el.getAttribute('data-project') === id)) {
+			} else if (projectPanels().some((el) => el.getAttribute('data-project') === id)) {
 				ensureWorkVisible();
 				openProject(id, { syncHash: false });
+			}
+
+			if (isInitialLoad) {
+				// Forzamos el reflow para que el cambio de clase sin transición se aplique de inmediato
+				void root.offsetHeight;
+				setTimeout(() => {
+					root.classList.remove('no-transition');
+				}, 50);
+				isInitialLoad = false;
 			}
 		}
 
@@ -802,6 +816,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		pointer-events: none;
 		overflow: hidden;
 		will-change: transform;
+	}
+
+	.work-slide.no-transition .work-layer {
+		transition: none !important;
 	}
 
 	.work-layer--project {
