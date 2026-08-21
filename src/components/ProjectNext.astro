@@ -84,6 +84,97 @@ const nextSlug = related[0]?.slug;
 	</div>
 </article>
 
+<script>
+	// Shrinks text to fit on a single line, never lets it wrap:
+	// 1) the "Mauricio Atencia" wordmark in the header
+	// 2) each project name inside the yellow .project-next__bar
+	//
+	// Runs against EVERY .project-next instance on the page (one per
+	// project) and re-measures whenever an instance's `hidden` attribute
+	// changes, since hidden elements report 0px and can't be measured
+	// correctly while invisible.
+
+	function fitTextToWidth(el: HTMLElement, available: number, minScale = 0.35) {
+		el.style.transform = 'scale(1)';
+		if (available <= 0) return;
+
+		const actual = el.scrollWidth;
+		if (actual > available) {
+			const scale = Math.max(available / actual, minScale);
+			el.style.transform = `scale(${scale})`;
+		}
+	}
+
+	function fitLogoTitle(header: HTMLElement) {
+		const title = header.querySelector('.project-next__name-title') as HTMLElement | null;
+		if (!title) return;
+		if (header.clientWidth === 0) return;
+
+		title.style.transform = 'scale(1)';
+
+		const navEl = header.querySelector('.navbar') as HTMLElement | null;
+		const titleRect = title.getBoundingClientRect();
+		const gap = parseFloat(getComputedStyle(header).gap) || 0;
+		const buffer = 8;
+
+		const boundaryLeft = navEl
+			? navEl.getBoundingClientRect().left - gap
+			: header.getBoundingClientRect().right;
+
+		fitTextToWidth(title, boundaryLeft - titleRect.left - buffer);
+	}
+
+	function fitCardNames(article: HTMLElement) {
+		article.querySelectorAll<HTMLElement>('.project-next__bar').forEach((bar) => {
+			const name = bar.querySelector('.project-next__name') as HTMLElement | null;
+			if (!name) return;
+			if (bar.clientWidth === 0) return;
+
+			const style = getComputedStyle(bar);
+			const paddingLeft = parseFloat(style.paddingLeft) || 0;
+			const paddingRight = parseFloat(style.paddingRight) || 0;
+			const buffer = 4;
+
+			fitTextToWidth(name, bar.clientWidth - paddingLeft - paddingRight - buffer);
+		});
+	}
+
+	function fitArticle(article: HTMLElement) {
+		if (article.hidden) return;
+		const header = article.querySelector('.project-next__nav') as HTMLElement | null;
+		if (header) fitLogoTitle(header);
+		fitCardNames(article);
+	}
+
+	function fitAll() {
+		document.querySelectorAll<HTMLElement>('.project-next').forEach(fitArticle);
+	}
+
+	function initFit() {
+		fitAll();
+
+		document.querySelectorAll<HTMLElement>('.project-next').forEach((article) => {
+			const observer = new MutationObserver((mutations) => {
+				for (const m of mutations) {
+					if (m.attributeName === 'hidden') fitArticle(article);
+				}
+			});
+			observer.observe(article, { attributes: true, attributeFilter: ['hidden'] });
+		});
+
+		window.addEventListener('resize', fitAll);
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initFit);
+	} else {
+		initFit();
+	}
+
+	// Re-run after Astro view transitions swap the page.
+	document.addEventListener('astro:page-load', initFit);
+</script>
+
 <style>
 	.project-next {
 		position: absolute;
@@ -131,6 +222,9 @@ const nextSlug = related[0]?.slug;
 		line-height: 0.95;
 		letter-spacing: -0.022em;
 		-webkit-text-stroke: clamp(0.5px, 0.035vw, 1px) currentColor;
+		white-space: nowrap;
+		display: inline-block;
+		transform-origin: left top;
 	}
 
 	.project-next__name-title:focus-visible {
@@ -141,6 +235,8 @@ const nextSlug = related[0]?.slug;
 	@media (max-width: 900px) {
 		.project-next__name-title {
 			font-size: clamp(1.5rem, 10vw, 3.5rem);
+			font-weight: 700;
+			font-synthesis: weight;
 			-webkit-text-stroke: clamp(1px, 0.07vw, 2px) currentColor;
 		}
 		@supports (height: 1dvh) {
@@ -206,6 +302,7 @@ const nextSlug = related[0]?.slug;
 		display: flex;
 		align-items: center;
 		padding: clamp(0.85rem, 1.8vh, 1.35rem) clamp(1rem, 1.8vw, 1.75rem);
+		overflow: hidden;
 	}
 
 	.project-next__name {
@@ -215,6 +312,10 @@ const nextSlug = related[0]?.slug;
 		font-size: clamp(1.5rem, 2.3vw, 2.8rem);
 		letter-spacing: 0.02em;
 		line-height: 1.1;
+		white-space: nowrap;
+		display: inline-block;
+		transform-origin: left center;
+		max-width: 100%;
 	}
 
 	.project-next__forward,
