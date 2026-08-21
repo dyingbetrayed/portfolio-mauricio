@@ -19,6 +19,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	{/* ── Capa 0: menú de categorías ── */}
 	<div class="work-layer work-layer--menu" data-layer="0">
 		<div class="work-grid" data-v-scroll>
+			<div class="work-row-spacer" aria-hidden="true"></div>
 			<button type="button" class="work-link hover-branding work-row work-row--white work-row--branding" data-open-category="branding" data-cursor-nav>
 				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 40ms;">BRANDING</span>
 			</button>
@@ -876,7 +877,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		position: absolute;
 		inset: 0;
 		display: grid;
-		grid-template-rows: repeat(4, minmax(0, 1fr));
+		grid-template-rows: repeat(5, minmax(0, 1fr));
 		overflow-x: hidden;
 		overflow-y: auto;
 		overscroll-behavior: contain;
@@ -892,6 +893,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		background-color: #ffffff;
 	}
 
+	.work-row-spacer {
+		background-color: #ffffff;
+		min-height: 0;
+	}
+
 	.work-row-pair > .work-row {
 		flex: 1 1 50%;
 		min-height: 0;
@@ -901,7 +907,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	   dentro de la altura disponible de cada fila. */
 	@media (hover: none) and (max-height: 520px) {
 		.work-grid {
-			grid-template-rows: repeat(5, minmax(0, 1fr));
+			grid-template-rows: repeat(6, minmax(0, 1fr));
 		}
 
 		.work-txt--xl {
@@ -911,7 +917,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 	@media (max-width: 700px) {
 		.work-grid {
-			grid-template-rows: repeat(5, minmax(0, 1fr));
+			grid-template-rows: repeat(6, minmax(0, 1fr));
 		}
 
 		.work-row-pair {
