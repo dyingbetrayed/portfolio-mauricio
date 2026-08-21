@@ -290,7 +290,11 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		const contact = getContactSlide();
 		const container = getScrollContainer();
 		if (!(contact instanceof HTMLElement) || !(container instanceof HTMLElement)) return;
-		container.scrollLeft = contact.offsetLeft;
+		if (window.matchMedia('(max-width: 700px)').matches) {
+			container.scrollTop = contact.offsetTop;
+		} else {
+			container.scrollLeft = contact.offsetLeft;
+		}
 	}
 
 	function isContactActive() {
@@ -298,6 +302,9 @@ const toEmail = 'mauricioatenciam@gmail.com';
 		const container = getScrollContainer();
 		if (!(contact instanceof HTMLElement) || !(container instanceof HTMLElement)) {
 			return location.hash === '#contact';
+		}
+		if (window.matchMedia('(max-width: 700px)').matches) {
+			return Math.abs(contact.offsetTop - container.scrollTop) < contact.offsetHeight * 0.35;
 		}
 		return Math.abs(contact.offsetLeft - container.scrollLeft) < contact.offsetWidth * 0.35;
 	}
