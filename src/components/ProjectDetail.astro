@@ -446,4 +446,11 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 			padding-top: clamp(0.75rem, 3vh, 1.5rem);
 		}
 	}
+
+	@media (max-width: 700px) {
+		.project__name-title {
+			font-size: clamp(1rem, 4.2vw, 1.2rem);
+			top: calc(var(--pad-header-y) + 0.9rem);
+		}
+	}
 </style>

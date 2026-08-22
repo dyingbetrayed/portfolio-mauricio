@@ -953,6 +953,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			background-color: #e0e0e0;
 		}
 
+		.work-grid > .hover-ikeneas {
+			background-color: #ffffff;
+		}
+
 		.work-txt--xl {
 			font-size: min(var(--row-size), 12.5cqi);
 		}
@@ -1308,6 +1312,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		.work-slide[data-depth='4'] .work-layer--images,
 		.work-slide[data-depth='4'] .work-layer--next {
 			transform: translate3d(0, 0, 0);
+		}
+
+		.category__name-title {
+			font-size: clamp(1rem, 4.2vw, 1.2rem);
+			top: calc(var(--pad-header-y) + 0.9rem);
 		}
 
 		.project-row {
