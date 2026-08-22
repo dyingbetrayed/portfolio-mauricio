@@ -26,7 +26,6 @@ import ContactDrawer from './ContactDrawer.astro';
 		<footer class="contact-footer reveal" style="--reveal-delay: 280ms">
 			<div class="footer-col left-col">
 				<a href="/" class="footer-link">Instagram</a>
-				<a href="https://api.whatsapp.com/send/?phone=573146253071&text&type=phone_number&app_absent=0" class="footer-link">WhatsApp</a>
 			</div>
 			
 			<div class="footer-col center-col">
@@ -40,7 +39,7 @@ import ContactDrawer from './ContactDrawer.astro';
 			</div>
 			
 			<div class="footer-col right-col">
-				<span class="footer-link footer-phone">+57 314 625 3071</span>
+				<a href="https://api.whatsapp.com/send/?phone=573146253071&text&type=phone_number&app_absent=0" class="footer-link">WhatsApp</a>
 			</div>
 		</footer>
 	</div>
@@ -278,10 +277,12 @@ import ContactDrawer from './ContactDrawer.astro';
 
 		.contact-footer {
 			display: flex;
-			flex-direction: column;
+			flex-direction: row;
+			flex-wrap: wrap;
 			align-items: center;
+			justify-content: space-between;
 			width: 100%;
-			gap: 0.6rem;
+			gap: 0.6rem 0;
 			font-size: clamp(0.72rem, 2.8vw, 0.85rem);
 		}
 
@@ -298,19 +299,16 @@ import ContactDrawer from './ContactDrawer.astro';
 
 		.left-col {
 			order: 2;
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-			width: 100%;
-		}
-
-		.left-col .footer-link {
-			font-size: clamp(0.72rem, 2.8vw, 0.85rem);
 		}
 
 		.right-col {
-			display: none;
+			order: 3;
+			display: flex;
+		}
+
+		.left-col .footer-link,
+		.right-col .footer-link {
+			font-size: clamp(0.72rem, 2.8vw, 0.85rem);
 		}
 	}
 
