@@ -44,6 +44,19 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 			color={project.color}
 			class="project-image__quote"
 		/>
+		<button
+			type="button"
+			class="project-image__scroll-hint"
+			aria-label="Continuar a la siguiente imagen o proyecto"
+			data-work-forward
+			data-cursor-nav
+		>
+			<div class="project-image__scroll-hint-arrow" aria-hidden="true">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M5 12h14M12 5l7 7-7 7"/>
+				</svg>
+			</div>
+		</button>
 	</div>
 </article>
 
@@ -170,6 +183,43 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 
 	.project-image__footer > :global(*) {
 		pointer-events: auto;
+	}
+
+	.project-image__scroll-hint {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		color: #ffffff;
+		padding: clamp(0.45rem, 1.2vh, 1rem) 14px clamp(0.45rem, 1.2vh, 1rem) 0;
+		margin-right: -14px;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		overflow: visible;
+		opacity: 0.7;
+		transition: opacity var(--dur-med) var(--ease-out);
+	}
+
+	.project-image__scroll-hint:hover {
+		opacity: 1;
+	}
+
+	.project-image__scroll-hint:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 0.35rem;
+	}
+
+	.project-image__scroll-hint-arrow {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		animation: project-image-hint-bounce-x 2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+	}
+
+	@keyframes project-image-hint-bounce-x {
+		0%, 100% { transform: translateX(0); }
+		50% { transform: translateX(8px); }
 	}
 
 	@media (prefers-reduced-motion: reduce) {

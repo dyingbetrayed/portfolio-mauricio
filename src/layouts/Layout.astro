@@ -61,8 +61,8 @@ const projectImageSources = [
 		let frame = 0;
 
 		const paint = () => {
-			x += (targetX - x) * 0.55;
-			y += (targetY - y) * 0.55;
+			x += (targetX - x) * 0.72;
+			y += (targetY - y) * 0.72;
 			cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(var(--cursor-scale))`;
 
 			if (Math.abs(targetX - x) > 0.1 || Math.abs(targetY - y) > 0.1) {
