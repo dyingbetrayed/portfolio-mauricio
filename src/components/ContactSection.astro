@@ -40,7 +40,6 @@ import ContactDrawer from './ContactDrawer.astro';
 			</div>
 			
 			<div class="footer-col right-col">
-				<a href="/" class="footer-link">Behance</a>
 				<span class="footer-link footer-phone">+57 314 625 3071</span>
 			</div>
 		</footer>
@@ -278,48 +277,39 @@ import ContactDrawer from './ContactDrawer.astro';
 		}
 
 		.contact-footer {
-			display: grid;
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			grid-template-rows: repeat(3, auto);
-			align-items: start;
-			column-gap: 1rem;
-			row-gap: 0.35rem;
-			font-size: clamp(0.85rem, 3.6vw, 1rem);
-		}
-
-		.left-col,
-		.right-col {
-			display: contents;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 100%;
+			gap: 0.6rem;
+			font-size: clamp(0.72rem, 2.8vw, 0.85rem);
 		}
 
 		.center-col {
-			grid-column: 1 / -1;
-			grid-row: 1;
-			align-items: center;
+			order: 1;
+			width: 100%;
 			text-align: center;
-			justify-self: center;
-			margin-bottom: 0.5rem;
+			margin-bottom: 0.2rem;
 		}
 
-		.left-col .footer-link:first-child {
-			grid-column: 1;
-			grid-row: 2;
-			justify-self: start;
+		.center-col .footer-link {
+			font-size: clamp(0.62rem, 2.5vw, 0.75rem);
 		}
 
-		.right-col .footer-link:first-child {
-			grid-column: 2;
-			grid-row: 2;
-			justify-self: end;
+		.left-col {
+			order: 2;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
 		}
 
-		.left-col .footer-link:last-child {
-			grid-column: 2;
-			grid-row: 3;
-			justify-self: end;
+		.left-col .footer-link {
+			font-size: clamp(0.72rem, 2.8vw, 0.85rem);
 		}
 
-		.footer-phone {
+		.right-col {
 			display: none;
 		}
 	}
