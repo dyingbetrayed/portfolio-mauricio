@@ -1,6 +1,7 @@
 ---
 import Navbar from './Navbar.astro';
 import ContactDrawer from './ContactDrawer.astro';
+import contactData from '../content/contact.json';
 ---
 
 <section class="slide contact-slide" id="contact">
@@ -25,21 +26,21 @@ import ContactDrawer from './ContactDrawer.astro';
 		
 		<footer class="contact-footer reveal" style="--reveal-delay: 280ms">
 			<div class="footer-col left-col">
-				<a data-external-url="https://www.instagram.com/studiolaficha" class="footer-link">Instagram</a>
+				<a data-external-url={contactData.instagram_url} class="footer-link">Instagram</a>
 			</div>
 			
 			<div class="footer-col center-col">
 				<a
-					href="mailto:mauricioatenciam@gmail.com"
+					href={`mailto:${contactData.email}`}
 					class="footer-link"
 					data-open-contact-drawer
 				>
-					mauricioatenciam@gmail.com
+					{contactData.email}
 				</a>
 			</div>
 			
 			<div class="footer-col right-col">
-				<a href="https://api.whatsapp.com/send/?phone=573146253071&text&type=phone_number&app_absent=0" class="footer-link">WhatsApp</a>
+				<a href={contactData.whatsapp_url} class="footer-link">WhatsApp</a>
 			</div>
 		</footer>
 	</div>

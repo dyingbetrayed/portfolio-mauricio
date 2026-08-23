@@ -1,10 +1,8 @@
 ---
 import Navbar from './Navbar.astro';
+import aboutData from '../content/about.json';
 
-const aboutParagraphs = [
-	'Durante más de cuatro años he desarrollado identidades visuales, experiencias de marca y espacios comerciales donde la estrategia, el diseño y la ejecución, trabajan como un solo sistema.',
-	'Mi enfoque combina branding, retail y dirección de arte para crear marcas coherentes, memorables y listas para el mundo real. Todo esto a través de  diferentes empresas, agencias y la ficha studio, un proyecto personal que captura mi visión',
-];
+const aboutParagraphs = aboutData.paragraphs;
 
 const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 	let globalCharIndex = 0;
@@ -36,7 +34,7 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 		</div>
 
 		<div class="about-footer-container reveal" style="--reveal-delay: 600ms">
-			<div class="location-text">Medellín, Colombia</div>
+			<div class="location-text">{aboutData.location}</div>
 			<hr class="about-divider" />
 			<div class="about-footer-content">
 				<div class="about-title">About</div>

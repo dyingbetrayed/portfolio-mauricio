@@ -1,0 +1,11 @@
+{
+  "id": "03",
+  "slug": "lafichastudio",
+  "name": "La Ficha Studio",
+  "year": "2024",
+  "location": "Medellín, CO",
+  "color": "#e6c200",
+  "images": [
+    "/work/branding/lafichastudio/image.png"
+  ]
+}

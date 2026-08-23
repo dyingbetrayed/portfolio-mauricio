@@ -1,0 +1,69 @@
+backend:
+  name: github
+  repo: dyingbetrayed/portfolio-mauricio
+  branch: main
+  base_url: https://sveltia-cms-auth.vercel.app
+  auth_endpoint: auth
+
+local_backend: true
+
+media_folder: "public/work"
+public_folder: "/work"
+
+collections:
+  - name: "about"
+    label: "Sobre mí"
+    files:
+      - label: "Contenido About"
+        name: "about"
+        file: "src/content/about.json"
+        fields:
+          - { label: "Ubicación", name: "location", widget: "string" }
+          - label: "Párrafos"
+            name: "paragraphs"
+            widget: "list"
+            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+
+  - name: "contact"
+    label: "Contacto"
+    files:
+      - label: "Información de contacto"
+        name: "contact"
+        file: "src/content/contact.json"
+        fields:
+          - { label: "Email", name: "email", widget: "string" }
+          - { label: "Instagram URL", name: "instagram_url", widget: "string" }
+          - { label: "WhatsApp URL", name: "whatsapp_url", widget: "string" }
+
+  - name: "projects_branding"
+    label: "Proyectos Branding"
+    folder: "src/content/projects/branding"
+    create: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    fields:
+      - { label: "ID", name: "id", widget: "string" }
+      - { label: "Slug", name: "slug", widget: "string" }
+      - { label: "Nombre", name: "name", widget: "string" }
+      - { label: "Año", name: "year", widget: "string" }
+      - { label: "Ubicación", name: "location", widget: "string" }
+      - { label: "Color", name: "color", widget: "color" }
+      - { label: "Tagline", name: "tagline", widget: "text", required: false }
+      - { label: "Servicios", name: "services", widget: "list", required: false }
+      - label: "Secciones"
+        name: "sections"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Título", name: "label", widget: "string" }
+          - label: "Párrafos"
+            name: "paragraphs"
+            widget: "list"
+            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+      - { label: "Nota legal", name: "note", widget: "string", required: false }
+      - label: "Imágenes"
+        name: "images"
+        widget: "list"
+        required: false
+        field: { label: "Imagen", name: "image", widget: "image" }

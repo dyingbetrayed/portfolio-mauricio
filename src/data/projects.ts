@@ -29,69 +29,19 @@ export interface ProjectCategory {
 	projects: Project[];
 }
 
+const brandingFiles = import.meta.glob('../content/projects/branding/*.json', { eager: true });
+const brandingProjects = Object.values(brandingFiles) as Project[];
+
+// Ordenamos por ID si existe
+brandingProjects.sort((a, b) => {
+	if (!a.id || !b.id) return 0;
+	return a.id.localeCompare(b.id);
+});
+
 export const projectCategories: Record<string, ProjectCategory> = {
 	branding: {
 		title: 'BRANDING',
-		projects: [
-			{
-				id: '01',
-				slug: 'artificio',
-				name: 'Artificio',
-				year: '2024',
-				location: 'Medellín, CO',
-				color: '#938c2a',
-				tagline: 'Comida rápida, pensada\npara la inmediatez.',
-				services: ['Branding', 'Flyer'],
-				sections: [
-					{
-						label: 'Objetivo',
-						paragraphs: [
-							'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas malesuada in tortor a suscipit. Morbi commodo mi in mattis cursus. Etiam congue iaculis est ac vehicula. Curabitur suscipit ante in purus pellentesque, semper commodo arcu porta. Pellentesque scelerisque tortor eros, quis cursus odio tempus at. Mauris ut magna ligula. Vestibulum.',
-						],
-					},
-				],
-				note: '*Derechos reservados por Mauricio Atencia',
-				images: [
-					'/work/branding/artificio/Artificio-x-BQQ.jpg.jpeg',
-					'/work/branding/artificio/Artificio-x-KB.jpeg',
-					'/work/branding/artificio/Artificio-x-PK.jpg.jpeg',
-					'/work/branding/artificio/Artificio-x-TOUR.jpg.jpeg',
-				]
-			},
-			{
-				id: '02',
-				slug: 'neas',
-				name: 'Neas',
-				year: '2024',
-				location: 'Medellín, CO',
-				color: '#7aff5c',
-				images: [
-					'/work/branding/neas/image.png',
-				]
-			},
-			{
-				id: '03',
-				slug: 'lafichastudio',
-				name: 'La Ficha Studio',
-				year: '2024',
-				location: 'Medellín, CO',
-				color: '#e6c200',
-				images: [
-					'/work/branding/lafichastudio/image.png',
-				]
-			},
-			{
-				id: '04',
-				slug: 'combuses',
-				name: 'Combuses',
-				year: '2024',
-				location: 'Medellín, CO',
-				color: '#e85f00',
-				images: [
-					'/work/branding/combuses/image.png',
-				]
-			}
-		]
+		projects: brandingProjects
 	},
 };
 // export const projectCategories: Record<string, ProjectCategory> = {
