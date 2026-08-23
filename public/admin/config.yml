@@ -1,7 +1,7 @@
 backend:
   name: github
   repo: dyingbetrayed/portfolio-mauricio
-  branch: features/cms
+  branch: main
   base_url: https://portfolio-mauricio-beta.vercel.app
   auth_endpoint: api/auth
 
