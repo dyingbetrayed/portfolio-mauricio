@@ -2,8 +2,7 @@ backend:
   name: github
   repo: dyingbetrayed/portfolio-mauricio
   branch: main
-  base_url: https://sveltia-cms-auth.vercel.app
-  auth_endpoint: auth
+  auth_endpoint: api/auth
 
 local_backend: true
 
