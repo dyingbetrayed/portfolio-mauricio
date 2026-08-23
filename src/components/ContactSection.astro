@@ -118,7 +118,7 @@ import ContactDrawer from './ContactDrawer.astro';
 		flex-direction: column;
 		flex: 1;
 		min-height: 0;
-		padding: 0 var(--pad-section-x-r) var(--pad-section-b) var(--pad-section-x-l);
+		padding: 0 0 var(--pad-section-b) 0;
 		box-sizing: border-box;
 		width: 100%;
 		justify-content: flex-end;
@@ -134,6 +134,9 @@ import ContactDrawer from './ContactDrawer.astro';
 		display: block;
 		/* Reserva el ascenso de las mayúsculas dentro de la máscara reveal. */
 		padding-top: clamp(0.5rem, 2.8vw, 3rem);
+		padding-left: var(--pad-section-x-l);
+		padding-right: var(--pad-section-x-r);
+		box-sizing: border-box;
 		margin-bottom: 0;
 		container-type: inline-size;
 	}
@@ -194,6 +197,9 @@ import ContactDrawer from './ContactDrawer.astro';
 		justify-content: space-between;
 		align-items: flex-end;
 		width: 100%;
+		padding-left: var(--pad-section-x-l);
+		padding-right: var(--pad-section-x-r);
+		box-sizing: border-box;
 		font-family: var(--font-helvetica);
 		font-weight: 300;
 		font-style: normal;
