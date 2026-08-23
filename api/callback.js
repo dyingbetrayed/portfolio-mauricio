@@ -34,9 +34,18 @@ export default async function handler(req, res) {
       <head><title>Autorizando...</title></head>
       <body>
         <script>
-          const message = 'authorization:github:success:{"token":"${token}","provider":"github"}';
-          window.opener.postMessage(message, "*");
-          window.close();
+          (function() {
+            function receiveMessage(e) {
+              window.opener.postMessage(
+                'authorization:github:success:{"token":"${token}","provider":"github"}',
+                e.origin
+              );
+              window.removeEventListener("message", receiveMessage, false);
+              setTimeout(() => window.close(), 100);
+            }
+            window.addEventListener("message", receiveMessage, false);
+            window.opener.postMessage("authorizing:github", "*");
+          })();
         </script>
       </body>
       </html>
