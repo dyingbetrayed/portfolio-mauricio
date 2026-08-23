@@ -44,10 +44,12 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 			<>
 				<div class="project__meta">
 					{project.tagline && <p class="project__tagline">{project.tagline}</p>}
-					{services && <p class="project__services">{services}</p>}
+					{services && <p class="project__services project__services--desktop">{services}</p>}
 				</div>
 
 				<hr class="project__rule" />
+				
+				{services && <p class="project__services project__services--mobile">{services}</p>}
 			</>
 		)}
 
@@ -281,6 +283,10 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 		letter-spacing: 0.02em;
 	}
 
+	.project__services--mobile {
+		display: none;
+	}
+
 	.project__body {
 		flex: 0 0 auto;
 		display: flex;
@@ -443,11 +449,15 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 			display: block;
 		}
 
-		.project__services {
-			grid-column: auto;
-			justify-self: end;
+		.project__services--desktop {
+			display: none;
+		}
+
+		.project__services--mobile {
+			display: block;
 			text-align: right;
-			margin-top: 0.25rem;
+			margin-top: 0.5rem;
+			margin-bottom: 0.25rem;
 		}
 
 		.project__rule {
