@@ -4,11 +4,12 @@ import Navbar from '../components/Navbar.astro';
 import AboutSection from '../components/AboutSection.astro';
 import WorkSlide from '../components/WorkSlide.astro';
 import ContactSection from '../components/ContactSection.astro';
+import homeData from '../content/home.json';
 ---
 
 <Layout>
 	<main class="horizontal-scroll-container">
-		<section class="slide hero-slide">
+		<section class="slide hero-slide" style={`--bg-color: ${homeData.background_color}; --hero-image: url('${homeData.hero_image}'); --overlay-opacity: ${homeData.overlay_opacity}; --overlay-opacity-active: ${homeData.overlay_opacity_active};`}>
 			<div class="hero-media" aria-hidden="true"></div>
 			<div class="overlay"></div>
 			<header class="slide-header hero-header reveal" style="--reveal-delay: 80ms">
@@ -793,7 +794,7 @@ import ContactSection from '../components/ContactSection.astro';
 	}
 
 	.hero-slide {
-		background-color: #050505;
+		background-color: var(--bg-color, #050505);
 		justify-content: space-between;
 	}
 
@@ -801,7 +802,7 @@ import ContactSection from '../components/ContactSection.astro';
 		position: absolute;
 		inset: 0;
 		z-index: 0;
-		background: url('/index/1.jpg') center / cover no-repeat;
+		background: var(--hero-image, url('/index/1.jpg')) center / cover no-repeat;
 		/* Parte de un cuadrado central y crece hacia los cuatro bordes. */
 		clip-path: inset(50% 50% 50% 50%);
 		will-change: clip-path;
@@ -821,12 +822,12 @@ import ContactSection from '../components/ContactSection.astro';
 		background: rgba(0, 0, 0, 0.15);
 		z-index: 1;
 		pointer-events: none;
-		opacity: 0.25;
+		opacity: var(--overlay-opacity, 0.25);
 		transition: opacity var(--dur-slow) var(--ease-out) 90ms;
 	}
 
 	.hero-slide.is-active .overlay {
-		opacity: 0.82;
+		opacity: var(--overlay-opacity-active, 0.82);
 	}
 
 	/* La navegación cae desde el borde superior una vez que el fondo abre. */

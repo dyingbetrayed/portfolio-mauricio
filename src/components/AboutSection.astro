@@ -19,7 +19,7 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 });
 ---
 
-<section class="slide about-slide" id="about">
+<section class="slide about-slide" id="about" style={`--bg-color: ${aboutData.background_color}; --text-color: ${aboutData.text_color};`}>
 	<header class="about-header">
 		<h1 class="name-title top-name-title" aria-label="Mauricio Atencia">
 			<span class="name-title__mask"><span class="name-title__word">Mauricio</span></span>
@@ -30,7 +30,7 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 
 	<div class="about-content-wrapper" data-v-scroll>
 		<div class="about-center reveal" style="--reveal-delay: 160ms">
-			<img src="/about/image.png" alt="Mauricio Atencia" class="about-image" />
+			<img src={aboutData.image} alt="Mauricio Atencia" class="about-image" />
 		</div>
 
 		<div class="about-footer-container reveal" style="--reveal-delay: 600ms">
@@ -69,8 +69,8 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 		overflow: hidden;
 		box-sizing: border-box;
 
-		background-color: #eeedec;
-		color: #000000;
+		background-color: var(--bg-color, #eeedec);
+		color: var(--text-color, #000000);
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -86,7 +86,7 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 		width: 100%;
 		box-sizing: border-box;
 		justify-content: flex-end;
-		background-color: #eeedec;
+		background-color: transparent;
 	}
 
 	/* El header no usa máscara: el título absoluto es más alto que la barra. */

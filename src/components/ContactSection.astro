@@ -4,7 +4,7 @@ import ContactDrawer from './ContactDrawer.astro';
 import contactData from '../content/contact.json';
 ---
 
-<section class="slide contact-slide" id="contact">
+<section class="slide contact-slide" id="contact" style={`--bg-color: ${contactData.background_color}; --text-color: ${contactData.text_color};`}>
 	<header class="slide-header contact-header reveal" style="--reveal-delay: 60ms">
 		<a href="/" class="contact__name-title" aria-label="Ir al inicio">Mauricio Atencia</a>
 		<Navbar theme="dark" active="contact" />
@@ -59,8 +59,8 @@ import contactData from '../content/contact.json';
 		overflow: hidden;
 		box-sizing: border-box;
 
-		background-color: #eeedec;
-		color: #000000;
+		background-color: var(--bg-color, #eeedec);
+		color: var(--text-color, #000000);
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;

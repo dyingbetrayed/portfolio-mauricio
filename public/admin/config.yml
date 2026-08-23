@@ -11,6 +11,18 @@ media_folder: "public/work"
 public_folder: "/work"
 
 collections:
+  - name: "home"
+    label: "Inicio (Hero)"
+    files:
+      - label: "Contenido Home"
+        name: "home"
+        file: "src/content/home.json"
+        fields:
+          - { label: "Imagen de fondo", name: "hero_image", widget: "image" }
+          - { label: "Color de fondo", name: "background_color", widget: "color" }
+          - { label: "Opacidad capa base", name: "overlay_opacity", widget: "number", value_type: "float" }
+          - { label: "Opacidad capa activa", name: "overlay_opacity_active", widget: "number", value_type: "float" }
+
   - name: "about"
     label: "Sobre mí"
     files:
@@ -18,6 +30,9 @@ collections:
         name: "about"
         file: "src/content/about.json"
         fields:
+          - { label: "Imagen", name: "image", widget: "image" }
+          - { label: "Color de fondo", name: "background_color", widget: "color" }
+          - { label: "Color de texto", name: "text_color", widget: "color" }
           - { label: "Ubicación", name: "location", widget: "string" }
           - label: "Párrafos"
             name: "paragraphs"
@@ -31,6 +46,8 @@ collections:
         name: "contact"
         file: "src/content/contact.json"
         fields:
+          - { label: "Color de fondo", name: "background_color", widget: "color" }
+          - { label: "Color de texto", name: "text_color", widget: "color" }
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Instagram URL", name: "instagram_url", widget: "string" }
           - { label: "WhatsApp URL", name: "whatsapp_url", widget: "string" }
