@@ -33,7 +33,15 @@ import categories from '../../content/categories.json';
           }
         });
         
-        CMS.init({ config });
+        const initCMS = () => {
+          if (window.CMS) {
+            window.CMS.init({ config });
+          } else {
+            setTimeout(initCMS, 100);
+          }
+        };
+        
+        initCMS();
       });
   </script>
 </body>
