@@ -11,6 +11,9 @@ import categories from '../../content/categories.json';
 </head>
 <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script is:inline>
+    window.CMS_MANUAL_INIT = true;
+  </script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script define:vars={{ categories }}>
     fetch('/admin/config.yml')
