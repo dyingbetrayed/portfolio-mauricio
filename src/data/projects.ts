@@ -31,10 +31,10 @@ export interface ProjectCategory {
 
 import categoriesData from '../content/categories.json';
 
-const brandingFiles = import.meta.glob('../content/projects/branding/*.json', { eager: true });
-const socialMediaFiles = import.meta.glob('../content/projects/social-media/*.json', { eager: true });
-const flyersFiles = import.meta.glob('../content/projects/flyers/*.json', { eager: true });
-const merchFiles = import.meta.glob('../content/projects/merch/*.json', { eager: true });
+const category1Files = import.meta.glob('../content/projects/category_1/*.json', { eager: true });
+const category2Files = import.meta.glob('../content/projects/category_2/*.json', { eager: true });
+const category3Files = import.meta.glob('../content/projects/category_3/*.json', { eager: true });
+const category4Files = import.meta.glob('../content/projects/category_4/*.json', { eager: true });
 
 function mapProjects(files: Record<string, any>): Project[] {
 	const projects = Object.entries(files).map(([path, data]) => {
@@ -42,33 +42,39 @@ function mapProjects(files: Record<string, any>): Project[] {
 		return { ...(data as any).default || data, slug } as Project;
 	});
 	projects.sort((a, b) => {
+		const yearA = a.year ? parseInt(a.year, 10) : 0;
+		const yearB = b.year ? parseInt(b.year, 10) : 0;
+		if (yearA !== yearB) {
+			return yearB - yearA; // Descendente por año
+		}
+		// Si es igual, usar el orden de ID como fallback secundario
 		if (!a.id || !b.id) return 0;
 		return a.id.localeCompare(b.id);
 	});
 	return projects;
 }
 
-const brandingProjects = mapProjects(brandingFiles);
-const socialMediaProjects = mapProjects(socialMediaFiles);
-const flyersProjects = mapProjects(flyersFiles);
-const merchProjects = mapProjects(merchFiles);
+const category1Projects = mapProjects(category1Files);
+const category2Projects = mapProjects(category2Files);
+const category3Projects = mapProjects(category3Files);
+const category4Projects = mapProjects(category4Files);
 
 export const projectCategories: Record<string, ProjectCategory> = {
-	branding: {
-		title: categoriesData.branding_title || 'BRANDING',
-		projects: brandingProjects
+	category_1: {
+		title: categoriesData.category_1_title || 'CATEGORÍA 1',
+		projects: category1Projects
 	},
-	"social-media": {
-		title: categoriesData.social_media_title || 'SOCIAL MEDIA',
-		projects: socialMediaProjects
+	category_2: {
+		title: categoriesData.category_2_title || 'CATEGORÍA 2',
+		projects: category2Projects
 	},
-	flyers: {
-		title: categoriesData.flyers_title || 'FLYERS',
-		projects: flyersProjects
+	category_3: {
+		title: categoriesData.category_3_title || 'CATEGORÍA 3',
+		projects: category3Projects
 	},
-	merch: {
-		title: categoriesData.merch_title || 'MERCH',
-		projects: merchProjects
+	category_4: {
+		title: categoriesData.category_4_title || 'CATEGORÍA 4',
+		projects: category4Projects
 	}
 };
 

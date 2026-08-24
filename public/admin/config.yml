@@ -18,10 +18,10 @@ collections:
         name: "categories"
         file: "src/content/categories.json"
         fields:
-          - { label: "Título Branding", name: "branding_title", widget: "string", default: "BRANDING" }
-          - { label: "Título Social Media", name: "social_media_title", widget: "string", default: "SOCIAL MEDIA" }
-          - { label: "Título Flyers", name: "flyers_title", widget: "string", default: "FLYERS" }
-          - { label: "Título Merch", name: "merch_title", widget: "string", default: "MERCH" }
+          - { label: "Título Categoría 1", name: "category_1_title", widget: "string", default: "BRANDING" }
+          - { label: "Título Categoría 2", name: "category_2_title", widget: "string", default: "SOCIAL MEDIA" }
+          - { label: "Título Categoría 3", name: "category_3_title", widget: "string", default: "FLYERS" }
+          - { label: "Título Categoría 4", name: "category_4_title", widget: "string", default: "MERCH" }
 
   - name: "home"
     label: "Inicio (Hero)"
@@ -30,7 +30,7 @@ collections:
         name: "home"
         file: "src/content/home.json"
         fields:
-          - { label: "Imagen de fondo", name: "hero_image", widget: "image" }
+          - { label: "Fondo (Imagen o Video)", name: "hero_media", widget: "file" }
           - { label: "Color de fondo", name: "background_color", widget: "color" }
           - { label: "Opacidad capa base", name: "overlay_opacity", widget: "number", value_type: "float" }
           - { label: "Opacidad capa activa", name: "overlay_opacity_active", widget: "number", value_type: "float" }
@@ -64,9 +64,9 @@ collections:
           - { label: "Instagram URL", name: "instagram_url", widget: "string" }
           - { label: "WhatsApp URL", name: "whatsapp_url", widget: "string" }
 
-  - name: "projects_branding"
-    label: "Proyectos Branding"
-    folder: "src/content/projects/branding"
+  - name: "projects_category_1"
+    label: "Proyectos Categoría 1"
+    folder: "src/content/projects/category_1"
     create: true
     extension: "json"
     format: "json"
@@ -97,9 +97,9 @@ collections:
         required: false
         field: { label: "Imagen", name: "image", widget: "image" }
 
-  - name: "projects_social_media"
-    label: "Proyectos Social Media"
-    folder: "src/content/projects/social-media"
+  - name: "projects_category_2"
+    label: "Proyectos Categoría 2"
+    folder: "src/content/projects/category_2"
     create: true
     extension: "json"
     format: "json"
@@ -130,9 +130,9 @@ collections:
         required: false
         field: { label: "Imagen", name: "image", widget: "image" }
 
-  - name: "projects_flyers"
-    label: "Proyectos Flyers"
-    folder: "src/content/projects/flyers"
+  - name: "projects_category_3"
+    label: "Proyectos Categoría 3"
+    folder: "src/content/projects/category_3"
     create: true
     extension: "json"
     format: "json"
@@ -163,9 +163,9 @@ collections:
         required: false
         field: { label: "Imagen", name: "image", widget: "image" }
 
-  - name: "projects_merch"
-    label: "Proyectos Merch"
-    folder: "src/content/projects/merch"
+  - name: "projects_category_4"
+    label: "Proyectos Categoría 4"
+    folder: "src/content/projects/category_4"
     create: true
     extension: "json"
     format: "json"

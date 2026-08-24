@@ -6,10 +6,10 @@ import ProjectNext from './ProjectNext.astro';
 import { projectCategories, type ProjectCategory } from '../data/projects';
 
 const tableCategories: Array<[string, ProjectCategory]> = [
-	['branding', projectCategories.branding],
-	['social-media', projectCategories['social-media']],
-	['flyers', projectCategories.flyers],
-	['merch', projectCategories.merch],
+	['category_1', projectCategories.category_1],
+	['category_2', projectCategories.category_2],
+	['category_3', projectCategories.category_3],
+	['category_4', projectCategories.category_4],
 ];
 const allProjects = Object.values(projectCategories).flatMap((group) => group.projects);
 const projectsWithImages = allProjects.filter((project) => project.images?.length);
@@ -20,21 +20,21 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	<div class="work-layer work-layer--menu" data-layer="0">
 		<div class="work-grid" data-v-scroll>
 			<div class="work-row-spacer" aria-hidden="true"></div>
-			<button type="button" class="work-link hover-branding work-row work-row--white work-row--branding" data-open-category="branding" data-cursor-nav>
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 40ms;">{projectCategories.branding.title}</span>
+			<button type="button" class="work-link hover-branding work-row work-row--white work-row--branding" data-open-category="category_1" data-cursor-nav>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 40ms;">{projectCategories.category_1.title}</span>
 			</button>
 
-			<button type="button" class="work-link hover-proyectos work-row work-row--gray work-row--branding" data-open-category="social-media" data-cursor-nav aria-label="social media">
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 115ms;">{projectCategories['social-media'].title}</span>
+			<button type="button" class="work-link hover-proyectos work-row work-row--gray work-row--branding" data-open-category="category_2" data-cursor-nav aria-label="social media">
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 115ms;">{projectCategories.category_2.title}</span>
 			</button>
 
 			<div class="work-row-pair">
-				<button type="button" class="work-link hover-flyers work-row work-row--white work-row--branding" data-open-category="flyers" data-cursor-nav>
-					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 190ms;">{projectCategories.flyers.title}</span>
+				<button type="button" class="work-link hover-flyers work-row work-row--white work-row--branding" data-open-category="category_3" data-cursor-nav>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 190ms;">{projectCategories.category_3.title}</span>
 				</button>
 
-				<button type="button" class="work-link hover-merch work-row work-row--white work-row--branding" data-open-category="merch" data-cursor-nav>
-					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 265ms;">{projectCategories.merch.title}</span>
+				<button type="button" class="work-link hover-merch work-row work-row--white work-row--branding" data-open-category="category_4" data-cursor-nav>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 265ms;">{projectCategories.category_4.title}</span>
 				</button>
 			</div>
 
