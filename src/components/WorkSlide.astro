@@ -34,6 +34,18 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				</button>
 
 				<button type="button" class="work-link hover-merch work-row work-row--white work-row--branding" data-open-category="merch" data-cursor-nav>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 265ms;">{projectCategories.merch.title}</span>
+				</button>
+			</div>
+
+			<button type="button" class="work-link hover-ikeneas work-row work-row--gray work-row--branding" data-external-url="https://ikeneas.com/" data-cursor-nav>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">IKENEAS</span>
+			</button>
+		</div>
+
+		<div class="work-nav">
+			<div class="work-nav__inner">
+				<Navbar theme="dark" active="work" />
 			</div>
 		</div>
 	</div>
