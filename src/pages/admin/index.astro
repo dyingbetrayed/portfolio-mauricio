@@ -1,0 +1,37 @@
+---
+import categories from '../../content/categories.json';
+---
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Panel de Administración — Mauricio Atencia</title>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script define:vars={{ categories }}>
+    fetch('/admin/config.yml')
+      .then(res => res.text())
+      .then(text => {
+        const config = jsyaml.load(text);
+        
+        config.collections.forEach(collection => {
+          if (collection.name === 'projects_category_1') {
+            collection.label = categories.category_1_title || 'Categoría 1';
+          } else if (collection.name === 'projects_category_2') {
+            collection.label = categories.category_2_title || 'Categoría 2';
+          } else if (collection.name === 'projects_category_3') {
+            collection.label = categories.category_3_title || 'Categoría 3';
+          } else if (collection.name === 'projects_category_4') {
+            collection.label = categories.category_4_title || 'Categoría 4';
+          }
+        });
+        
+        CMS.init({ config });
+      });
+  </script>
+</body>
+</html>
