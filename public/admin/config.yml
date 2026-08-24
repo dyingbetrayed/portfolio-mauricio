@@ -11,6 +11,18 @@ media_folder: "public/work"
 public_folder: "/work"
 
 collections:
+  - name: "settings"
+    label: "Configuración"
+    files:
+      - label: "Categorías"
+        name: "categories"
+        file: "src/content/categories.json"
+        fields:
+          - { label: "Título Branding", name: "branding_title", widget: "string", default: "BRANDING" }
+          - { label: "Título Social Media", name: "social_media_title", widget: "string", default: "SOCIAL MEDIA" }
+          - { label: "Título Flyers", name: "flyers_title", widget: "string", default: "FLYERS" }
+          - { label: "Título Merch", name: "merch_title", widget: "string", default: "MERCH" }
+
   - name: "home"
     label: "Inicio (Hero)"
     files:
@@ -58,10 +70,109 @@ collections:
     create: true
     extension: "json"
     format: "json"
+    identifier_field: "name"
     slug: "{{slug}}"
     fields:
       - { label: "ID", name: "id", widget: "string" }
-      - { label: "Slug", name: "slug", widget: "string" }
+      - { label: "Nombre", name: "name", widget: "string" }
+      - { label: "Año", name: "year", widget: "string" }
+      - { label: "Ubicación", name: "location", widget: "string" }
+      - { label: "Color", name: "color", widget: "color" }
+      - { label: "Tagline", name: "tagline", widget: "text", required: false }
+      - { label: "Servicios", name: "services", widget: "list", required: false }
+      - label: "Secciones"
+        name: "sections"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Título", name: "label", widget: "string" }
+          - label: "Párrafos"
+            name: "paragraphs"
+            widget: "list"
+            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+      - { label: "Nota legal", name: "note", widget: "string", required: false }
+      - label: "Imágenes"
+        name: "images"
+        widget: "list"
+        required: false
+        field: { label: "Imagen", name: "image", widget: "image" }
+
+  - name: "projects_social_media"
+    label: "Proyectos Social Media"
+    folder: "src/content/projects/social-media"
+    create: true
+    extension: "json"
+    format: "json"
+    identifier_field: "name"
+    slug: "{{slug}}"
+    fields:
+      - { label: "ID", name: "id", widget: "string" }
+      - { label: "Nombre", name: "name", widget: "string" }
+      - { label: "Año", name: "year", widget: "string" }
+      - { label: "Ubicación", name: "location", widget: "string" }
+      - { label: "Color", name: "color", widget: "color" }
+      - { label: "Tagline", name: "tagline", widget: "text", required: false }
+      - { label: "Servicios", name: "services", widget: "list", required: false }
+      - label: "Secciones"
+        name: "sections"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Título", name: "label", widget: "string" }
+          - label: "Párrafos"
+            name: "paragraphs"
+            widget: "list"
+            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+      - { label: "Nota legal", name: "note", widget: "string", required: false }
+      - label: "Imágenes"
+        name: "images"
+        widget: "list"
+        required: false
+        field: { label: "Imagen", name: "image", widget: "image" }
+
+  - name: "projects_flyers"
+    label: "Proyectos Flyers"
+    folder: "src/content/projects/flyers"
+    create: true
+    extension: "json"
+    format: "json"
+    identifier_field: "name"
+    slug: "{{slug}}"
+    fields:
+      - { label: "ID", name: "id", widget: "string" }
+      - { label: "Nombre", name: "name", widget: "string" }
+      - { label: "Año", name: "year", widget: "string" }
+      - { label: "Ubicación", name: "location", widget: "string" }
+      - { label: "Color", name: "color", widget: "color" }
+      - { label: "Tagline", name: "tagline", widget: "text", required: false }
+      - { label: "Servicios", name: "services", widget: "list", required: false }
+      - label: "Secciones"
+        name: "sections"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Título", name: "label", widget: "string" }
+          - label: "Párrafos"
+            name: "paragraphs"
+            widget: "list"
+            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+      - { label: "Nota legal", name: "note", widget: "string", required: false }
+      - label: "Imágenes"
+        name: "images"
+        widget: "list"
+        required: false
+        field: { label: "Imagen", name: "image", widget: "image" }
+
+  - name: "projects_merch"
+    label: "Proyectos Merch"
+    folder: "src/content/projects/merch"
+    create: true
+    extension: "json"
+    format: "json"
+    identifier_field: "name"
+    slug: "{{slug}}"
+    fields:
+      - { label: "ID", name: "id", widget: "string" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
       - { label: "Ubicación", name: "location", widget: "string" }

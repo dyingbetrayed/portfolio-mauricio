@@ -7,9 +7,9 @@ import { projectCategories, type ProjectCategory } from '../data/projects';
 
 const tableCategories: Array<[string, ProjectCategory]> = [
 	['branding', projectCategories.branding],
-	['social-media', { title: 'SOCIAL MEDIA', projects: [] }],
-	['flyers', { title: 'FLYERS', projects: [] }],
-	['merch', { title: 'MERCH', projects: [] }],
+	['social-media', projectCategories['social-media']],
+	['flyers', projectCategories.flyers],
+	['merch', projectCategories.merch],
 ];
 const allProjects = Object.values(projectCategories).flatMap((group) => group.projects);
 const projectsWithImages = allProjects.filter((project) => project.images?.length);
@@ -21,31 +21,19 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		<div class="work-grid" data-v-scroll>
 			<div class="work-row-spacer" aria-hidden="true"></div>
 			<button type="button" class="work-link hover-branding work-row work-row--white work-row--branding" data-open-category="branding" data-cursor-nav>
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 40ms;">BRANDING</span>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 40ms;">{projectCategories.branding.title}</span>
 			</button>
 
 			<button type="button" class="work-link hover-proyectos work-row work-row--gray work-row--branding" data-open-category="social-media" data-cursor-nav aria-label="social media">
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 115ms;">SOCIAL MEDIA</span>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 115ms;">{projectCategories['social-media'].title}</span>
 			</button>
 
 			<div class="work-row-pair">
 				<button type="button" class="work-link hover-flyers work-row work-row--white work-row--branding" data-open-category="flyers" data-cursor-nav>
-					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 190ms;">FLYERS</span>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 190ms;">{projectCategories.flyers.title}</span>
 				</button>
 
 				<button type="button" class="work-link hover-merch work-row work-row--white work-row--branding" data-open-category="merch" data-cursor-nav>
-					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 265ms;">MERCH</span>
-				</button>
-			</div>
-
-			<button type="button" class="work-link hover-ikeneas work-row work-row--gray work-row--branding" data-external-url="https://ikeneas.com/" data-cursor-nav>
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">IKENEAS</span>
-			</button>
-		</div>
-
-		<div class="work-nav">
-			<div class="work-nav__inner">
-				<Navbar theme="dark" active="work" />
 			</div>
 		</div>
 	</div>
