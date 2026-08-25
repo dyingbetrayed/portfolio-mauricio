@@ -5,13 +5,18 @@ export interface Props {
 	projectName: string;
 	/** Mismo color del ítem en la tabla / fondo de la descripción */
 	color: string;
+	/** Slug del proyecto para incluir el link en el mensaje */
+	slug?: string;
 	class?: string;
 }
 
-const { projectName, color, class: className } = Astro.props;
+const { projectName, color, slug, class: className } = Astro.props;
 const ink = readableInk(color);
 
-const message = `Hola, me interesa cotizar un proyecto similar a ${projectName}.`;
+const projectUrl = slug ? `https://portfolio-mauricio-beta.vercel.app/${slug}` : '';
+const message = projectUrl
+	? `Hola, me interesa cotizar un proyecto similar a ${projectName}. ${projectUrl}`
+	: `Hola, me interesa cotizar un proyecto similar a ${projectName}.`;
 const href = `https://api.whatsapp.com/send/?phone=573146253071&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
 ---
 
