@@ -26,6 +26,7 @@ export interface Project {
 
 export interface ProjectCategory {
 	title: string;
+	slug: string;
 	projects: Project[];
 }
 
@@ -59,21 +60,29 @@ const category2Projects = mapProjects(category2Files);
 const category3Projects = mapProjects(category3Files);
 const category4Projects = mapProjects(category4Files);
 
+function slugify(text: string) {
+	return text.toString().toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+}
+
 export const projectCategories: Record<string, ProjectCategory> = {
 	category_1: {
 		title: categoriesData.category_1_title || 'CATEGORÍA 1',
+		slug: slugify(categoriesData.category_1_title || 'CATEGORÍA 1'),
 		projects: category1Projects
 	},
 	category_2: {
 		title: categoriesData.category_2_title || 'CATEGORÍA 2',
+		slug: slugify(categoriesData.category_2_title || 'CATEGORÍA 2'),
 		projects: category2Projects
 	},
 	category_3: {
 		title: categoriesData.category_3_title || 'CATEGORÍA 3',
+		slug: slugify(categoriesData.category_3_title || 'CATEGORÍA 3'),
 		projects: category3Projects
 	},
 	category_4: {
 		title: categoriesData.category_4_title || 'CATEGORÍA 4',
+		slug: slugify(categoriesData.category_4_title || 'CATEGORÍA 4'),
 		projects: category4Projects
 	}
 };

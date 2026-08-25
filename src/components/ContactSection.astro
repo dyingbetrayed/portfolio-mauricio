@@ -7,7 +7,7 @@ import SiteBrand from './SiteBrand.astro';
 
 <section class="slide contact-slide" id="contact" style={`--bg-color: ${contactData.background_color}; --text-color: ${contactData.text_color};`}>
 	<header class="slide-header contact-header reveal" style="--reveal-delay: 60ms">
-		<SiteBrand class="contact__name-title" />
+		<a href="/" class="contact__name-title" aria-label="Ir al inicio"><SiteBrand /></a>
 		<Navbar theme="dark" active="contact" />
 	</header>
 	

@@ -1,22 +1,15 @@
 ---
 import siteSettings from '../content/site_settings.json';
 
-interface Props {
-	class?: string;
-}
-
-const { class: className } = Astro.props;
 const logoText = siteSettings.logo_text || 'Mauricio Atencia';
 const logoImage = siteSettings.logo_image;
 ---
 
-<a href="/" class={className} aria-label="Ir al inicio">
-	{logoImage ? (
-		<img src={logoImage} alt={logoText} class="site-logo-img" />
-	) : (
-		logoText
-	)}
-</a>
+{logoImage ? (
+	<img src={logoImage} alt={logoText} class="site-logo-img" />
+) : (
+	<>{logoText}</>
+)}
 
 <style>
 	.site-logo-img {
