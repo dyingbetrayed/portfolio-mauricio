@@ -1,5 +1,6 @@
 ---
 import Navbar from './Navbar.astro';
+import SiteBrand from './SiteBrand.astro';
 import type { Project } from '../data/projects';
 import { getNextProjects } from '../data/projects';
 import { readableInk } from '../utils/color';
@@ -15,7 +16,7 @@ const nextSlug = related[0]?.slug;
 
 <article class="project-next" data-project-next={project.slug} hidden>
 	<header class="project-next__nav">
-		<a href="/" class="project-next__name-title" aria-label="Ir al inicio">Mauricio Atencia</a>
+		<SiteBrand class="project-next__name-title" />
 		<Navbar theme="dark" active="work" />
 	</header>
 

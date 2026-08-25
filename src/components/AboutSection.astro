@@ -1,6 +1,7 @@
 ---
 import Navbar from './Navbar.astro';
 import aboutData from '../content/about.json';
+import siteSettings from '../content/site_settings.json';
 
 const aboutParagraphs = aboutData.paragraphs;
 
@@ -21,9 +22,14 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 
 <section class="slide about-slide" id="about" style={`--bg-color: ${aboutData.background_color}; --text-color: ${aboutData.text_color};`}>
 	<header class="about-header">
-		<h1 class="name-title top-name-title" aria-label="Mauricio Atencia">
-			<span class="name-title__mask"><span class="name-title__word">Mauricio</span></span>
-			<span class="name-title__mask"><span class="name-title__word">Atencia</span></span>
+		<h1 class="name-title top-name-title" aria-label={siteSettings.logo_text || 'Mauricio Atencia'}>
+			{siteSettings.logo_image ? (
+				<img src={siteSettings.logo_image} alt={siteSettings.logo_text || 'Mauricio Atencia'} class="site-logo-img" />
+			) : (
+				(siteSettings.logo_text || 'Mauricio Atencia').split(' ').map((word, i) => (
+					<span class="name-title__mask"><span class="name-title__word" style={i > 0 ? "transition-delay: 85ms;" : ""}>{word}</span></span>
+				))
+			)}
 		</h1>
 		<Navbar theme="dark" active="about" />
 	</header>
@@ -134,8 +140,20 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 		transform: translate3d(0, 0, 0);
 	}
 
-	.name-title__mask:nth-child(2) .name-title__word {
-		transition-delay: 85ms;
+	.site-logo-img {
+		height: 1em;
+		width: auto;
+		object-fit: contain;
+		display: block;
+		clip-path: inset(100% 0 0 0);
+		transform: translate3d(0, 115%, 0);
+		transition: clip-path var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out);
+		will-change: transform, clip-path;
+	}
+
+	.about-slide.is-active .site-logo-img {
+		clip-path: inset(0 0 0 0);
+		transform: translate3d(0, 0, 0);
 	}
 
 	.about-content-wrapper {

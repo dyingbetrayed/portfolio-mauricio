@@ -1,5 +1,6 @@
 ---
 import Navbar from './Navbar.astro';
+import SiteBrand from './SiteBrand.astro';
 import type { Project } from '../data/projects';
 import { readableInk } from '../utils/color';
 import { findProjectCategory, projectCategories } from '../data/projects';
@@ -28,7 +29,7 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 	hidden
 >
 	<header class="project__nav">
-		<a href="/" class="project__name-title" aria-label="Ir al inicio">Mauricio Atencia</a>
+		<SiteBrand class="project__name-title" />
 		<Navbar theme={navTheme} active="work" />
 	</header>
 

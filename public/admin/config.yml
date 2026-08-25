@@ -23,6 +23,13 @@ collections:
           - { label: "Título Categoría 3", name: "category_3_title", widget: "string", default: "FLYERS" }
           - { label: "Título Categoría 4", name: "category_4_title", widget: "string", default: "MERCH" }
 
+      - label: "Ajustes del Sitio (Logo)"
+        name: "site_settings"
+        file: "src/content/site_settings.json"
+        fields:
+          - { label: "Texto del Logo", name: "logo_text", widget: "string", default: "Mauricio Atencia" }
+          - { label: "Imagen del Logo (Opcional)", name: "logo_image", widget: "image", required: false }
+
   - name: "home"
     label: "Inicio (Hero)"
     files:

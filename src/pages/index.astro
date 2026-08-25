@@ -6,7 +6,7 @@ import WorkSlide from '../components/WorkSlide.astro';
 import ContactSection from '../components/ContactSection.astro';
 import homeData from '../content/home.json';
 
-const heroMedia = homeData.hero_media || homeData.hero_image || '';
+const heroMedia = homeData.hero_media || (homeData as any).hero_image || '';
 const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 ---
 

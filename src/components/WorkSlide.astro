@@ -3,6 +3,7 @@ import Navbar from './Navbar.astro';
 import ProjectDetail from './ProjectDetail.astro';
 import ProjectImage from './ProjectImage.astro';
 import ProjectNext from './ProjectNext.astro';
+import SiteBrand from './SiteBrand.astro';
 import { projectCategories, type ProjectCategory } from '../data/projects';
 
 const tableCategories: Array<[string, ProjectCategory]> = [
@@ -55,7 +56,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		{tableCategories.map(([category, group]) => (
 			<div class="category-panel" data-category={category} id={category} data-v-scroll hidden>
 				<header class="category-nav">
-					<a href="/" class="category__name-title" aria-label="Ir al inicio">Mauricio Atencia</a>
+					<SiteBrand class="category__name-title" />
 					<Navbar theme="dark" active="work" />
 				</header>
 
