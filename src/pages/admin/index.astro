@@ -8,41 +8,68 @@ import categories from '../../content/categories.json';
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
   <title>Panel de Administración — Mauricio Atencia</title>
+  <style>
+    #cms-loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      font-family: sans-serif;
+      font-size: 1rem;
+      color: #666;
+      z-index: 9999;
+    }
+  </style>
 </head>
 <body>
+  <div id="cms-loading">Cargando panel…</div>
+
+  <!-- js-yaml must be available before CMS script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
-  <script is:inline>
-    window.CMS_MANUAL_INIT = true;
-  </script>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
   <script define:vars={{ categories }}>
-    fetch('/admin/config.yml')
-      .then(res => res.text())
-      .then(text => {
-        const config = jsyaml.load(text);
-        
-        config.collections.forEach(collection => {
-          if (collection.name === 'projects_category_1') {
-            collection.label = categories.category_1_title || 'Categoría 1';
-          } else if (collection.name === 'projects_category_2') {
-            collection.label = categories.category_2_title || 'Categoría 2';
-          } else if (collection.name === 'projects_category_3') {
-            collection.label = categories.category_3_title || 'Categoría 3';
-          } else if (collection.name === 'projects_category_4') {
-            collection.label = categories.category_4_title || 'Categoría 4';
-          }
-        });
-        
-        const initCMS = () => {
-          if (window.CMS) {
-            window.CMS.init({ config });
-          } else {
-            setTimeout(initCMS, 100);
-          }
-        };
-        
-        initCMS();
+    // Tell Decap not to auto-init until we call CMS.init()
+    window.CMS_MANUAL_INIT = true;
+
+    async function bootstrap() {
+      // 1. Fetch & parse config
+      const text = await fetch('/admin/config.yml').then(r => r.text());
+      const config = jsyaml.load(text);
+
+      // 2. Patch collection labels with live category names
+      config.collections.forEach(collection => {
+        if (collection.name === 'projects_category_1') {
+          collection.label = categories.category_1_title || 'Categoría 1';
+        } else if (collection.name === 'projects_category_2') {
+          collection.label = categories.category_2_title || 'Categoría 2';
+        } else if (collection.name === 'projects_category_3') {
+          collection.label = categories.category_3_title || 'Categoría 3';
+        } else if (collection.name === 'projects_category_4') {
+          collection.label = categories.category_4_title || 'Categoría 4';
+        }
       });
+
+      // 3. Load the CMS script dynamically so it runs AFTER config is ready
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+
+      // 4. Init CMS with our patched config
+      document.getElementById('cms-loading')?.remove();
+      window.CMS.init({ config });
+    }
+
+    bootstrap().catch(err => {
+      console.error('CMS bootstrap error:', err);
+      const el = document.getElementById('cms-loading');
+      if (el) el.textContent = 'Error al cargar el panel. Revisa la consola.';
+    });
   </script>
 </body>
 </html>
