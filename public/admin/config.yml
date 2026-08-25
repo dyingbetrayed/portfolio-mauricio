@@ -28,7 +28,7 @@ collections:
         file: "src/content/site_settings.json"
         fields:
           - { label: "Texto del Logo", name: "logo_text", widget: "string", default: "Mauricio Atencia" }
-          - { label: "Imagen del Logo (Opcional — dejar vacío para usar texto)", name: "logo_image", widget: "file", required: false, default: "", allow_multiple: false, media_library: {config: {multiple: false}} }
+          - { label: "Imagen del Logo (Opcional — dejar vacío para usar texto)", name: "logo_image", widget: "file", required: false, allow_multiple: false, media_library: {config: {multiple: false}} }
 
   - name: "home"
     label: "Inicio (Hero)"
