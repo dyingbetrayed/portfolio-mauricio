@@ -207,7 +207,7 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 				if (goToIndex(target)) {
 					navigationDirection = delta;
 					const id = slides()[target]?.id;
-					const url = id ? `#${id}` : `${location.pathname}${location.search}`;
+					const url = id ? `/#${id}` : `/`;
 					history.replaceState(null, '', url);
 				}
 				return;
@@ -218,7 +218,7 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 			if (goToIndex(target)) {
 				navigationDirection = delta;
 				const id = slides()[target]?.id;
-				const url = id ? `#${id}` : `${location.pathname}${location.search}`;
+				const url = id ? `/#${id}` : `/`;
 				history.replaceState(null, '', url);
 			}
 		}
@@ -646,7 +646,7 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 				document.getElementById('work')?.dispatchEvent(new CustomEvent('work:close'));
 			}
 			goToIndex(idx);
-			history.replaceState(null, '', href);
+			history.replaceState(null, '', `/${href}`);
 		});
 
 		container.addEventListener('scroll', () => {

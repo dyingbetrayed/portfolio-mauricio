@@ -224,14 +224,14 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			if (syncHash) {
 				const activeCategory = root.querySelector('[data-category]:not([hidden])');
 				const activeProject = root.querySelector('[data-project]:not([hidden])');
-				let hash = '#work';
+				let newUrl = '/#work';
 				if (depth >= 2 && activeProject) {
-					hash = `#${activeProject.getAttribute('data-project')}`;
+					newUrl = `/${activeProject.getAttribute('data-project')}`;
 				} else if (depth === 1 && activeCategory) {
-					hash = `#${activeCategory.getAttribute('data-category')}`;
+					newUrl = `/${activeCategory.getAttribute('data-category')}`;
 				}
-				if (location.hash !== hash) {
-					history.replaceState(null, '', hash);
+				if (window.location.pathname + window.location.hash !== newUrl) {
+					history.replaceState(null, '', newUrl);
 				}
 			}
 		}
