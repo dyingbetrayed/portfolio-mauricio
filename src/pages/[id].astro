@@ -3,7 +3,7 @@ import { projectCategories } from '../data/projects';
 import type { Project, ProjectCategory } from '../data/projects';
 
 export function getStaticPaths() {
-	const paths = [];
+	const paths: { params: { id: string }; props: { type: 'category' | 'project'; data: Project | ProjectCategory; slug: string } }[] = [];
 
 	Object.entries(projectCategories).forEach(([categoryId, category]) => {
 		// Agrega la categoría
@@ -26,7 +26,7 @@ export function getStaticPaths() {
 
 interface Props {
 	type: 'category' | 'project';
-	data: any;
+	data: Project | ProjectCategory;
 	slug: string;
 }
 
@@ -54,8 +54,8 @@ if (type === 'project') {
 	ogImage = firstProjectWithImage?.images?.[0]
 		? `${BASE_URL}${firstProjectWithImage.images[0]}`
 		: ogImage;
-	ogTitle = category.name;
-	ogDescription = category.description || `Proyectos en ${category.name} — Mauricio Atencia`;
+	ogTitle = (category as ProjectCategory).title;
+	ogDescription = `Proyectos de ${(category as ProjectCategory).title} — Mauricio Atencia`;
 }
 ---
 <!DOCTYPE html>

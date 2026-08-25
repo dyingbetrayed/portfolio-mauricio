@@ -46,6 +46,20 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		/>
 		<button
 			type="button"
+			class="project-image__share"
+			data-share-slug={project.slug}
+			aria-label="Copiar enlace para compartir"
+			title="Copiar enlace"
+		>
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+				<polyline points="16 6 12 2 8 6"></polyline>
+				<line x1="12" y1="2" x2="12" y2="15"></line>
+			</svg>
+			<span class="project-image__share-label">Compartir</span>
+		</button>
+		<button
+			type="button"
 			class="project-image__scroll-hint"
 			aria-label="Continuar a la siguiente imagen o proyecto"
 			data-work-forward
@@ -222,6 +236,37 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		50% { transform: translateX(8px); }
 	}
 
+	.project-image__share {
+		display: flex;
+		align-items: center;
+		gap: 0.4em;
+		flex-shrink: 0;
+		color: #ffffff;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid rgba(255,255,255,0.35);
+		border-radius: 2rem;
+		background: rgba(0,0,0,0.35);
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+		cursor: pointer;
+		Font-family: var(--font-nav);
+		font-weight: 600;
+		font-size: clamp(0.72rem, 0.9vw, 0.9rem);
+		letter-spacing: 0.03em;
+		opacity: 0.85;
+		transition: opacity 0.2s, background 0.2s;
+	}
+
+	.project-image__share:hover {
+		opacity: 1;
+		background: rgba(0,0,0,0.55);
+	}
+
+	.project-image__share.copied {
+		border-color: rgba(255,255,255,0.7);
+		opacity: 1;
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		.project-image.is-entering-forward,
 		.project-image.is-entering-backward {
@@ -263,3 +308,28 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		}
 	}
 </style>
+
+<script>
+	document.addEventListener('click', (event) => {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+		const btn = target.closest('.project-image__share');
+		if (!(btn instanceof HTMLElement)) return;
+
+		const slug = btn.getAttribute('data-share-slug');
+		if (!slug) return;
+
+		const url = `${window.location.origin}/${slug}`;
+		const label = btn.querySelector('.project-image__share-label');
+
+		navigator.clipboard.writeText(url).then(() => {
+			btn.classList.add('copied');
+			const original = label?.textContent;
+			if (label) label.textContent = '¡Copiado!';
+			setTimeout(() => {
+				btn.classList.remove('copied');
+				if (label && original) label.textContent = original;
+			}, 2000);
+		});
+	});
+</script>
