@@ -1,6 +1,6 @@
 {
   "color": "#f7d904",
-  "name": "la ficha studios",
+  "name": "la ficha studio",
   "slug": "lafichastudio",
   "sections": [
     {
@@ -29,7 +29,7 @@
     "/work/mesa-de-trabajo-45.png"
   ],
   "id": "03",
-  "year": "2025",
+  "year": "2026",
   "services": [
     "hola"
   ]
