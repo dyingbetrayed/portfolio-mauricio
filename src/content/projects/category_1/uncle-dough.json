@@ -10,5 +10,16 @@
     "/work/mesa-de-trabajo-52.png",
     "/work/mesa-de-trabajo-53.png",
     "/work/mesa-de-trabajo-54.png"
+  ],
+  "sections": [
+    {
+      "paragraphs": [
+        "Permíteme presentarte al tío Dough y su panadería, un pequeño local de ambiente familiar que te invita a descubrir el sabor de una nueva tradición."
+      ],
+      "label": "Objetivo"
+    }
+  ],
+  "services": [
+    "branding"
   ]
 }
