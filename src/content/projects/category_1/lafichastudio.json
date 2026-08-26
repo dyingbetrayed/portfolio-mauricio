@@ -2,7 +2,15 @@
   "color": "#f7d904",
   "name": "la ficha studio",
   "slug": "lafichastudio",
-  "tagline": "branding, namiing",
+  "sections": [
+    {
+      "label": "branding"
+    },
+    {
+      "label": "naming"
+    }
+  ],
+  "tagline": "creacion de proyecto nuevo",
   "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-31.png",
