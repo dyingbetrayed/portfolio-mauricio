@@ -1,0 +1,22 @@
+{
+  "id": "08",
+  "name": "eligellantas",
+  "year": "2025",
+  "location": "Medellín, CO",
+  "color": "#c30000",
+  "services": [
+    "rediseñodelogo"
+  ],
+  "sections": [],
+  "images": [
+    "/work/a-21-.png",
+    "/work/a-22-.png",
+    "/work/a-23-.png",
+    "/work/a-24-.png",
+    "/work/a-25-.png",
+    "/work/a-26-.png",
+    "/work/a-27-.png",
+    "/work/a-28-.png",
+    "/work/a-29-.png"
+  ]
+}
