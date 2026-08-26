@@ -1,10 +1,16 @@
 {
-  "id": "08",
-  "name": "viral music",
-  "year": "2023",
-  "location": "Bogotá, CO",
   "color": "#8409d8",
+  "name": "viral music",
+  "sections": [
+    {
+      "label": "Objetivo",
+      "paragraphs": [
+        "Viral Music es una empresa especializada en servicios de TikTok para sellos, agencias de management y otras organizaciones de la industria musical. Surgimos de la cooperación entre Casa Manglar, una empresa especializada en content marketing y TeamUp, una agencia que brinda soluciones de marketing digital a artistas y sellos."
+      ]
+    }
+  ],
   "note": "Todos los derechos son reservados de Casa Manglar.",
+  "location": "Bogotá, CO",
   "images": [
     "/work/mesa-de-trabajo-18.png",
     "/work/mesa-de-trabajo-19.png",
@@ -19,5 +25,10 @@
     "/work/mesa-de-trabajo-28.png",
     "/work/mesa-de-trabajo-29.png",
     "/work/mesa-de-trabajo-30.png"
+  ],
+  "id": "08",
+  "year": "2023",
+  "services": [
+    "Branding"
   ]
 }
