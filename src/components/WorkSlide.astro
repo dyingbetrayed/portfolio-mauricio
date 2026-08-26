@@ -630,33 +630,47 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				const panel = imagePanelFor(slug);
 				const gallery = panel?.querySelector('.project-image__gallery');
 				if (gallery) {
+					/* Scroll horizontal nativo (trackpad/rueda horizontal): dejar pasar */
 					if (horizontalIntent) {
 						if (canScrollHorizontally(gallery, rawDelta)) return;
 					} else {
-						if (canScrollHorizontally(gallery, delta)) {
-							gallery.scrollBy({ left: delta, behavior: 'auto' });
-							event.preventDefault();
-							event.stopPropagation();
-							return;
+						/* Scroll vertical → convertir en avance/retroceso de imagen completa */
+						event.preventDefault();
+						event.stopPropagation();
+						if (performance.now() < deepWheelBlockedUntil) return;
+
+						if (deepWheelAccumulator && Math.sign(deepWheelAccumulator) !== Math.sign(delta)) {
+							deepWheelAccumulator = 0;
 						}
-					}
-				}
-				
-				if (delta < 0) {
-					event.preventDefault();
-					event.stopPropagation();
-					if (performance.now() < deepWheelBlockedUntil) return;
-					/* Intentar retroceder dentro del carrusel primero */
-					const isAtStart = gallery.scrollLeft <= 10;
-					if (!isAtStart) {
-						gallery.scrollBy({ left: -gallery.clientWidth, behavior: 'smooth' });
+						deepWheelAccumulator += delta;
+						keepDeepWheelOpen();
+						if (Math.abs(deepWheelAccumulator) < DEEP_WHEEL_THRESHOLD) return;
+
+						const direction = Math.sign(deepWheelAccumulator);
+						clearDeepWheelAccumulator();
 						blockDeepWheel();
+
+						if (direction > 0) {
+							/* Avanzar: si quedan imágenes, ir a la siguiente */
+							const isAtEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 10;
+							if (!isAtEnd) {
+								gallery.scrollBy({ left: gallery.clientWidth, behavior: 'smooth' });
+							} else {
+								guardWorkExitWheel();
+								void openProjectNext(slug);
+							}
+						} else {
+							/* Retroceder: si hay imágenes anteriores, ir a la anterior */
+							const isAtStart = gallery.scrollLeft <= 10;
+							if (!isAtStart) {
+								gallery.scrollBy({ left: -gallery.clientWidth, behavior: 'smooth' });
+							} else {
+								guardWorkExitWheel();
+								void goBack();
+							}
+						}
 						return;
 					}
-					blockDeepWheel();
-					guardWorkExitWheel();
-					void goBack();
-					return;
 				}
 			}
 
