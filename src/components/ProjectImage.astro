@@ -278,6 +278,21 @@ const images = project.images ?? [];
 			top: calc(var(--pad-header-y) + 0.9rem);
 		}
 
+		/* El mix-blend-mode:difference en el nav hace que el icono
+		   hamburguesa quede invisible. Forzamos blanco con isolation. */
+		.project-image__nav {
+			mix-blend-mode: normal;
+			color: #ffffff;
+		}
+
+		.project-image__nav :global(.navbar__toggle) {
+			color: #ffffff;
+		}
+
+		.project-image__nav :global(.navbar__toggle span) {
+			background: #ffffff;
+		}
+
 		.project-image.is-entering-forward {
 			animation-name: project-image-enter-up;
 		}

@@ -552,7 +552,8 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 				if (gesture.axis === 'x' && !gesture.hasScrollTargetH && Math.abs(dx) >= SWIPE_THRESHOLD) {
 					if (dx < 0) shouldForward = true;
 					else shouldBack = true;
-				} else if (gesture.axis === 'y' && !gesture.hasScrollTarget && Math.abs(dy) >= SWIPE_THRESHOLD) {
+				} else if (gesture.axis === 'y' && !gesture.hasScrollTarget && depth < 3 && Math.abs(dy) >= SWIPE_THRESHOLD) {
+					/* En depth 3 (galería de imágenes) el scroll nativo maneja los snap; no interferimos */
 					if (dy < 0) shouldForward = true;
 					else shouldBack = true;
 				}
