@@ -14,5 +14,13 @@
   ],
   "services": [
     "logo"
+  ],
+  "sections": [
+    {
+      "label": "Objetivo",
+      "paragraphs": [
+        "Diseño de logo para la distribuidora musical colombiana: MILAGROSA MUSIC MEDIA, creada por el DJ y productor Astronomical Telegram."
+      ]
+    }
   ]
 }
