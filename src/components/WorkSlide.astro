@@ -443,6 +443,19 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					if (currentDepth() < 4) showOnly(nextPanels(), 'data-project-next', null);
 				});
 			} else if (depth === 3) {
+				const project = activeProjectPanel();
+				const slug = project?.getAttribute('data-project');
+				const panel = imagePanelFor(slug);
+				if (panel) {
+					const gallery = panel.querySelector('.project-image__gallery');
+					if (gallery) {
+						const isAtStart = gallery.scrollLeft <= 10;
+						if (!isAtStart) {
+							gallery.scrollBy({ left: -gallery.clientWidth, behavior: 'smooth' });
+							return;
+						}
+					}
+				}
 				imageOpenRequest += 1;
 				setDepth(2);
 				afterSlide(layerImages, () => {
@@ -633,6 +646,13 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					event.preventDefault();
 					event.stopPropagation();
 					if (performance.now() < deepWheelBlockedUntil) return;
+					/* Intentar retroceder dentro del carrusel primero */
+					const isAtStart = gallery.scrollLeft <= 10;
+					if (!isAtStart) {
+						gallery.scrollBy({ left: -gallery.clientWidth, behavior: 'smooth' });
+						blockDeepWheel();
+						return;
+					}
 					blockDeepWheel();
 					guardWorkExitWheel();
 					void goBack();
