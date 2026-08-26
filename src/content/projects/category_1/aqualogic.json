@@ -1,10 +1,16 @@
 {
-  "id": "08",
-  "name": "aqualogic",
-  "year": "2025",
-  "location": "Quito, EC",
   "color": "#005bd8",
+  "name": "aqualogic",
+  "sections": [
+    {
+      "label": "Objetivo",
+      "paragraphs": [
+        "Aqualogic es una empresa pionera en el ecuador que ofrece el servicio corporativo de renta de dispensadores de agua fría y caliente con sistema de filtración y purificación incorporado. Nuestros altos estándares de calidad aseguran el agua más pura, refrescante y saludable en el mercado."
+      ]
+    }
+  ],
   "note": "Todos los derechos son reservados de Símbolo Agencia Digital.",
+  "location": "Quito, EC",
   "images": [
     "/work/a-1-.png",
     "/work/a-2-.png",
@@ -14,5 +20,10 @@
     "/work/a-6-.png",
     "/work/a-7-.png",
     "/work/a-8-.png"
+  ],
+  "id": "08",
+  "year": "2025",
+  "services": [
+    "Rebranding"
   ]
 }
