@@ -1,0 +1,14 @@
+{
+  "id": "06",
+  "name": "uncle dough",
+  "year": "2025",
+  "location": "Medellín",
+  "color": "#ff0000",
+  "images": [
+    "/work/mesa-de-trabajo-50.png",
+    "/work/mesa-de-trabajo-51.png",
+    "/work/mesa-de-trabajo-52.png",
+    "/work/mesa-de-trabajo-53.png",
+    "/work/mesa-de-trabajo-54.png"
+  ]
+}
