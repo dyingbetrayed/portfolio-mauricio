@@ -1,10 +1,9 @@
 {
-  "id": "03",
-  "slug": "lafichastudio",
-  "name": "la ficha studio",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#f7d904",
+  "name": "la ficha studio",
+  "slug": "lafichastudio",
+  "tagline": "branding, namiing",
+  "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-31.png",
     "/work/mesa-de-trabajo-32.png",
@@ -22,5 +21,9 @@
     "/work/mesa-de-trabajo-44.png",
     "/work/mesa-de-trabajo-45.png"
   ],
-  "tagline": "branding, namiing"
+  "id": "03",
+  "year": "2025",
+  "services": [
+    "branding"
+  ]
 }
