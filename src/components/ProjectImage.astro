@@ -19,7 +19,7 @@ const images = project.images ?? [];
 >
 	<header class="project-image__nav">
 		<a href="/" class="project-image__brand" aria-label="Ir al inicio"><SiteBrand /></a>
-		<Navbar theme="dark" active="work" />
+		<Navbar theme="light" active="work" />
 	</header>
 
 	<div class="project-image__gallery" tabindex="0">
@@ -116,10 +116,19 @@ const images = project.images ?? [];
 		flex-shrink: 0;
 		width: 100%;
 		box-sizing: border-box;
-		position: relative;
+		position: absolute;
+		top: 0;
+		left: 0;
 		z-index: 5;
 		padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
-		background: #ffffff;
+		background: transparent;
+		pointer-events: none;
+		mix-blend-mode: difference;
+		color: #ffffff;
+	}
+
+	.project-image__nav > :global(*) {
+		pointer-events: auto;
 	}
 
 	.project-image__nav :global(.navbar) {
@@ -133,7 +142,7 @@ const images = project.images ?? [];
 		left: var(--pad-header-x-l);
 		top: var(--pad-header-y);
 		z-index: 10;
-		color: #000000;
+		color: #ffffff;
 		font-family: var(--font-nav);
 		font-weight: 600;
 		font-size: clamp(0.85rem, 1.5vw, 1.75rem);
