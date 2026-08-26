@@ -7,10 +7,10 @@
       "label": "branding"
     },
     {
-      "label": "naming - naming"
+      "label": "flyer"
     }
   ],
-  "tagline": "",
+  "tagline": "creación de proyecto",
   "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-31.png",
@@ -31,6 +31,6 @@
   "id": "03",
   "year": "2025",
   "services": [
-    "branding"
+    "hola"
   ]
 }
