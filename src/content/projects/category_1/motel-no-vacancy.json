@@ -9,5 +9,14 @@
     "/work/mesa-de-trabajo-48.png",
     "/work/mesa-de-trabajo-49.png"
   ],
-  "id": "05"
+  "id": "05",
+  "sections": [
+    {
+      "label": "Objetivo",
+      "paragraphs": [
+        "'No Vacancy' capta a la perfección el ambiente de los viajes por carretera de los años 70 gracias a su atrevida paleta de colores rosa y turquesa, combinada con una tipografía de inspiración vintage. El diseño logra un equilibrio perfecto entre lo divertido y lo elegante, lo que confiere al motel un aire chic y natural, a la vez que se nota que está cuidadosamente elaborado. "
+      ]
+    }
+  ],
+  "tagline": "Estamos en los años 70. El verano está en pleno apogeo y 'No vacancy' es el motel rosa perfecto para hacer una parada en el camino y disfrutar de sus instalaciones chic y elegantes. "
 }
