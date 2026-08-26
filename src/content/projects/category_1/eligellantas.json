@@ -5,9 +5,16 @@
   "location": "Medellín, CO",
   "color": "#c30000",
   "services": [
-    "rediseñodelogo"
+    "Rebrandingdelogo"
   ],
-  "sections": [],
+  "sections": [
+    {
+      "label": "Objetivo",
+      "paragraphs": [
+        "Eligellantas.com es una compañía colombiana con más de 35 años de experiencia en la comercialización y distribución de llantas, rines y accesorios para vehículos, con una trayectoria que incluye 14 centros de ventas y servicios en 12 ciudades del país. "
+      ]
+    }
+  ],
   "images": [
     "/work/a-21-.png",
     "/work/a-22-.png",
