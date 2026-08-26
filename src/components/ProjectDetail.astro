@@ -475,13 +475,8 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 	}
 
 	@media (max-width: 700px) {
-		.project__nav :global(.navbar) {
+		.project__nav {
 			display: none;
-		}
-
-		.project__name-title {
-			font-size: clamp(1rem, 4.2vw, 1.2rem);
-			top: calc(var(--pad-header-y) + 0.9rem);
 		}
 	}
 </style>

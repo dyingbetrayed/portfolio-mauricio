@@ -264,6 +264,20 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 			return true;
 		}
 
+		function canScrollHorizontally(el, deltaX) {
+			if (!(el instanceof Element)) return false;
+			const style = getComputedStyle(el);
+			const overflowX = style.overflowX;
+			if (overflowX !== 'auto' && overflowX !== 'scroll' && overflowX !== 'overlay') {
+				return false;
+			}
+			const max = el.scrollWidth - el.clientWidth;
+			if (max <= 1) return false;
+			if (deltaX < 0) return el.scrollLeft > 0;
+			if (deltaX > 0) return el.scrollLeft < max - 1;
+			return true;
+		}
+
 		function findScrollableParent(start, deltaY) {
 			let node = start instanceof Element ? start : null;
 			while (node && node !== container) {
@@ -271,6 +285,17 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 					node.hasAttribute('data-v-scroll') &&
 					canScrollVertically(node, deltaY)
 				) {
+					return node;
+				}
+				node = node.parentElement;
+			}
+			return null;
+		}
+
+		function findScrollableParentH(start, deltaX) {
+			let node = start instanceof Element ? start : null;
+			while (node && node !== container) {
+				if (canScrollHorizontally(node, deltaX)) {
 					return node;
 				}
 				node = node.parentElement;
@@ -479,12 +504,15 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 
 			if (!touchGesture.axis) {
 				if (Math.max(Math.abs(dx), Math.abs(dy)) < TOUCH_INTENT_THRESHOLD) {
-					/* Even before determining axis, prevent default on horizontal moves to block the browser gesture */
-					if (Math.abs(dx) > Math.abs(dy) && event.cancelable) event.preventDefault();
+					/* Only block horizontal browser-nav gesture if there's no native H scroll target */
+					const earlyH = findScrollableParentH(touchGesture.scrollStartTarget, -dx);
+					if (!earlyH && Math.abs(dx) > Math.abs(dy) && event.cancelable) event.preventDefault();
 					return;
 				}
 				const scrollTarget = findScrollableParent(touchGesture.scrollStartTarget, -dy);
+				const scrollTargetH = findScrollableParentH(touchGesture.scrollStartTarget, -dx);
 				touchGesture.hasScrollTarget = !!scrollTarget;
+				touchGesture.hasScrollTargetH = !!scrollTargetH;
 				if (isVerticalLayout()) {
 					touchGesture.axis = Math.abs(dy) >= Math.abs(dx) ? 'y' : 'x';
 					touchGesture.navigates =
@@ -501,8 +529,8 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 				}
 			}
 
-			/* Always block horizontal touches globally to prevent browser history navigation */
-			if (touchGesture.axis === 'x' && event.cancelable) event.preventDefault();
+			/* Block horizontal touches globally UNLESS there's a native H scroll container */
+			if (touchGesture.axis === 'x' && !touchGesture.hasScrollTargetH && event.cancelable) event.preventDefault();
 			else if (touchGesture.navigates && event.cancelable) event.preventDefault();
 		}, { passive: false });
 
@@ -521,7 +549,7 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 				let shouldForward = false;
 				let shouldBack = false;
 
-				if (gesture.axis === 'x' && Math.abs(dx) >= SWIPE_THRESHOLD) {
+				if (gesture.axis === 'x' && !gesture.hasScrollTargetH && Math.abs(dx) >= SWIPE_THRESHOLD) {
 					if (dx < 0) shouldForward = true;
 					else shouldBack = true;
 				} else if (gesture.axis === 'y' && !gesture.hasScrollTarget && Math.abs(dy) >= SWIPE_THRESHOLD) {
