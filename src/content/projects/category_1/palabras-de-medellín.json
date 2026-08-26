@@ -3,7 +3,10 @@
   "name": "palabras de medellín",
   "sections": [
     {
-      "label": "naming y más"
+      "label": "Objetivo",
+      "paragraphs": [
+        "Palabras Medellín"
+      ]
     }
   ],
   "tagline": "creación de proyecto",
