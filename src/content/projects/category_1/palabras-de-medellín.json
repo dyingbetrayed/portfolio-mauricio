@@ -1,0 +1,35 @@
+{
+  "color": "#00e0ff",
+  "name": "palabras de medellín",
+  "sections": [
+    {
+      "label": "naming y más"
+    }
+  ],
+  "tagline": "creación de proyecto",
+  "location": "Medellín, CO",
+  "images": [
+    "/work/mesa-de-trabajo-2.png",
+    "/work/mesa-de-trabajo-1.png",
+    "/work/mesa-de-trabajo-3.png",
+    "/work/mesa-de-trabajo-4.png",
+    "/work/mesa-de-trabajo-5.png",
+    "/work/mesa-de-trabajo-6.png",
+    "/work/mesa-de-trabajo-7.png",
+    "/work/mesa-de-trabajo-8.png",
+    "/work/mesa-de-trabajo-9.png",
+    "/work/mesa-de-trabajo-11.png",
+    "/work/mesa-de-trabajo-10.png",
+    "/work/mesa-de-trabajo-12.png",
+    "/work/mesa-de-trabajo-13.png",
+    "/work/mesa-de-trabajo-14.png",
+    "/work/mesa-de-trabajo-15.png",
+    "/work/mesa-de-trabajo-16.png",
+    "/work/mesa-de-trabajo-17.png"
+  ],
+  "id": "01",
+  "year": "2026",
+  "services": [
+    "branding"
+  ]
+}
