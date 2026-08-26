@@ -1,9 +1,16 @@
 {
-  "id": "01",
-  "name": "NEA$ - Junín, el corazón de Medellín",
-  "year": "2026",
-  "location": "Medellín, CO",
   "color": "#8cbcd6",
+  "name": "NEA$ - Junín, el corazón de Medellín",
+  "sections": [
+    {
+      "label": "Objetivo",
+      "paragraphs": [
+        "Con el fin de no perder un diseño gráfico realizado para la extinta marca NEA$, decidí re imaginar un restaurante, tomando el diseño principal de la camisa como elemento clave y crear un lugar de comida basado en los restaurantes de la época, inspirado en el corazón de la ciudad de Medellín: Junín.\n\nAdicional, seguí la idea conceptual de la camisa, presentando una mini campaña de fotografías."
+      ]
+    }
+  ],
+  "tagline": "Proyecto personal de una camisa inspirada en la época de la Medellín de los 70s.",
+  "location": "Medellín, CO",
   "images": [
     "/work/merch-1-.png",
     "/work/merch-3-.png",
@@ -17,5 +24,10 @@
     "/work/merch-11-.png",
     "/work/merch-12-.png",
     "/work/merch-13-.png"
+  ],
+  "id": "01",
+  "year": "2026",
+  "services": [
+    "Diseñoydireccióndearte"
   ]
 }
