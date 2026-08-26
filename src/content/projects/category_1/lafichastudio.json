@@ -1,11 +1,26 @@
 {
   "id": "03",
   "slug": "lafichastudio",
-  "name": "La Ficha Studio",
-  "year": "2024",
+  "name": "la ficha studio",
+  "year": "2025",
   "location": "Medellín, CO",
-  "color": "#e6c200",
+  "color": "#f7d904",
   "images": [
-    "/work/branding/lafichastudio/image.png"
-  ]
+    "/work/mesa-de-trabajo-31.png",
+    "/work/mesa-de-trabajo-32.png",
+    "/work/mesa-de-trabajo-33.png",
+    "/work/mesa-de-trabajo-33.png",
+    "/work/mesa-de-trabajo-35.png",
+    "/work/mesa-de-trabajo-36.png",
+    "/work/mesa-de-trabajo-37.png",
+    "/work/mesa-de-trabajo-38.png",
+    "/work/mesa-de-trabajo-39.png",
+    "/work/mesa-de-trabajo-40.png",
+    "/work/mesa-de-trabajo-41.png",
+    "/work/mesa-de-trabajo-42.png",
+    "/work/mesa-de-trabajo-43.png",
+    "/work/mesa-de-trabajo-44.png",
+    "/work/mesa-de-trabajo-45.png"
+  ],
+  "tagline": "branding, namiing"
 }
