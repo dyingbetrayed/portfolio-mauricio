@@ -94,18 +94,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		))}
 	</div>
 
-	{/* ── Capa 3: imágenes a pantalla completa (una pantalla por imagen) ── */}
+	{/* ── Capa 3: imágenes a pantalla completa (carrusel por proyecto) ── */}
 	<div class="work-layer work-layer--images" data-layer="3" aria-hidden="true" inert>
-		{projectsWithImages.map((project) =>
-			(project.images ?? []).map((src, index) => (
-				<ProjectImage
-					project={project}
-					src={src}
-					index={index}
-					total={project.images!.length}
-				/>
-			))
-		)}
+		{projectsWithImages.map((project) => (
+			<ProjectImage project={project} />
+		))}
 	</div>
 
 	{/* ── Capa 4: siguientes proyectos según el actual ── */}
@@ -138,11 +131,9 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		let currentImagePanel = null;
 		let imageTransitionTimer = 0;
 
-		function imagePanelFor(slug, index) {
+		function imagePanelFor(slug) {
 			return imagePanels().find(
-				(el) =>
-					el.getAttribute('data-project-image') === slug &&
-					Number(el.getAttribute('data-image-index')) === Number(index)
+				(el) => el.getAttribute('data-project-image') === slug
 			);
 		}
 
@@ -152,8 +143,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const cached = imagePreparation.get(panel);
 			if (cached) return cached;
 
-			const image = panel.querySelector('.project-image__img');
-			if (!(image instanceof HTMLImageElement)) return Promise.resolve();
+			const images = Array.from(panel.querySelectorAll('.project-image__img'));
+			if (images.length === 0) return Promise.resolve();
+			
+			const image = images[0];
 
 			const prepared = new Promise((resolve) => {
 				const decode = () => {
@@ -255,86 +248,76 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			});
 		}
 
-		function showProjectImage(slug, index, { animate = false, direction = 'forward' } = {}) {
-			const panels = imagePanels().filter(
-				(el) => el.getAttribute('data-project-image') === slug
-			);
-			const nextPanel = panels.find(
-				(el) => Number(el.getAttribute('data-image-index')) === Number(index)
-			);
-			if (!nextPanel) return false;
-			const currentPanel =
-				currentImagePanel?.getAttribute('data-project-image') === slug &&
-				!currentImagePanel.hasAttribute('hidden')
-					? currentImagePanel
-					: panels.find((el) => !el.hasAttribute('hidden'));
-			const canAnimate =
-				animate &&
-				currentPanel &&
-				currentPanel !== nextPanel &&
-				!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		function showProjectImage(slug, { animate = false, resetScroll = true } = {}) {
+			const panel = imagePanelFor(slug);
+			if (!panel) return false;
+			
+			const canAnimate = animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 			if (!canAnimate) {
 				window.clearTimeout(imageTransitionTimer);
 				imageTransitionTimer = 0;
-				panels.forEach((el) => {
+				imagePanels().forEach((el) => {
 					el.classList.remove('is-entering-forward', 'is-entering-backward');
 					el.style.removeProperty('z-index');
-					if (el === nextPanel) el.removeAttribute('hidden');
+					if (el === panel) el.removeAttribute('hidden');
 					else el.setAttribute('hidden', '');
 				});
-				currentImagePanel = nextPanel;
+				currentImagePanel = panel;
+				if (resetScroll) {
+					const gallery = panel.querySelector('.project-image__gallery');
+					if (gallery) gallery.scrollLeft = 0;
+				}
 				return true;
 			}
 
-			/* La imagen saliente se conserva hasta que la entrante termine de cubrirla. */
-			panels.forEach((el) => {
-				if (el !== currentPanel && el !== nextPanel) {
+			imagePanels().forEach((el) => {
+				if (el !== currentImagePanel && el !== panel) {
 					el.classList.remove('is-entering-forward', 'is-entering-backward');
 					el.style.removeProperty('z-index');
 					el.setAttribute('hidden', '');
 				}
 			});
-			currentPanel.classList.remove('is-entering-forward', 'is-entering-backward');
-			currentPanel.style.zIndex = '0';
-			nextPanel.removeAttribute('hidden');
-			nextPanel.classList.remove('is-entering-forward', 'is-entering-backward');
-			nextPanel.style.zIndex = '1';
-			void nextPanel.offsetWidth;
-			nextPanel.classList.add(
-				direction === 'backward' ? 'is-entering-backward' : 'is-entering-forward'
-			);
-			currentImagePanel = nextPanel;
+			
+			if (currentImagePanel && currentImagePanel !== panel) {
+				currentImagePanel.classList.remove('is-entering-forward', 'is-entering-backward');
+				currentImagePanel.style.zIndex = '0';
+			}
+			
+			panel.removeAttribute('hidden');
+			panel.classList.remove('is-entering-forward', 'is-entering-backward');
+			panel.style.zIndex = '1';
+			void panel.offsetWidth;
+			panel.classList.add('is-entering-forward');
+			currentImagePanel = panel;
+			
+			if (resetScroll) {
+				const gallery = panel.querySelector('.project-image__gallery');
+				if (gallery) gallery.scrollLeft = 0;
+			}
 
 			const settle = () => {
-				if (currentImagePanel !== nextPanel) return;
+				if (currentImagePanel !== panel) return;
 				window.clearTimeout(imageTransitionTimer);
 				imageTransitionTimer = 0;
-				currentPanel.classList.remove('is-entering-forward', 'is-entering-backward');
-				currentPanel.style.removeProperty('z-index');
-				currentPanel.setAttribute('hidden', '');
-				nextPanel.classList.remove('is-entering-forward', 'is-entering-backward');
-				nextPanel.style.removeProperty('z-index');
+				
+				imagePanels().forEach((el) => {
+					if (el !== panel) {
+						el.classList.remove('is-entering-forward', 'is-entering-backward');
+						el.style.removeProperty('z-index');
+						el.setAttribute('hidden', '');
+					}
+				});
+				panel.classList.remove('is-entering-forward', 'is-entering-backward');
+				panel.style.removeProperty('z-index');
 			};
-			nextPanel.addEventListener('animationend', settle, { once: true });
+			panel.addEventListener('animationend', settle, { once: true });
 			window.clearTimeout(imageTransitionTimer);
 			imageTransitionTimer = window.setTimeout(settle, 1000);
 			return true;
 		}
 
-		function activeImageIndex(slug) {
-			const visible =
-				currentImagePanel?.getAttribute('data-project-image') === slug &&
-				!currentImagePanel.hasAttribute('hidden')
-					? currentImagePanel
-					: imagePanels().find(
-				(el) =>
-					el.getAttribute('data-project-image') === slug &&
-					!el.hasAttribute('hidden')
-					);
-			if (!visible) return -1;
-			return Number(visible.getAttribute('data-image-index'));
-		}
+
 
 		function openCategory(id, opts) {
 			imageOpenRequest += 1;
@@ -387,8 +370,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			setDepth(2, opts);
 		}
 
-		async function openProjectImage(slug, index, opts) {
-			const imagePanel = imagePanelFor(slug, index);
+		async function openProjectImage(slug, opts) {
+			const imagePanel = imagePanelFor(slug);
 			if (!imagePanel) return;
 			const requestId = ++imageOpenRequest;
 			await prepareProjectImage(imagePanel);
@@ -396,9 +379,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
 			if (!projectPanel) return;
-			const previousIndex = activeImageIndex(slug);
-			const direction = previousIndex > index ? 'backward' : 'forward';
-			if (!showProjectImage(slug, index, { animate: previousIndex >= 0, direction })) return;
+			if (!showProjectImage(slug, { animate: true })) return;
 
 			const row = root.querySelector(`[data-open-project="${slug}"]`);
 			const category = row?.getAttribute('data-from-category');
@@ -421,15 +402,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				showOnly(projectPanels(), 'data-project', slug);
 			}
 
-			// Mantener la última imagen visible debajo de "siguientes"
-			const images = imagePanels().filter(
-				(el) => el.getAttribute('data-project-image') === slug
-			);
-			if (images.length) {
-				const lastIndex = images.length - 1;
-				await prepareProjectImage(images[lastIndex]);
+			const imagePanel = imagePanelFor(slug);
+			if (imagePanel) {
+				await prepareProjectImage(imagePanel);
 				if (requestId !== imageOpenRequest) return;
-				showProjectImage(slug, lastIndex);
+				showProjectImage(slug, { animate: false, resetScroll: false });
 			}
 			if (requestId !== imageOpenRequest) return;
 
@@ -466,19 +443,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					if (currentDepth() < 4) showOnly(nextPanels(), 'data-project-next', null);
 				});
 			} else if (depth === 3) {
-				const activeProject = root.querySelector('[data-project]:not([hidden])');
-				const slug = activeProject?.getAttribute('data-project');
-				const index = slug ? activeImageIndex(slug) : -1;
-
-				if (slug && index > 0) {
-					const previousPanel = imagePanelFor(slug, index - 1);
-					const requestId = ++imageOpenRequest;
-					await prepareProjectImage(previousPanel);
-					if (requestId !== imageOpenRequest) return;
-					showProjectImage(slug, index - 1, { animate: true, direction: 'backward' });
-					return;
-				}
-
 				imageOpenRequest += 1;
 				setDepth(2);
 				afterSlide(layerImages, () => {
@@ -522,8 +486,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			if (!slug) return false;
 
 			if (depth === 2) {
-				if (imagePanelFor(slug, 0)) {
-					void openProjectImage(slug, 0);
+				if (imagePanelFor(slug)) {
+					void openProjectImage(slug);
 				} else {
 					void openProjectNext(slug);
 				}
@@ -531,13 +495,18 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			}
 
 			if (depth === 3) {
-				const index = activeImageIndex(slug);
-				const nextImage = imagePanelFor(slug, index + 1);
-				if (nextImage) {
-					void openProjectImage(slug, index + 1);
-				} else {
-					void openProjectNext(slug);
+				const panel = imagePanelFor(slug);
+				if (panel) {
+					const gallery = panel.querySelector('.project-image__gallery');
+					if (gallery) {
+						const isAtEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 10;
+						if (!isAtEnd) {
+							gallery.scrollBy({ left: gallery.clientWidth, behavior: 'smooth' });
+							return true;
+						}
+					}
 				}
+				void openProjectNext(slug);
 				return true;
 			}
 
@@ -590,6 +559,20 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			return true;
 		}
 
+		function canScrollHorizontally(el, deltaX) {
+			if (!(el instanceof Element)) return false;
+			const style = getComputedStyle(el);
+			const overflowX = style.overflowX;
+			if (overflowX !== 'auto' && overflowX !== 'scroll' && overflowX !== 'overlay') {
+				return false;
+			}
+			const max = el.scrollWidth - el.clientWidth;
+			if (max <= 1) return false;
+			if (deltaX < 0) return el.scrollLeft > 0;
+			if (deltaX > 0) return el.scrollLeft < max - 1;
+			return true;
+		}
+
 		/* El wheel vertical navega horizontalmente también dentro del detalle. */
 		root.addEventListener('wheel', (event) => {
 			const depth = currentDepth();
@@ -625,6 +608,36 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				guardWorkExitWheel();
 				void goBack();
 				return;
+			}
+			
+			/* Carrusel de imágenes (Capa 3) */
+			if (depth === 3) {
+				const project = activeProjectPanel();
+				const slug = project?.getAttribute('data-project');
+				const panel = imagePanelFor(slug);
+				const gallery = panel?.querySelector('.project-image__gallery');
+				if (gallery) {
+					if (horizontalIntent) {
+						if (canScrollHorizontally(gallery, rawDelta)) return;
+					} else {
+						if (canScrollHorizontally(gallery, delta)) {
+							gallery.scrollBy({ left: delta, behavior: 'auto' });
+							event.preventDefault();
+							event.stopPropagation();
+							return;
+						}
+					}
+				}
+				
+				if (delta < 0) {
+					event.preventDefault();
+					event.stopPropagation();
+					if (performance.now() < deepWheelBlockedUntil) return;
+					blockDeepWheel();
+					guardWorkExitWheel();
+					void goBack();
+					return;
+				}
 			}
 
 			/* La pantalla final no tiene un destino automático hacia delante. */

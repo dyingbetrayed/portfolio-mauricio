@@ -1,42 +1,41 @@
 ---
 import QuoteSimilarButton from './QuoteSimilarButton.astro';
+import Navbar from './Navbar.astro';
+import SiteBrand from './SiteBrand.astro';
 import type { Project } from '../data/projects';
 
 export interface Props {
 	project: Project;
-	src: string;
-	index: number;
-	total: number;
 }
 
-const { project, src, index, total } = Astro.props;
-const isLast = index >= total - 1;
-const label = `${project.name} — imagen ${index + 1} de ${total}`;
+const { project } = Astro.props;
+const images = project.images ?? [];
 ---
 
 <article
 	class="project-image"
 	data-project-image={project.slug}
-	data-image-index={String(index)}
 	hidden
 >
 	<header class="project-image__nav">
-		<button type="button" class="project-image__back" data-nav-back aria-label="Volver">
-			<span class="project-image__back-icon" aria-hidden="true">←</span>
-			<span>Volver</span>
-		</button>
+		<a href="/" class="project-image__brand" aria-label="Ir al inicio"><SiteBrand /></a>
+		<Navbar theme="dark" active="work" />
 	</header>
 
-	<figure class="project-image__figure">
-		<img
-			class="project-image__img"
-			src={src}
-			alt={label}
-			loading="eager"
-			decoding="async"
-			fetchpriority="high"
-		/>
-	</figure>
+	<div class="project-image__gallery" tabindex="0">
+		{images.map((src, idx) => (
+			<figure class="project-image__figure">
+				<img
+					class="project-image__img"
+					src={src}
+					alt={`${project.name} — imagen ${idx + 1} de ${images.length}`}
+					loading="eager"
+					decoding="async"
+					fetchpriority="high"
+				/>
+			</figure>
+		))}
+	</div>
 
 	<div class="project-image__footer">
 		<QuoteSimilarButton
@@ -111,59 +110,82 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 	}
 
 	.project-image__nav {
-		display: none;
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
+		display: flex;
+		justify-content: flex-end;
+		align-items: flex-start;
+		flex-shrink: 0;
+		width: 100%;
+		box-sizing: border-box;
+		position: relative;
 		z-index: 5;
 		padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
-		background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), transparent);
+		background: #ffffff;
 	}
 
-	.project-image__back {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		border: none;
-		background: transparent;
-		padding: 0;
-		cursor: pointer;
+	.project-image__nav :global(.navbar) {
+		width: auto;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.project-image__brand {
+		position: absolute;
+		left: var(--pad-header-x-l);
+		top: var(--pad-header-y);
+		z-index: 10;
+		color: #000000;
 		font-family: var(--font-nav);
 		font-weight: 600;
-		font-size: var(--nav-size);
-		letter-spacing: 0.03em;
-		color: #ffffff;
-		flex-shrink: 0;
-		text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+		font-size: clamp(0.85rem, 1.5vw, 1.75rem);
+		line-height: 0.95;
+		letter-spacing: -0.022em;
+		-webkit-text-stroke: clamp(0.5px, 0.035vw, 1px) currentColor;
+		text-decoration: none;
 	}
 
-	.project-image__back:hover {
-		opacity: 0.7;
+	.project-image__gallery {
+		flex: 1;
+		min-height: 0;
+		width: 100vw;
+		display: flex;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		-webkit-overflow-scrolling: touch;
+		scroll-behavior: smooth;
+		outline: none;
 	}
-
-	.project-image__back-icon {
-		font-size: 1.1em;
-		line-height: 1;
+	
+	.project-image__gallery::-webkit-scrollbar {
+		display: none;
 	}
 
 	.project-image__figure {
 		margin: 0;
-		flex: 1;
-		min-height: 0;
-		width: 100%;
+		margin-right: -1px; /* Evita franjas de sub-píxeles entre imágenes */
+		flex: 0 0 auto;
+		height: 100%;
+		min-width: 10vw;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: #0a0a0a;
+		background: transparent;
+		scroll-snap-align: center;
+	}
+	
+	.project-image__figure:last-child {
+		margin-right: 0;
 	}
 
 	.project-image__img {
 		display: block;
-		width: 100%;
+		width: auto;
+		max-width: none;
 		height: 100%;
-		object-fit: cover;
+		object-fit: contain;
 		object-position: center;
+		outline: none;
+		border: none;
 	}
 
 	.project-image__footer {
@@ -223,8 +245,6 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 		50% { transform: translateX(8px); }
 	}
 
-
-
 	@media (prefers-reduced-motion: reduce) {
 		.project-image.is-entering-forward,
 		.project-image.is-entering-backward {
@@ -233,6 +253,15 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 	}
 
 	@media (max-width: 700px) {
+		.project-image__nav :global(.navbar) {
+			display: none;
+		}
+		
+		.project-image__brand {
+			font-size: clamp(1rem, 4.2vw, 1.2rem);
+			top: calc(var(--pad-header-y) + 0.9rem);
+		}
+
 		.project-image.is-entering-forward {
 			animation-name: project-image-enter-up;
 		}
@@ -246,7 +275,6 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 				transform: translate3d(0, 3%, 0);
 				opacity: 0;
 			}
-
 			to {
 				transform: translate3d(0, 0, 0);
 				opacity: 1;
@@ -258,7 +286,6 @@ const label = `${project.name} — imagen ${index + 1} de ${total}`;
 				transform: translate3d(0, -3%, 0);
 				opacity: 0;
 			}
-
 			to {
 				transform: translate3d(0, 0, 0);
 				opacity: 1;
