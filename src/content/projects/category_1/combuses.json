@@ -1,11 +1,17 @@
 {
-  "id": "04",
-  "name": "combuses",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#ff5a00",
-  "tagline": "branding",
+  "name": "combuses",
+  "sections": [
+    {
+      "label": "Objetivo",
+      "paragraphs": [
+        "El reto solicitado por la empresa fue desarrollar su papelería, branding y línea gráfica para redes sociales, utilizando su isologo como un elemento principal para darle vida a la marca en diferentes productos físicos, conservando su paleta de colores actual."
+      ]
+    }
+  ],
+  "tagline": "La empresa colombiana Combuses S.A., busca establecer su logo horizontal de forma principal e imaginar todas su aplicaciones en un mundo físico y real. ",
   "note": "Todos los derechos son reservados de Símbolo Agencia Digital.",
+  "location": "Medellín, CO",
   "images": [
     "/work/a-9-.png",
     "/work/a-10-.png",
@@ -19,5 +25,10 @@
     "/work/a-19-.png",
     "/work/a-18-.png",
     "/work/a-20-.png"
+  ],
+  "id": "04",
+  "year": "2025",
+  "services": [
+    "branding"
   ]
 }
