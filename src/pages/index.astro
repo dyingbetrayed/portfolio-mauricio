@@ -636,10 +636,10 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 
 			const depth = workDepth();
 			if (depth > 0) {
-				if (event.key === 'ArrowLeft') {
+				if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
 					event.preventDefault();
 					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:back'));
-				} else if (event.key === 'ArrowRight') {
+				} else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
 					event.preventDefault();
 					document.getElementById('work')?.dispatchEvent(new CustomEvent('work:forward'));
 				}
