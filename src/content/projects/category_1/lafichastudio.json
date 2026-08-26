@@ -4,10 +4,10 @@
   "slug": "lafichastudio",
   "sections": [
     {
-      "label": "branding"
-    },
-    {
-      "label": "flyer"
+      "label": "Objetivo",
+      "paragraphs": [
+        "Este proyecto nace de convertirse en la clave, el elemento y la jugada final de proyectos independientes que buscan ir más allá de los pixeles. En la ficha studio buscan construir trabajos desde la confianza.\n\n\"Nos esforzamos por ser 'la ficha bacana': un socio agradable, con comunicación fluida y un compromiso genuino con el éxito de su empresa. Nuestro objetivo es que trabajar con nosotros sea tan eficiente como gratificante\"."
+      ]
     }
   ],
   "tagline": "creación de proyecto",
