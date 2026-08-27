@@ -1,22 +1,26 @@
 {
-  "id": "03",
-  "name": "lega tour",
-  "year": "2026",
-  "location": "Bogotá, CO",
   "color": "#f30a0a",
+  "name": "lega tour",
   "sections": [
     {
       "paragraphs": [
-        "Desde 2022 me he encargado de desarrollar y conceptualizar todas las piezas graficas del artista bogota lega y sus diferentes tour por Europa."
+        "Desde 2022 he desarrollado y conceptualizado las piezas gráficas de Lega y sus diferentes tours por Europa. El trabajo parte de cada presentación para construir una expresión visual capaz de acompañar al artista y mantener una identidad reconocible entre diferentes fechas y escenarios."
       ],
-      "label": "objetivo"
+      "label": "La dirección"
     }
   ],
+  "tagline": "Desde 2022, cada tour de Lega ha sido una oportunidad para construir una nueva expresión alrededor de su música.",
+  "location": "Bogotá, CO",
   "images": [
     "/work/f-15-.png",
     "/work/f-16-.png",
     "/work/f-17-.png",
     "/work/f-18-.png",
     "/work/f-19-.png"
+  ],
+  "id": "03",
+  "year": "2026",
+  "services": [
+    "Art Direction · Diseño gráfico · Dirección visual"
   ]
 }
