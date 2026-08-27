@@ -207,7 +207,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 		const PAIR = 2;
 		const nextPreviewReady = new Map();
-		const CATEGORY_PAGE_SIZE = 8;
+		const CATEGORY_MAX_PAGE_SIZE = 8;
+		const categoryPaginationObservers = new WeakMap();
 
 		function galleryImages(panel) {
 			return Array.from(panel.querySelectorAll('.project-image__img'));
@@ -292,13 +293,19 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			return Math.min(max, Math.max(min, n));
 		}
 
+		function categoryPageSize(panel) {
+			if (!(panel instanceof HTMLElement)) return CATEGORY_MAX_PAGE_SIZE;
+			const value = Number(panel.dataset.pageSize || CATEGORY_MAX_PAGE_SIZE);
+			return Math.max(1, Math.min(CATEGORY_MAX_PAGE_SIZE, value || CATEGORY_MAX_PAGE_SIZE));
+		}
+
 		function initCategoryPagination(panel) {
 			if (!(panel instanceof HTMLElement)) return;
 			if (panel.dataset.paginationBound === '1') return;
 			panel.dataset.paginationBound = '1';
 
 			const rows = Array.from(panel.querySelectorAll('.project-row'));
-			const totalPages = Math.max(1, Math.ceil(rows.length / CATEGORY_PAGE_SIZE));
+			const totalPages = Math.max(1, Math.ceil(rows.length / categoryPageSize(panel)));
 			panel.dataset.pageCount = String(totalPages);
 			panel.dataset.pageIndex = panel.dataset.pageIndex || '0';
 
@@ -306,6 +313,19 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			if (pager instanceof HTMLElement) {
 				if (totalPages <= 1) pager.setAttribute('hidden', '');
 				else pager.removeAttribute('hidden');
+			}
+
+			// Recalcula el tamaño de página si cambia el viewport (móvil/desktop,
+			// barra del navegador, etc.) para evitar que aparezca scroll vertical.
+			if ('ResizeObserver' in window && !categoryPaginationObservers.get(panel)) {
+				const observer = new ResizeObserver(() => {
+					if (panel.hidden) return;
+					requestAnimationFrame(() => {
+						autoFitCategoryPageSize(panel);
+					});
+				});
+				observer.observe(panel);
+				categoryPaginationObservers.set(panel, observer);
 			}
 		}
 
@@ -318,8 +338,9 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const safeIndex = clamp(Number(pageIndex) || 0, 0, totalPages - 1);
 			panel.dataset.pageIndex = String(safeIndex);
 
-			const start = safeIndex * CATEGORY_PAGE_SIZE;
-			const end = start + CATEGORY_PAGE_SIZE;
+			const pageSize = categoryPageSize(panel);
+			const start = safeIndex * pageSize;
+			const end = start + pageSize;
 			rows.forEach((row, idx) => {
 				row.toggleAttribute('hidden', !(idx >= start && idx < end));
 			});
@@ -331,6 +352,42 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const next = panel.querySelector('[data-category-page="next"]');
 			if (prev instanceof HTMLButtonElement) prev.disabled = safeIndex <= 0;
 			if (next instanceof HTMLButtonElement) next.disabled = safeIndex >= totalPages - 1;
+		}
+
+		// Ajusta automáticamente el tamaño de página (hasta 8) para que NO
+		// aparezca scroll vertical dentro de la categoría (mejor UX y evita
+		// que el wheel llegue al límite y retroceda al menú).
+		function autoFitCategoryPageSize(panel) {
+			if (!(panel instanceof HTMLElement)) return;
+			initCategoryPagination(panel);
+
+			const rows = Array.from(panel.querySelectorAll('.project-row'));
+			const max = Math.min(CATEGORY_MAX_PAGE_SIZE, rows.length || CATEGORY_MAX_PAGE_SIZE);
+
+			// Probamos desde 8 hacia abajo hasta que el panel deje de desbordarse.
+			let best = max;
+			for (let size = max; size >= 1; size--) {
+				panel.dataset.pageSize = String(size);
+				panel.dataset.pageCount = String(Math.max(1, Math.ceil(rows.length / size)));
+				setCategoryPage(panel, 0);
+
+				// Tolerancia por subpíxeles / fonts.
+				if (panel.scrollHeight <= panel.clientHeight + 2) {
+					best = size;
+					break;
+				}
+			}
+
+			panel.dataset.pageSize = String(best);
+			panel.dataset.pageCount = String(Math.max(1, Math.ceil(rows.length / best)));
+
+			const pager = panel.querySelector('[data-category-pagination]');
+			if (pager instanceof HTMLElement) {
+				if (Number(panel.dataset.pageCount || '1') <= 1) pager.setAttribute('hidden', '');
+				else pager.removeAttribute('hidden');
+			}
+
+			setCategoryPage(panel, 0);
 		}
 
 		function activeCategoryPanel() {
@@ -546,7 +603,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const panel = activeCategoryPanel();
 			if (panel instanceof HTMLElement) {
 				panel.scrollTop = 0;
-				setCategoryPage(panel, 0);
+				// Esperamos 1 frame para asegurar mediciones correctas.
+				requestAnimationFrame(() => autoFitCategoryPageSize(panel));
 			}
 		}
 
@@ -1073,6 +1131,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				isInitialLoad = false;
 			}
 		}
+
+		// Si la ventana cambia de tamaño, re-ajustamos el tamaño de página en
+		// la categoría activa para evitar scroll vertical inesperado.
+		window.addEventListener('resize', () => {
+			const panel = activeCategoryPanel();
+			if (panel instanceof HTMLElement && currentDepth() === 1) {
+				requestAnimationFrame(() => autoFitCategoryPageSize(panel));
+			}
+		});
 
 		root.addEventListener('pointerenter', (event) => {
 			const target = event.target;
