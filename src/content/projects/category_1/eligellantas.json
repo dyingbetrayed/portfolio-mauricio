@@ -1,20 +1,16 @@
 {
-  "id": "08",
-  "name": "eligellantas",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#c30000",
-  "services": [
-    "Rebrandingdelogo"
-  ],
+  "name": "eligellantas",
   "sections": [
     {
-      "label": "Objetivo",
+      "label": "Sobre el proyecto",
       "paragraphs": [
-        "Eligellantas.com es una compañía colombiana con más de 35 años de experiencia en la comercialización y distribución de llantas, rines y accesorios para vehículos, con una trayectoria que incluye 14 centros de ventas y servicios en 12 ciudades del país. "
+        "Eligellantas necesitaba actualizar su identidad visual y llevar su logo hacia una expresión más contemporánea. El reto estaba en evolucionar una marca vinculada a un sector altamente competitivo, donde la claridad y el reconocimiento son fundamentales.\n\nEl trabajo se concentró en rediseñar el logo y ajustar sus elementos para conseguir una identidad más actual, limpia y funcional. La propuesta busca conservar el reconocimiento de la marca mientras mejora su presencia y capacidad de adaptación en diferentes aplicaciones."
       ]
     }
   ],
+  "tagline": "Una marca que necesitaba cambiar de rumbo sin perder el camino.",
+  "location": "Medellín, CO",
   "images": [
     "/work/a-21-.png",
     "/work/a-22-.png",
@@ -25,5 +21,10 @@
     "/work/a-27-.png",
     "/work/a-28-.png",
     "/work/a-29-.png"
+  ],
+  "id": "08",
+  "year": "2025",
+  "services": [
+    "Rediseño de logo · Rebranding"
   ]
 }
