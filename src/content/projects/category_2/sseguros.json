@@ -1,0 +1,21 @@
+{
+  "id": "02",
+  "name": "sseguros",
+  "year": "2025",
+  "location": "Bogotá, CO",
+  "color": "#f10909",
+  "sections": [
+    {
+      "paragraphs": [
+        "Desarrolle y rediseñe la nueva identidad grafica de la empresa para actualizar y mejorar su comunicación digital, apuntando a generar una mejor comunicación en terminos digitales y de pauta."
+      ]
+    }
+  ],
+  "images": [
+    "/work/el-1-.png",
+    "/work/el-2-.png",
+    "/work/el-3-.png",
+    "/work/el-4-.png",
+    "/work/el-5-.png"
+  ]
+}
