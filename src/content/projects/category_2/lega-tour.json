@@ -1,0 +1,21 @@
+{
+  "id": "03",
+  "name": "lega tour",
+  "year": "2026",
+  "location": "Bogotá, CO",
+  "color": "#f30a0a",
+  "sections": [
+    {
+      "paragraphs": [
+        "Desde 2022 me he encargado de desarrollar y conceptualizar todas las piezas graficas del artista bogota lega y sus diferentes tour por Europa."
+      ]
+    }
+  ],
+  "images": [
+    "/work/f-15-.png",
+    "/work/f-16-.png",
+    "/work/f-17-.png",
+    "/work/f-18-.png",
+    "/work/f-19-.png"
+  ]
+}
