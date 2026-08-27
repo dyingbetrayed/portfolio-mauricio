@@ -1,14 +1,23 @@
 {
-  "id": "09",
-  "name": "yositoko",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#ef0c0c",
+  "name": "yositoko",
+  "sections": [
+    {
+      "label": "Sobre el proyecto"
+    }
+  ],
+  "tagline": "Nostalgia colombiana, cultura anime y electrónica en un mismo universo visual.",
+  "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-68.png",
     "/work/mesa-de-trabajo-69.png",
     "/work/mesa-de-trabajo-70.png",
     "/work/mesa-de-trabajo-71.png",
     "/work/mesa-de-trabajo-72.png"
+  ],
+  "id": "09",
+  "year": "2025",
+  "services": [
+    "Identidad visual · Dirección de arte · Diseño gráfico"
   ]
 }
