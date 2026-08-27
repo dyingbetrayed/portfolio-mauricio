@@ -235,16 +235,9 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 		function ensurePairs(images, index) {
 			const base = pairStart(index);
-			void loadPair(images, base);
+			const current = loadPair(images, base);
 			void loadPair(images, base + PAIR);
-			return loadPair(images, base);
-		}
-
-		async function fillGalleryPairs(images, fromIndex, slug) {
-			for (let i = pairStart(fromIndex); i < images.length; i += PAIR) {
-				await loadPair(images, i);
-				if (slug) maybePrefetchNext(slug, images, i);
-			}
+			return current;
 		}
 
 		function nextPanelFor(slug) {
@@ -265,16 +258,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			return Promise.all(nextThumbImages(panel).map((image) => hydrateImage(image)));
 		}
 
-		function prefetchRelatedGalleries(slug) {
-			relatedSlugs(slug).forEach((relSlug, index) => {
-				const gallery = imagePanelFor(relSlug);
-				if (!gallery) return;
-				const images = galleryImages(gallery);
-				if (index === 0) void fillGalleryPairs(images, 0);
-				else void loadPair(images, 0);
-			});
-		}
-
 		function ensureNextPreviews(slug) {
 			if (!slug) return Promise.resolve();
 			const cached = nextPreviewReady.get(slug);
@@ -283,19 +266,16 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const panel = nextPanelFor(slug);
 			if (!panel) return Promise.resolve();
 
-			const ready = prepareNextThumbs(panel).then(() => {
-				prefetchRelatedGalleries(slug);
-			});
+			const ready = prepareNextThumbs(panel);
 			nextPreviewReady.set(slug, ready);
 			return ready;
 		}
 
 		function maybePrefetchNext(slug, images, index) {
 			if (!slug || !images.length) return;
-			const remaining = images.length - 1 - index;
-			if (remaining <= 3 || images.length <= 3) {
-				void ensureNextPreviews(slug);
-			}
+			const start = pairStart(index);
+			const threshold = Math.max(0, images.length - PAIR * 2);
+			if (start >= threshold) void ensureNextPreviews(slug);
 		}
 
 		function bindGalleryLoader(panel) {
@@ -345,7 +325,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			}
 
 			prefetchFromScroll();
-			void fillGalleryPairs(images, galleryIndexFromScroll(gallery));
 		}
 
 		function prepareProjectImage(panel, startIndex = 0) {
@@ -357,7 +336,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const slug = panel.getAttribute('data-project-image') || '';
 			maybePrefetchNext(slug, images, index);
 			const ready = ensurePairs(images, index);
-			void fillGalleryPairs(images, index + PAIR);
 			return ready;
 		}
 
@@ -541,7 +519,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					setDepth(2, opts);
 					const imagePanel = imagePanelFor(slug);
 					if (imagePanel) void prepareProjectImage(imagePanel, 0);
-					void ensureNextPreviews(slug);
 				});
 				return;
 			}
@@ -551,7 +528,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			setDepth(2, opts);
 			const imagePanel = imagePanelFor(slug);
 			if (imagePanel) void prepareProjectImage(imagePanel, 0);
-			void ensureNextPreviews(slug);
 		}
 
 		function imageOpenOptions(opts) {
@@ -566,7 +542,6 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const requestId = ++imageOpenRequest;
 			await prepareProjectImage(imagePanel, imageIndex);
 			if (requestId !== imageOpenRequest) return;
-			void ensureNextPreviews(slug);
 
 			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
 			if (!projectPanel) return;
