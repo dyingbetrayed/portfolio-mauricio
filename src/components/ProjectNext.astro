@@ -14,7 +14,7 @@ const related = getNextProjects(project.slug, 3);
 const nextSlug = related[0]?.slug;
 ---
 
-<article class="project-next" data-project-next={project.slug} hidden>
+<article class="project-next" data-project-next={project.slug} data-related={related.map((item) => item.slug).join(',')} hidden>
 	<header class="project-next__nav">
 		<a href="/" class="project-next__name-title" aria-label="Ir al inicio"><SiteBrand /></a>
 		<Navbar theme="dark" active="work" />
