@@ -1,8 +1,16 @@
 {
-  "name": "motel no vacancy",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#87a5f5",
+  "name": "motel no vacancy",
+  "sections": [
+    {
+      "label": "Sobre el proyecto",
+      "paragraphs": [
+        "Motel No Vacancy nace como un ejercicio de construcción de una marca inspirada en los moteles de carretera y la estética norteamericana de los años 70. El reto era capturar esa nostalgia sin convertirla en una reproducción literal del pasado.\n\nLa identidad combina referencias vintage, una estética vibrante y una dirección de arte con carácter para construir un universo propio. El resultado es una marca que utiliza la nostalgia como punto de partida para crear una experiencia visual contemporánea."
+      ]
+    }
+  ],
+  "tagline": "Un motel de carretera imaginado desde el glamour, la nostalgia y el exceso de los años 70.",
+  "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-46.png",
     "/work/mesa-de-trabajo-47.png",
@@ -10,13 +18,8 @@
     "/work/mesa-de-trabajo-49.png"
   ],
   "id": "05",
-  "sections": [
-    {
-      "label": "Objetivo",
-      "paragraphs": [
-        "'No Vacancy' capta a la perfección el ambiente de los viajes por carretera de los años 70 gracias a su atrevida paleta de colores rosa y turquesa, combinada con una tipografía de inspiración vintage. El diseño logra un equilibrio perfecto entre lo divertido y lo elegante, lo que confiere al motel un aire chic y natural, a la vez que se nota que está cuidadosamente elaborado. "
-      ]
-    }
-  ],
-  "tagline": "Estamos en los años 70. El verano está en pleno apogeo y 'No vacancy' es el motel rosa perfecto para hacer una parada en el camino y disfrutar de sus instalaciones chic y elegantes. "
+  "year": "2025",
+  "services": [
+    "Branding · Identidad visual"
+  ]
 }
