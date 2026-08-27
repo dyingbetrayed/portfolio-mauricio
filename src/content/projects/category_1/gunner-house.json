@@ -1,9 +1,17 @@
 {
-  "id": "09",
-  "name": "gunner house",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#000000",
+  "name": "gunner house",
+  "sections": [
+    {
+      "label": "Sobre el proyecto",
+      "paragraphs": [
+        "Gunner House nace alrededor de una propuesta musical vinculada a la electrónica y necesitaba una identidad capaz de representar diferentes artistas y lanzamientos bajo una misma firma. El reto era construir una marca con suficiente personalidad para diferenciarse dentro de una escena donde la imagen es parte fundamental de la experiencia musical.\n\nLa propuesta desarrolla un lenguaje gráfico de carácter fuerte y experimental, pensado para extenderse más allá del logo y convertirse en un universo visual adaptable a diferentes expresiones y piezas de la plataforma."
+      ]
+    }
+  ],
+  "tagline": "Una identidad nacida para una escena musical que no necesita pedir permiso.",
+  "note": "",
+  "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-73.png",
     "/work/mesa-de-trabajo-74.png",
@@ -11,5 +19,10 @@
     "/work/mesa-de-trabajo-76.png",
     "/work/mesa-de-trabajo-77.png",
     "/work/mesa-de-trabajo-78.png"
+  ],
+  "id": "09",
+  "year": "2025",
+  "services": [
+    "Branding · Identidad visual"
   ]
 }
