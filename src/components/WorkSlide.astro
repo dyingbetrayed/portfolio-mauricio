@@ -82,6 +82,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 							</button>
 						))}
 					</div>
+					<div class="category-pagination" data-category-pagination aria-label="Paginación de proyectos">
+						<button type="button" class="category-pagination__btn" data-category-page="prev" aria-label="Página anterior">
+							<span aria-hidden="true">←</span>
+						</button>
+						<span class="category-pagination__status" data-category-page-status>1 / 1</span>
+						<button type="button" class="category-pagination__btn" data-category-page="next" aria-label="Página siguiente">
+							<span aria-hidden="true">→</span>
+						</button>
+					</div>
 				</div>
 			</div>
 		))}
@@ -198,6 +207,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 		const PAIR = 2;
 		const nextPreviewReady = new Map();
+		const CATEGORY_PAGE_SIZE = 8;
 
 		function galleryImages(panel) {
 			return Array.from(panel.querySelectorAll('.project-image__img'));
@@ -276,6 +286,55 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const start = pairStart(index);
 			const threshold = Math.max(0, images.length - PAIR * 2);
 			if (start >= threshold) void ensureNextPreviews(slug);
+		}
+
+		function clamp(n, min, max) {
+			return Math.min(max, Math.max(min, n));
+		}
+
+		function initCategoryPagination(panel) {
+			if (!(panel instanceof HTMLElement)) return;
+			if (panel.dataset.paginationBound === '1') return;
+			panel.dataset.paginationBound = '1';
+
+			const rows = Array.from(panel.querySelectorAll('.project-row'));
+			const totalPages = Math.max(1, Math.ceil(rows.length / CATEGORY_PAGE_SIZE));
+			panel.dataset.pageCount = String(totalPages);
+			panel.dataset.pageIndex = panel.dataset.pageIndex || '0';
+
+			const pager = panel.querySelector('[data-category-pagination]');
+			if (pager instanceof HTMLElement) {
+				if (totalPages <= 1) pager.setAttribute('hidden', '');
+				else pager.removeAttribute('hidden');
+			}
+		}
+
+		function setCategoryPage(panel, pageIndex) {
+			if (!(panel instanceof HTMLElement)) return;
+			initCategoryPagination(panel);
+
+			const rows = Array.from(panel.querySelectorAll('.project-row'));
+			const totalPages = Number(panel.dataset.pageCount || '1') || 1;
+			const safeIndex = clamp(Number(pageIndex) || 0, 0, totalPages - 1);
+			panel.dataset.pageIndex = String(safeIndex);
+
+			const start = safeIndex * CATEGORY_PAGE_SIZE;
+			const end = start + CATEGORY_PAGE_SIZE;
+			rows.forEach((row, idx) => {
+				row.toggleAttribute('hidden', !(idx >= start && idx < end));
+			});
+
+			const status = panel.querySelector('[data-category-page-status]');
+			if (status) status.textContent = `${safeIndex + 1} / ${totalPages}`;
+
+			const prev = panel.querySelector('[data-category-page="prev"]');
+			const next = panel.querySelector('[data-category-page="next"]');
+			if (prev instanceof HTMLButtonElement) prev.disabled = safeIndex <= 0;
+			if (next instanceof HTMLButtonElement) next.disabled = safeIndex >= totalPages - 1;
+		}
+
+		function activeCategoryPanel() {
+			return root.querySelector('[data-category]:not([hidden])');
 		}
 
 		function bindGalleryLoader(panel) {
@@ -484,6 +543,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			hideAllImages();
 			showOnly(nextPanels(), 'data-project-next', null);
 			setDepth(1, opts);
+			const panel = activeCategoryPanel();
+			if (panel instanceof HTMLElement) {
+				panel.scrollTop = 0;
+				setCategoryPage(panel, 0);
+			}
 		}
 
 		function openProject(slug, opts) {
@@ -883,6 +947,19 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		root.addEventListener('click', (event) => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
+
+			const pagerControl = target.closest('[data-category-page]');
+			if (pagerControl instanceof HTMLElement) {
+				const panel = pagerControl.closest('[data-category]');
+				if (panel instanceof HTMLElement) {
+					event.preventDefault();
+					const direction = pagerControl.getAttribute('data-category-page');
+					const current = Number(panel.dataset.pageIndex || 0);
+					if (direction === 'prev') setCategoryPage(panel, current - 1);
+					if (direction === 'next') setCategoryPage(panel, current + 1);
+				}
+				return;
+			}
 
 			if (target.closest('[data-work-forward]')) {
 				event.preventDefault();
@@ -1470,6 +1547,46 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		padding-bottom: 0.25rem;
 	}
 
+	.category-pagination {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.85rem;
+		padding: 1rem 0 0.25rem;
+	}
+
+	.category-pagination[hidden] {
+		display: none !important;
+	}
+
+	.category-pagination__btn {
+		border: none;
+		background: transparent;
+		color: #000000;
+		cursor: pointer;
+		font-family: var(--font-nav, 'Aptos', sans-serif);
+		font-weight: 600;
+		font-size: 1.1rem;
+		padding: 0.35rem 0.5rem;
+		transition: opacity 0.2s ease;
+	}
+
+	.category-pagination__btn:disabled {
+		opacity: 0.25;
+		cursor: default;
+	}
+
+	.category-pagination__btn:not(:disabled):hover {
+		opacity: 0.65;
+	}
+
+	.category-pagination__status {
+		font-family: var(--font-nav, 'Aptos', sans-serif);
+		font-weight: 500;
+		font-size: 0.95rem;
+		letter-spacing: 0.02em;
+	}
+
 	.project-row {
 		display: grid;
 		grid-template-columns: clamp(40px, 5vw, 80px) 3fr 1fr 1fr;
@@ -1493,6 +1610,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			color var(--dur-fast, 0.32s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 		margin: 0;
 		width: 100%;
+	}
+
+	.project-row[hidden] {
+		display: none !important;
 	}
 
 	.project-row:hover {
