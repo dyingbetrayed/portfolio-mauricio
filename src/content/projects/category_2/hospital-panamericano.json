@@ -1,19 +1,24 @@
 {
-  "id": "02",
-  "name": "hospital panamericano",
-  "year": "2025",
-  "location": "Panamá",
   "color": "#0d0dce",
+  "name": "hospital panamericano",
   "sections": [
     {
       "paragraphs": [
-        "Desarrolle y rediseñe la nueva identidad grafica de la empresa para actualizar y mejorar su comunicación digital, apuntando a generar una mejor comunicación en terminos digitales y de pauta."
-      ]
+        "El Hospital Panamericano buscaba renovar su comunicación digital para mejorar su alcance, fortalecer su reconocimiento y potenciar el contenido utilizado en pauta para atraer nuevos clientes en Panamá.\n\nEl proyecto se enfocó en desarrollar un lenguaje gráfico más claro y contemporáneo, creando piezas capaces de funcionar tanto en comunicación orgánica como dentro de campañas publicitarias."
+      ],
+      "label": "La dirección"
     }
   ],
+  "tagline": "El proyecto replantea la dirección gráfica para hacer que sus contenidos fueran más claros, actuales y cercanos.",
+  "location": "Panamá",
   "images": [
     "/work/el-6-.png",
     "/work/el-7-.png",
     "/work/el-8-.png"
+  ],
+  "id": "02",
+  "year": "2025",
+  "services": [
+    "Art Direction · Comunicación digital · Dirección gráfica · Pauta"
   ]
 }
