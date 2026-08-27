@@ -1,9 +1,16 @@
 {
-  "id": "06",
-  "name": "uncle dough",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#ff0000",
+  "name": "uncle dough",
+  "sections": [
+    {
+      "paragraphs": [
+        "Uncle Dough parte de la idea de convertir una panadería en un personaje. El reto era alejarse de los códigos gráficos tradicionales de la categoría y construir una marca más cercana, memorable y reconocible.\n\nLa identidad utiliza el nombre como punto de partida para desarrollar una personalidad visual cálida y particular, llevando el concepto del “tío” a diferentes recursos gráficos y aplicaciones para crear una marca con una historia que contar."
+      ],
+      "label": "Sobre el proyecto"
+    }
+  ],
+  "tagline": "Una panadería con nombre de personaje y personalidad propia.",
+  "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-50.png",
     "/work/mesa-de-trabajo-51.png",
@@ -11,15 +18,9 @@
     "/work/mesa-de-trabajo-53.png",
     "/work/mesa-de-trabajo-54.png"
   ],
-  "sections": [
-    {
-      "paragraphs": [
-        "Permíteme presentarte al tío Dough y su panadería, un pequeño local de ambiente familiar que te invita a descubrir el sabor de una nueva tradición."
-      ],
-      "label": "Objetivo"
-    }
-  ],
+  "id": "06",
+  "year": "2025",
   "services": [
-    "branding"
+    "Branding · Identidad visual"
   ]
 }
