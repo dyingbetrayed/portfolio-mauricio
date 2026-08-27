@@ -1,13 +1,14 @@
 {
   "id": "01",
   "name": "NEA$ LABEL",
-  "year": "2022",
+  "year": "2023",
   "location": "Medellín, CO",
   "sections": [
     {
       "paragraphs": [
         "Desde 2022 conceptualice y dirigí todo el arte del sello NEA$ Medellín, conceptualizando todos sus proyectos graficamente."
-      ]
+      ],
+      "label": "objetivo"
     }
   ],
   "images": [
