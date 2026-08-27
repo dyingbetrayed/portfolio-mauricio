@@ -1,0 +1,19 @@
+{
+  "id": "02",
+  "name": "artificio label",
+  "year": "2021",
+  "location": "Medellín, CO",
+  "color": "#ffffff",
+  "images": [
+    "/work/f-12-.png",
+    "/work/f-13-.png",
+    "/work/f-14-.png"
+  ],
+  "sections": [
+    {
+      "paragraphs": [
+        "En 2021, dirigí todo el arte del tour realizado por el sello paisa Artificio."
+      ]
+    }
+  ]
+}
