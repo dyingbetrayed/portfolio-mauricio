@@ -1,16 +1,16 @@
 {
-  "id": "01",
+  "color": "#7b1313",
   "name": "NEA$ LABEL",
-  "year": "2023",
-  "location": "Medellín, CO",
   "sections": [
     {
       "paragraphs": [
-        "Desde 2022 conceptualice y dirigí todo el arte del sello NEA$ Medellín, conceptualizando todos sus proyectos graficamente."
+        "Desde 2022 he conceptualizado y dirigido la imagen gráfica del sello NEA$ Medellín y sus diferentes proyectos.\n\nEl trabajo consiste en construir conceptualmente cada lanzamiento y traducir la identidad del sello a diferentes piezas, artistas y momentos, manteniendo una firma visual reconocible sin limitar la expresión particular de cada proyecto."
       ],
-      "label": "objetivo"
+      "label": "La dirección"
     }
   ],
+  "tagline": "Cada proyecto parte de un concepto propio, pero todos pertenecen al mismo universo.",
+  "location": "Medellín, CO",
   "images": [
     "/work/f-1-.png",
     "/work/f-2-.png",
@@ -24,5 +24,9 @@
     "/work/f-10-.png",
     "/work/f-11-.png"
   ],
-  "color": "#7b1313"
+  "id": "01",
+  "year": "2023",
+  "services": [
+    "Art Direction · Concepto · Dirección gráfica"
+  ]
 }
