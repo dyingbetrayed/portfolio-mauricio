@@ -1,14 +1,26 @@
 {
-  "id": "06",
-  "name": "la ruta del valle",
-  "year": "2023",
-  "location": "Medellín, CO",
   "color": "#e60635",
+  "name": "la ruta del valle",
+  "sections": [
+    {
+      "label": "El concepto",
+      "paragraphs": [
+        "La Ruta del Valle toma la idea del recorrido como punto de partida para construir una pieza gráfica vinculada al territorio. La propuesta convierte referencias del Valle de Aburrá en un lenguaje visual pensado para una prenda, llevando el concepto de viaje y pertenencia a un objeto cotidiano.\n\nMás que representar literalmente un bus y barrio de Medellín, el diseño busca construir una pieza que pueda funcionar como recuerdo, identificación y expresión personal."
+      ]
+    }
+  ],
+  "tagline": "Un homenaje basado en los icónicos letreros de lo las rutas de buses de Medellín, de los 2000s.",
+  "location": "Medellín, CO",
   "images": [
     "/work/merch-30-.png",
     "/work/merch-31-.png",
     "/work/merch-32-.png",
     "/work/merch-33-.png",
     "/work/merch-34-.png"
+  ],
+  "id": "06",
+  "year": "2023",
+  "services": [
+    "Diseño de apparel · Concepto gráfico · Merchandising"
   ]
 }
