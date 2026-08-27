@@ -1,21 +1,26 @@
 {
-  "id": "02",
-  "name": "sseguros",
-  "year": "2025",
-  "location": "Bogotá, CO",
   "color": "#f10909",
+  "name": "sseguros",
   "sections": [
     {
       "paragraphs": [
-        "Desarrolle y rediseñe la nueva identidad grafica de la empresa para actualizar y mejorar su comunicación digital, apuntando a generar una mejor comunicación en terminos digitales y de pauta."
-      ]
+        "SSeguros buscaba actualizar su comunicación con un lenguaje más joven, moderno y empresarial, capaz de acercar la marca a nuevas audiencias sin perder su carácter profesional.\n\nLa dirección gráfica incorporó personas y situaciones cotidianas para generar una comunicación más cercana, desarrollando piezas pensadas para funcionar simultáneamente como contenido digital y como pauta para ampliar el alcance de la empresa."
+      ],
+      "label": "La dirección"
     }
   ],
+  "tagline": "SSeguros necesitaba hablarle a una audiencia más joven sin dejar atrás su carácter empresarial.",
+  "location": "Bogotá, CO",
   "images": [
     "/work/el-1-.png",
     "/work/el-2-.png",
     "/work/el-3-.png",
     "/work/el-4-.png",
     "/work/el-5-.png"
+  ],
+  "id": "02",
+  "year": "2025",
+  "services": [
+    "Art Direction · Comunicación digital · Dirección gráfica · Pauta"
   ]
 }
