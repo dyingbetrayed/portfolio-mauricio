@@ -3,13 +3,13 @@
   "name": "palabras para habitar mejor la ciudad",
   "sections": [
     {
-      "label": "Objetivo",
+      "label": "Sobre el proyecto",
       "paragraphs": [
-        "Palabras Medellín"
+        "El proyecto parte de una mirada sobre Medellín construida desde sus palabras, sus lugares y las historias que hacen parte de la vida cotidiana. El reto era crear una identidad capaz de hablar de la ciudad sin recurrir a sus representaciones más evidentes.\n\nLa propuesta convierte el lenguaje en un recurso visual y conceptual, creando un sistema que permite combinar palabras, mensajes y composiciones para construir diferentes formas de contar y habitar la ciudad."
       ]
     }
   ],
-  "tagline": "creación de proyecto",
+  "tagline": "Una identidad que convierte las palabras en una forma de recorrer y habitar la ciudad",
   "note": "Derechos reservados para Quintaesencia.",
   "location": "Medellín, CO",
   "images": [
@@ -34,6 +34,6 @@
   "id": "01",
   "year": "2026",
   "services": [
-    "branding"
+    "Branding · Identidad visual · Dirección de arte"
   ]
 }
