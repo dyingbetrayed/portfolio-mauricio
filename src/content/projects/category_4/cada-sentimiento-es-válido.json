@@ -1,14 +1,26 @@
 {
-  "id": "06",
-  "name": "cada sentimiento es válido",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#fd0000",
+  "name": "cada sentimiento es válido",
+  "sections": [
+    {
+      "label": "El concepto",
+      "paragraphs": [
+        "“Cada sentimiento es válido” parte de una frase sencilla para convertirla en una pieza gráfica que puede llevarse puesta. El diseño utiliza la prenda como soporte de comunicación, haciendo que el mensaje tenga presencia propia y pueda circular fuera de su contexto original."
+      ]
+    }
+  ],
+  "tagline": "Una frase que deja de ser mensaje y se convierte en objeto.",
+  "location": "Medellín, CO",
   "images": [
     "/work/merch-35-.png",
     "/work/merch-36-.png",
     "/work/merch-37-.png",
     "/work/merch-38-.png",
     "/work/merch-39-.png"
+  ],
+  "id": "06",
+  "year": "2025",
+  "services": [
+    "Diseño de apparel · Merchandising · Dirección de arte"
   ]
 }
