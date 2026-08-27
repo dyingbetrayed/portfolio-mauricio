@@ -3,13 +3,14 @@
   "name": "viral music",
   "sections": [
     {
-      "label": "Objetivo",
+      "label": "La identidad",
       "paragraphs": [
-        "Viral Music es una empresa especializada en servicios de TikTok para sellos, agencias de management y otras organizaciones de la industria musical. Surgimos de la cooperación entre Casa Manglar, una empresa especializada en content marketing y TeamUp, una agencia que brinda soluciones de marketing digital a artistas y sellos."
+        "Viral Music necesitaba construir una identidad capaz de representar la empresa más allá de su presencia digital. El proyecto comprendió el desarrollo del branding y concepto del logo, junto con diferentes aplicaciones para visualizar cómo podía existir físicamente.\n\nLos mockups y la papelería permitieron llevar la identidad a espacios y puntos de contacto concretos, ayudando a construir una visión de la marca como sistema y no únicamente como logotipo."
       ]
     }
   ],
-  "note": "Todos los derechos son reservados de Casa Manglar.",
+  "tagline": "El proyecto llevó el branding desde el logo hasta diferentes aplicaciones físicas para construir una visión más completa de la empresa.",
+  "note": "Todos los derechos son reservados a Casa Manglar.",
   "location": "Bogotá, CO",
   "images": [
     "/work/mesa-de-trabajo-18.png",
@@ -29,6 +30,6 @@
   "id": "08",
   "year": "2023",
   "services": [
-    "Branding"
+    "Branding · Concepto de marca"
   ]
 }
