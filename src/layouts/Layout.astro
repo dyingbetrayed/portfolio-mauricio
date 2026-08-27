@@ -1,13 +1,12 @@
 ---
-import { projectCategories } from '../data/projects';
+import homeData from '../content/home.json';
+import aboutData from '../content/about.json';
+import siteSettings from '../content/site_settings.json';
 
-const projectImageSources = [
-	...new Set(
-		Object.values(projectCategories).flatMap((category) =>
-			category.projects.flatMap((project) => project.images ?? [])
-		)
-	),
-];
+const heroMedia = homeData.hero_media || (homeData as { hero_image?: string }).hero_image || '';
+const isHeroVideo = /\.(mp4|webm|ogg)$/i.test(heroMedia);
+const aboutImage = aboutData.image || '';
+const logoImage = siteSettings.logo_image || '';
 ---
 
 <!doctype html>
@@ -31,9 +30,15 @@ const projectImageSources = [
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
-		{projectImageSources.map((src) => (
-			<link rel="preload" as="image" href={src} fetchpriority="high" />
-		))}
+		{heroMedia && !isHeroVideo && (
+			<link rel="preload" as="image" href={heroMedia} fetchpriority="high" />
+		)}
+		{aboutImage && (
+			<link rel="preload" as="image" href={aboutImage} fetchpriority="high" />
+		)}
+		{logoImage && (
+			<link rel="preload" as="image" href={logoImage} fetchpriority="high" />
+		)}
 		<script is:inline>document.documentElement.classList.add('js');</script>
 	</head>
 	<body>

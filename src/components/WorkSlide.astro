@@ -126,7 +126,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			Array.from(root.querySelectorAll('[data-project-image]'));
 		const nextPanels = () =>
 			Array.from(root.querySelectorAll('[data-project-next]'));
-		const imagePreparation = new WeakMap();
+		const imageHydration = new WeakMap();
 		let imageOpenRequest = 0;
 		let currentImagePanel = null;
 		let imageTransitionTimer = 0;
@@ -137,26 +137,37 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			);
 		}
 
-		/** Espera la descarga y la decodificación antes de hacer visible una imagen. */
-		function prepareProjectImage(panel) {
-			if (!(panel instanceof HTMLElement)) return Promise.resolve();
-			const cached = imagePreparation.get(panel);
+		function markImageReady(image) {
+			image.classList.add('is-ready');
+			image.closest('.project-image__figure, .project-next__media')?.classList.add('is-ready');
+		}
+
+		/** Asigna src y espera decode para no pintar un frame vacío. */
+		function hydrateImage(image) {
+			if (!(image instanceof HTMLImageElement)) return Promise.resolve();
+			const cached = imageHydration.get(image);
 			if (cached) return cached;
 
-			const images = Array.from(panel.querySelectorAll('.project-image__img'));
-			if (images.length === 0) return Promise.resolve();
-			
-			const image = images[0];
+			const src = image.getAttribute('src') || image.dataset.src;
+			if (!src) return Promise.resolve();
 
 			const prepared = new Promise((resolve) => {
+				const finish = () => {
+					markImageReady(image);
+					resolve();
+				};
 				const decode = () => {
 					const decoded = image.decode?.();
 					if (decoded) {
-						decoded.catch(() => undefined).finally(resolve);
+						decoded.catch(() => undefined).finally(finish);
 					} else {
-						resolve();
+						finish();
 					}
 				};
+
+				if (image.getAttribute('src') !== src) {
+					image.src = src;
+				}
 
 				if (image.complete) {
 					if (image.naturalWidth > 0) decode();
@@ -164,30 +175,92 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					return;
 				}
 
-				const onDone = () => {
-					image.removeEventListener('load', onLoad);
+				const onLoad = () => {
 					image.removeEventListener('error', onError);
 					decode();
 				};
-				const onLoad = () => onDone();
 				const onError = () => {
 					image.removeEventListener('load', onLoad);
-					image.removeEventListener('error', onError);
 					resolve();
 				};
 
 				image.addEventListener('load', onLoad, { once: true });
 				image.addEventListener('error', onError, { once: true });
-				if (image.complete) onDone();
+				if (image.complete) {
+					image.removeEventListener('load', onLoad);
+					image.removeEventListener('error', onError);
+					if (image.naturalWidth > 0) decode();
+					else resolve();
+				}
 			});
 
-			imagePreparation.set(panel, prepared);
+			imageHydration.set(image, prepared);
 			return prepared;
 		}
 
-		function warmProjectImages() {
-			imagePanels().forEach((panel) => {
-				void prepareProjectImage(panel);
+		function galleryImages(panel) {
+			return Array.from(panel.querySelectorAll('.project-image__img'));
+		}
+
+		function loadAroundIndex(images, index, radius = 2) {
+			const start = Math.max(0, index - 1);
+			const end = Math.min(images.length - 1, index + radius);
+			const pending = [];
+			for (let i = start; i <= end; i++) {
+				pending.push(hydrateImage(images[i]));
+			}
+			return Promise.all(pending);
+		}
+
+		function bindGalleryLoader(panel) {
+			if (!(panel instanceof HTMLElement) || panel.dataset.galleryBound === '1') return;
+			if (panel.hasAttribute('hidden')) return;
+			panel.dataset.galleryBound = '1';
+
+			const gallery = panel.querySelector('.project-image__gallery');
+			const images = galleryImages(panel);
+			if (!gallery || images.length === 0) return;
+
+			const figures = Array.from(gallery.querySelectorAll('.project-image__figure'));
+			if (!('IntersectionObserver' in window)) {
+				images.forEach((image) => void hydrateImage(image));
+				return;
+			}
+
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (!entry.isIntersecting) return;
+						const index = figures.indexOf(entry.target);
+						if (index < 0) return;
+						void loadAroundIndex(images, index, 2);
+					});
+				},
+				{
+					root: gallery,
+					rootMargin: '0px 140% 0px 140%',
+					threshold: 0.01,
+				}
+			);
+
+			figures.forEach((figure) => observer.observe(figure));
+		}
+
+		function prepareProjectImage(panel, startIndex = 0) {
+			if (!(panel instanceof HTMLElement)) return Promise.resolve();
+			const images = galleryImages(panel);
+			if (images.length === 0) return Promise.resolve();
+			const index = Math.min(Math.max(0, startIndex), images.length - 1);
+			images[index]?.setAttribute('fetchpriority', 'high');
+			const ready = hydrateImage(images[index]);
+			void loadAroundIndex(images, index, 2);
+			return ready;
+		}
+
+		function prepareNextThumbs(panel) {
+			if (!(panel instanceof HTMLElement)) return;
+			panel.querySelectorAll('.project-next__media img[data-src]').forEach((image) => {
+				void hydrateImage(image);
 			});
 		}
 
@@ -248,7 +321,19 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			});
 		}
 
-		function showProjectImage(slug, { animate = false, resetScroll = true } = {}) {
+		function scrollGalleryToIndex(panel, imageIndex) {
+			const gallery = panel.querySelector('.project-image__gallery');
+			if (!gallery) return;
+			if (!imageIndex) {
+				gallery.scrollLeft = 0;
+				return;
+			}
+			const figures = gallery.querySelectorAll('.project-image__figure');
+			const target = figures[imageIndex];
+			gallery.scrollLeft = target ? target.offsetLeft : 0;
+		}
+
+		function showProjectImage(slug, { animate = false, resetScroll = true, imageIndex = 0 } = {}) {
 			const panel = imagePanelFor(slug);
 			if (!panel) return false;
 			
@@ -264,10 +349,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					else el.setAttribute('hidden', '');
 				});
 				currentImagePanel = panel;
-				if (resetScroll) {
-					const gallery = panel.querySelector('.project-image__gallery');
-					if (gallery) gallery.scrollLeft = 0;
-				}
+				if (resetScroll) scrollGalleryToIndex(panel, imageIndex);
+				requestAnimationFrame(() => bindGalleryLoader(panel));
 				return true;
 			}
 
@@ -291,10 +374,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			panel.classList.add('is-entering-forward');
 			currentImagePanel = panel;
 			
-			if (resetScroll) {
-				const gallery = panel.querySelector('.project-image__gallery');
-				if (gallery) gallery.scrollLeft = 0;
-			}
+			if (resetScroll) scrollGalleryToIndex(panel, imageIndex);
+			requestAnimationFrame(() => bindGalleryLoader(panel));
 
 			const settle = () => {
 				if (currentImagePanel !== panel) return;
@@ -370,16 +451,22 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			setDepth(2, opts);
 		}
 
+		function imageOpenOptions(opts) {
+			if (typeof opts === 'number') return { imageIndex: opts };
+			return opts && typeof opts === 'object' ? opts : {};
+		}
+
 		async function openProjectImage(slug, opts) {
 			const imagePanel = imagePanelFor(slug);
 			if (!imagePanel) return;
+			const { imageIndex = 0, ...depthOpts } = imageOpenOptions(opts);
 			const requestId = ++imageOpenRequest;
-			await prepareProjectImage(imagePanel);
+			await prepareProjectImage(imagePanel, imageIndex);
 			if (requestId !== imageOpenRequest) return;
 
 			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
 			if (!projectPanel) return;
-			if (!showProjectImage(slug, { animate: true })) return;
+			if (!showProjectImage(slug, { animate: true, imageIndex })) return;
 
 			const row = root.querySelector(`[data-open-project="${slug}"]`);
 			const category = row?.getAttribute('data-from-category');
@@ -389,7 +476,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 			showOnly(projectPanels(), 'data-project', slug);
 			showOnly(nextPanels(), 'data-project-next', null);
-			setDepth(3, opts);
+			setDepth(3, depthOpts);
 		}
 
 		async function openProjectNext(slug, opts) {
@@ -401,6 +488,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			if (projectPanel) {
 				showOnly(projectPanels(), 'data-project', slug);
 			}
+
+			prepareNextThumbs(panel);
 
 			const imagePanel = imagePanelFor(slug);
 			if (imagePanel) {
@@ -451,6 +540,20 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					if (gallery) {
 						const isAtStart = gallery.scrollLeft <= 10;
 						if (!isAtStart) {
+							const images = galleryImages(panel);
+							const figures = Array.from(gallery.querySelectorAll('.project-image__figure'));
+							const center = gallery.scrollLeft + gallery.clientWidth / 2;
+							let current = 0;
+							let bestDist = Infinity;
+							figures.forEach((figure, i) => {
+								const mid = figure.offsetLeft + figure.offsetWidth / 2;
+								const dist = Math.abs(mid - center);
+								if (dist < bestDist) {
+									bestDist = dist;
+									current = i;
+								}
+							});
+							void loadAroundIndex(images, Math.max(0, current - 1), 2);
 							gallery.scrollBy({ left: -gallery.clientWidth, behavior: 'smooth' });
 							return;
 						}
@@ -514,6 +617,20 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					if (gallery) {
 						const isAtEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 10;
 						if (!isAtEnd) {
+							const images = galleryImages(panel);
+							const figures = Array.from(gallery.querySelectorAll('.project-image__figure'));
+							const center = gallery.scrollLeft + gallery.clientWidth / 2;
+							let current = 0;
+							let bestDist = Infinity;
+							figures.forEach((figure, i) => {
+								const mid = figure.offsetLeft + figure.offsetWidth / 2;
+								const dist = Math.abs(mid - center);
+								if (dist < bestDist) {
+									bestDist = dist;
+									current = i;
+								}
+							});
+							void loadAroundIndex(images, current + 1, 2);
 							gallery.scrollBy({ left: gallery.clientWidth, behavior: 'smooth' });
 							return true;
 						}
@@ -817,11 +934,16 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			}
 		}
 
-		if ('requestIdleCallback' in window) {
-			window.requestIdleCallback(warmProjectImages, { timeout: 1500 });
-		} else {
-			window.setTimeout(warmProjectImages, 150);
-		}
+		root.addEventListener('pointerenter', (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+			const row = target.closest('[data-open-project]');
+			if (!(row instanceof HTMLElement)) return;
+			const slug = row.getAttribute('data-open-project') || '';
+			const panel = imagePanelFor(slug);
+			if (!panel) return;
+			void prepareProjectImage(panel, 0);
+		}, true);
 
 		applyHash();
 		window.addEventListener('hashchange', applyHash);

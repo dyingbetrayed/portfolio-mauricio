@@ -6,7 +6,7 @@ const logoImage = siteSettings.logo_image;
 ---
 
 {logoImage ? (
-	<img src={logoImage} alt={logoText} class="site-logo-img" />
+	<img src={logoImage} alt={logoText} class="site-logo-img" decoding="async" />
 ) : (
 	<>{logoText}</>
 )}

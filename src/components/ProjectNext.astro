@@ -44,7 +44,7 @@ const nextSlug = related[0]?.slug;
 					data-cursor-nav
 				>
 					<div class="project-next__media" aria-hidden="true" style={`background-color: ${item.color};`}>
-						{image && <img src={image} alt="" loading="lazy" decoding="async" />}
+						{image && <img data-src={image} alt="" decoding="async" />}
 					</div>
 					<div
 						class="project-next__bar"
@@ -303,6 +303,12 @@ const nextSlug = related[0]?.slug;
 		height: 100%;
 		object-fit: cover;
 		object-position: center;
+		opacity: 0;
+		transition: opacity 180ms ease;
+	}
+
+	.project-next__media img.is-ready {
+		opacity: 1;
 	}
 
 	.project-next__bar {

@@ -24,7 +24,7 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 	<header class="about-header">
 		<h1 class="name-title top-name-title" aria-label={siteSettings.logo_text || 'Mauricio Atencia'}>
 			{siteSettings.logo_image ? (
-				<img src={siteSettings.logo_image} alt={siteSettings.logo_text || 'Mauricio Atencia'} class="site-logo-img" />
+				<img src={siteSettings.logo_image} alt={siteSettings.logo_text || 'Mauricio Atencia'} class="site-logo-img" fetchpriority="high" decoding="async" />
 			) : (
 				(siteSettings.logo_text || 'Mauricio Atencia').split(' ').map((word, i) => (
 					<span class="name-title__mask"><span class="name-title__word" style={i > 0 ? "transition-delay: 85ms;" : ""}>{word}</span></span>
@@ -36,7 +36,7 @@ const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 
 	<div class="about-content-wrapper" data-v-scroll>
 		<div class="about-center reveal" style="--reveal-delay: 160ms">
-			<img src={aboutData.image} alt="Mauricio Atencia" class="about-image" />
+			<img src={aboutData.image} alt="Mauricio Atencia" class="about-image" fetchpriority="high" decoding="async" />
 		</div>
 
 		<div class="about-footer-container reveal" style="--reveal-delay: 600ms">

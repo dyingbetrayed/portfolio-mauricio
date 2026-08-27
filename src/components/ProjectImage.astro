@@ -24,14 +24,12 @@ const images = project.images ?? [];
 
 	<div class="project-image__gallery" tabindex="0">
 		{images.map((src, idx) => (
-			<figure class="project-image__figure">
+			<figure class="project-image__figure" style={`--project-color: ${project.color};`}>
 				<img
 					class="project-image__img"
-					src={src}
+					data-src={src}
 					alt={`${project.name} — imagen ${idx + 1} de ${images.length}`}
-					loading="eager"
 					decoding="async"
-					fetchpriority="high"
 				/>
 			</figure>
 		))}
@@ -175,11 +173,18 @@ const images = project.images ?? [];
 		flex: 0 0 auto;
 		height: 100%;
 		min-width: 10vw;
+		aspect-ratio: 3 / 4;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: transparent;
+		background: #2a2a2a;
+		background: color-mix(in srgb, var(--project-color, #6b6b6b) 32%, #1a1a1a);
 		scroll-snap-align: center;
+	}
+
+	.project-image__figure.is-ready {
+		aspect-ratio: auto;
+		background: transparent;
 	}
 	
 	.project-image__figure:last-child {
@@ -195,6 +200,18 @@ const images = project.images ?? [];
 		object-position: center;
 		outline: none;
 		border: none;
+		opacity: 0;
+		transition: opacity 180ms ease;
+	}
+
+	.project-image__img.is-ready {
+		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.project-image__img {
+			transition: none;
+		}
 	}
 
 	.project-image__footer {
