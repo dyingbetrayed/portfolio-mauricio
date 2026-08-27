@@ -3,13 +3,13 @@
   "name": "motel no vacancy",
   "sections": [
     {
-      "label": "Sobre el proyecto",
+      "label": "El concepto",
       "paragraphs": [
-        "Motel No Vacancy nace como un ejercicio de construcción de una marca inspirada en los moteles de carretera y la estética norteamericana de los años 70. El reto era capturar esa nostalgia sin convertirla en una reproducción literal del pasado.\n\nLa identidad combina referencias vintage, una estética vibrante y una dirección de arte con carácter para construir un universo propio. El resultado es una marca que utiliza la nostalgia como punto de partida para crear una experiencia visual contemporánea."
+        "Motel No Vacancy nace de imaginar un motel de carretera norteamericano desde la estética de los años 70. El proyecto toma referencias de esa época para construir un lugar que parece haber existido, sin intentar reproducir literalmente el pasado.\n\nLa identidad combina tipografía, color, gráfica y dirección de arte para construir una ficción alrededor de la marca y hacer que ese motel imaginario se sienta real."
       ]
     }
   ],
-  "tagline": "Un motel de carretera imaginado desde el glamour, la nostalgia y el exceso de los años 70.",
+  "tagline": "Un motel de carretera que podría haber existido en algún lugar de Estados Unidos durante los años 70.",
   "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-46.png",
@@ -20,6 +20,6 @@
   "id": "05",
   "year": "2025",
   "services": [
-    "Branding · Identidad visual"
+    "Branding · Identidad visual · Dirección de arte"
   ]
 }
