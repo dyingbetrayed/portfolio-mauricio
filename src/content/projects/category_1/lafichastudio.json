@@ -4,13 +4,13 @@
   "slug": "lafichastudio",
   "sections": [
     {
-      "label": "Objetivo",
+      "label": "Sobre el proyecto",
       "paragraphs": [
-        "Este proyecto nace de convertirse en la clave, el elemento y la jugada final de proyectos independientes que buscan ir más allá de los pixeles. En la ficha studio buscan construir trabajos desde la confianza.\n\n\"Nos esforzamos por ser 'la ficha bacana': un socio agradable, con comunicación fluida y un compromiso genuino con el éxito de su empresa. Nuestro objetivo es que trabajar con nosotros sea tan eficiente como gratificante\"."
+        "La Ficha Studio necesitaba construir una identidad propia para posicionarse como un estudio creativo y no simplemente como un proveedor de diseño. El punto de partida fue el naming: “La Ficha”, entendida como ese elemento que entra en juego para hacer que algo suceda.\n\nA partir de esta idea se desarrolló una identidad cercana, flexible y con carácter, donde el concepto de juego se convierte en un recurso gráfico que acompaña la marca y sus diferentes aplicaciones."
       ]
     }
   ],
-  "tagline": "creación de proyecto",
+  "tagline": "Una marca que convierte el juego en una forma de construir ideas.",
   "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-31.png",
@@ -31,6 +31,6 @@
   "id": "03",
   "year": "2026",
   "services": [
-    "branding-naming"
+    "Naming · Branding · Identidad visual"
   ]
 }
