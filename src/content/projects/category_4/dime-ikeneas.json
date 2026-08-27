@@ -1,14 +1,26 @@
 {
-  "id": "03",
-  "name": "dime ikeneas",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#cbcaca",
+  "name": "dime ikeneas",
+  "sections": [
+    {
+      "label": "El concepto",
+      "paragraphs": [
+        "Dime Ikeneas se plantea desde el merchandising como un espacio de expresión gráfica. La propuesta toma el lenguaje visual de la pieza y lo convierte en una prenda donde el diseño funciona como protagonista, buscando que el objeto tenga una identidad propia más allá de su función."
+      ]
+    }
+  ],
+  "tagline": "Una pieza para llevar puesta una idea.",
+  "location": "Medellín, CO",
   "images": [
     "/work/merch-40-.png",
     "/work/merch-41-.png",
     "/work/merch-42-.png",
     "/work/merch-43-.png",
     "/work/merch-44-.png"
+  ],
+  "id": "03",
+  "year": "2025",
+  "services": [
+    "Diseño de apparel · Merchandising"
   ]
 }
