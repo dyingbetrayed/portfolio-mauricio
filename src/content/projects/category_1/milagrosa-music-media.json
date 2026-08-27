@@ -1,9 +1,16 @@
 {
-  "id": "07",
-  "name": "milagrosa music media",
-  "year": "2025",
-  "location": "Medellín, CO",
   "color": "#001869",
+  "name": "milagrosa music media",
+  "sections": [
+    {
+      "label": "Sobre el proyecto",
+      "paragraphs": [
+        "Milagrosa Music Media necesitaba una firma visual capaz de representar una plataforma vinculada a la industria musical y convivir con diferentes artistas, lanzamientos y propuestas sonoras. El reto estaba en crear un símbolo con personalidad propia, pero suficientemente flexible para no competir con los proyectos que representa.\n\nLa solución se concentra en un logo fuerte basado en el barrio La Milagrosa, el cuál se extrae de la línea invisible que separa este sector de la Comuna 9 de Medellín, logrando una firma reconocible dentro de sus diferentes expresiones visuales."
+      ]
+    }
+  ],
+  "tagline": "Una logo que necesitaba sonar antes de empezar a hablar.",
+  "location": "Medellín, CO",
   "images": [
     "/work/mesa-de-trabajo-59.png",
     "/work/mesa-de-trabajo-60.png",
@@ -12,15 +19,9 @@
     "/work/mesa-de-trabajo-65.png",
     "/work/mesa-de-trabajo-67.png"
   ],
+  "id": "07",
+  "year": "2025",
   "services": [
-    "logo"
-  ],
-  "sections": [
-    {
-      "label": "Objetivo",
-      "paragraphs": [
-        "Diseño de logo para la distribuidora musical colombiana: MILAGROSA MUSIC MEDIA, creada por el DJ y productor Astronomical Telegram."
-      ]
-    }
+    "Diseño de logo · Identidad gráfica"
   ]
 }
