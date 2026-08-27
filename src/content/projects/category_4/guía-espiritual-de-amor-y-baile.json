@@ -1,12 +1,24 @@
 {
-  "id": "07",
-  "name": "guía espiritual de amor y baile",
-  "year": "2023",
-  "location": "Medellín, CO",
   "color": "#efe49c",
+  "name": "guía espiritual de amor y baile",
+  "sections": [
+    {
+      "label": "El concepto",
+      "paragraphs": [
+        "“Guía espiritual de amor y baile” juega con la idea de convertir una frase en una especie de manifiesto. La propuesta utiliza el lenguaje editorial y gráfico para construir una pieza que mezcla humor, cultura de baile y expresión personal.\n\nEl resultado convierte el merchandising en algo más cercano a un objeto cultural: una pieza que comunica una actitud y no solamente una marca."
+      ]
+    }
+  ],
+  "tagline": "Un manual para perderse entre el amor y la pista de baile.",
+  "location": "Medellín, CO",
   "images": [
     "/work/merch-27-.png",
     "/work/merch-28-.png",
     "/work/merch-29-.png"
+  ],
+  "id": "07",
+  "year": "2023",
+  "services": [
+    "Diseño gráfico · Diseño de apparel · Dirección de arte"
   ]
 }
