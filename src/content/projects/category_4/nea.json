@@ -1,13 +1,25 @@
 {
-  "id": "05",
-  "name": "NEA$",
-  "year": "2022",
-  "location": "Medellín, CO",
   "color": "#63ff00",
+  "name": "NEA$",
+  "sections": [
+    {
+      "label": "El concepto",
+      "paragraphs": [
+        "NEA$ nace desde una exploración gráfica alrededor de la marca y su universo visual. La propuesta utiliza la camisa como soporte principal para desarrollar una pieza con carácter propio, donde el diseño gráfico adquiere protagonismo y convierte el merchandising en una extensión de la identidad.\n\nEsta pieza también funciona como antecedente del proyecto NEA$ — Junín, donde ese mismo lenguaje se llevó mucho más lejos para construir un universo alrededor de la prenda."
+      ]
+    }
+  ],
+  "tagline": "Antes de desaparecer, una marca dejó algo para llevar puesto.",
+  "location": "Medellín, CO",
   "images": [
     "/work/merch-23-.png",
     "/work/merch-24-.png",
     "/work/merch-25-.png",
     "/work/merch-26-.png"
+  ],
+  "id": "05",
+  "year": "2022",
+  "services": [
+    "Diseño de apparel · Diseño gráfico · Merchandising"
   ]
 }
