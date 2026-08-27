@@ -1,9 +1,16 @@
 {
-  "id": "02",
-  "name": "NECIO",
-  "year": "2023",
-  "location": "Medellín, CO",
   "color": "#e6e09e",
+  "name": "NECIO",
+  "sections": [
+    {
+      "label": "El concepto",
+      "paragraphs": [
+        "NECIO utiliza la propia palabra como punto de partida para construir una pieza gráfica de fuerte personalidad, reinterpretando su significado colombiano, reflejando que una persona necia es un niño que siempre quiere estar jugando con sus amigos y no quiere entrarse para la casa cuando la mama le dice que ya se acabo el juego. \n\nEl diseño y nombre de esta campaña, convierte el mensaje en el elemento central de la prenda, explorando cómo la tipografía, la composición y el tratamiento gráfico pueden transformar una palabra cotidiana en una declaración visual."
+      ]
+    }
+  ],
+  "tagline": "Una colaboración entre el sello NEA$ y Artificio, mezclando el nombre de ambas para dar como resultado NECIO. ",
+  "location": "Medellín, CO",
   "images": [
     "/work/merch-14-.png",
     "/work/merch-15-.png",
@@ -14,5 +21,10 @@
     "/work/merch-20-.png",
     "/work/merch-21-.png",
     "/work/merch-22-.png"
+  ],
+  "id": "02",
+  "year": "2023",
+  "services": [
+    "Diseño de apparel · Merchandising · Diseño gráfico"
   ]
 }
