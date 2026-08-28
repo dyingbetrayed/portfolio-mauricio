@@ -260,6 +260,25 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 			return -1;
 		}
 
+		function routeTarget() {
+			const hashId = location.hash.replace(/^#/, '');
+			if (hashId) return hashId;
+
+			const queryId = new URLSearchParams(location.search).get('route');
+			if (queryId) return decodeURIComponent(queryId);
+
+			const pathId = location.pathname.replace(/^\/+|\/+$/g, '');
+			if (pathId) return decodeURIComponent(pathId);
+
+			return '';
+		}
+
+		function indexForCurrentRoute() {
+			const id = routeTarget();
+			if (!id) return 0;
+			return indexForHash(`#${id}`);
+		}
+
 		function canScrollVertically(el, deltaY) {
 			if (!(el instanceof Element)) return false;
 			const style = getComputedStyle(el);
@@ -718,12 +737,12 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 		}
 
 		currentIndex = nearestIndex();
-		const initialHash = indexForHash(location.hash);
-		if (initialHash >= 0) {
+		const initialRouteIndex = indexForCurrentRoute();
+		if (initialRouteIndex >= 0) {
 			const list = slides();
-			const slide = list[initialHash];
+			const slide = list[initialRouteIndex];
 			if (slide) {
-				currentIndex = initialHash;
+				currentIndex = initialRouteIndex;
 				if (isVerticalLayout()) {
 					container.scrollTo({ top: slide.offsetTop, behavior: 'instant' });
 				} else {

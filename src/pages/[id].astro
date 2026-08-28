@@ -40,7 +40,7 @@ interface Props {
 
 const { type, data, slug } = Astro.props;
 const BASE_URL = 'https://portfolio-mauricio-beta.vercel.app';
-const redirectUrl = `/#${slug}`;
+const redirectUrl = `/?route=${encodeURIComponent(slug)}`;
 
 let ogImage = `${BASE_URL}/LA-FICHA-LOGO.png`;
 let ogTitle = '';

@@ -1107,10 +1107,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		let isInitialLoad = true;
 		function routeTarget() {
 			const hashId = location.hash.replace(/^#/, '');
-			if (hashId) return hashId;
+			if (hashId) return { id: hashId, source: 'hash' };
+
+			const queryId = new URLSearchParams(location.search).get('route');
+			if (queryId) return { id: decodeURIComponent(queryId), source: 'query' };
+
 			const pathId = location.pathname.replace(/^\/+|\/+$/g, '');
-			if (pathId) return decodeURIComponent(pathId);
-			return '';
+			if (pathId) return { id: decodeURIComponent(pathId), source: 'path' };
+
+			return { id: '', source: 'none' };
 		}
 
 		function applyHash() {
@@ -1118,7 +1123,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				root.classList.add('no-transition');
 			}
 
-			const id = routeTarget();
+			const { id, source } = routeTarget();
 			if (!id || id === 'work') {
 				if (id === 'work') ensureWorkVisible();
 				closeAll({ syncHash: false });
@@ -1128,6 +1133,13 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			} else if (projectPanels().some((el) => el.getAttribute('data-project') === id)) {
 				ensureWorkVisible();
 				openProject(id, { syncHash: false });
+			}
+
+			if (source === 'query') {
+				const cleanUrl = id && id !== 'work' ? `/${encodeURIComponent(id)}` : '/';
+				if (window.location.pathname + window.location.search + window.location.hash !== cleanUrl) {
+					history.replaceState(null, '', cleanUrl);
+				}
 			}
 
 			if (isInitialLoad) {
