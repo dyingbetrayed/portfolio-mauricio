@@ -80,7 +80,7 @@ collections:
     identifier_field: "name"
     slug: "{{slug}}"
     fields:
-      - { label: "ID", name: "id", widget: "string" }
+      - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
       - { label: "Ubicación", name: "location", widget: "string" }
@@ -113,7 +113,7 @@ collections:
     identifier_field: "name"
     slug: "{{slug}}"
     fields:
-      - { label: "ID", name: "id", widget: "string" }
+      - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
       - { label: "Ubicación", name: "location", widget: "string" }
@@ -146,7 +146,7 @@ collections:
     identifier_field: "name"
     slug: "{{slug}}"
     fields:
-      - { label: "ID", name: "id", widget: "string" }
+      - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
       - { label: "Ubicación", name: "location", widget: "string" }
@@ -179,7 +179,7 @@ collections:
     identifier_field: "name"
     slug: "{{slug}}"
     fields:
-      - { label: "ID", name: "id", widget: "string" }
+      - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
       - { label: "Ubicación", name: "location", widget: "string" }

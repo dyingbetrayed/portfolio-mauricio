@@ -48,11 +48,19 @@ function mapProjects(files: Record<string, any>): Project[] {
 		if (yearA !== yearB) {
 			return yearB - yearA; // Descendente por año
 		}
-		// Si es igual, usar el orden de ID como fallback secundario
-		if (!a.id || !b.id) return 0;
-		return a.id.localeCompare(b.id);
+		// Si es igual, un orden estable por nombre/slug (evita depender de un ID manual)
+		const nameA = (a.name || '').toString().toLowerCase();
+		const nameB = (b.name || '').toString().toLowerCase();
+		if (nameA !== nameB) return nameA.localeCompare(nameB);
+		return (a.slug || '').localeCompare(b.slug || '');
 	});
-	return projects;
+
+	// ID visual automático por posición dentro de la categoría (01, 02, 03...)
+	// Así, si agregas un proyecto más reciente (ej. 2026), quedará 01 y los demás se corren.
+	return projects.map((project, index) => ({
+		...project,
+		id: String(index + 1).padStart(2, '0')
+	}));
 }
 
 const category1Projects = mapProjects(category1Files);
