@@ -6,11 +6,19 @@ export function getStaticPaths() {
 	const paths: { params: { id: string }; props: { type: 'category' | 'project'; data: Project | ProjectCategory; slug: string } }[] = [];
 
 	Object.entries(projectCategories).forEach(([categoryId, category]) => {
-		// Agrega la categoría
+		// Agrega la categoría con su slug público
 		paths.push({
-			params: { id: categoryId },
-			props: { type: 'category', data: category, slug: categoryId }
+			params: { id: category.slug },
+			props: { type: 'category', data: category, slug: category.slug }
 		});
+
+		// Compatibilidad con rutas antiguas como /category_1
+		if (category.slug !== categoryId) {
+			paths.push({
+				params: { id: categoryId },
+				props: { type: 'category', data: category, slug: category.slug }
+			});
+		}
 
 		// Agrega los proyectos de esta categoría
 		category.projects.forEach(project => {
@@ -32,7 +40,7 @@ interface Props {
 
 const { type, data, slug } = Astro.props;
 const BASE_URL = 'https://portfolio-mauricio-beta.vercel.app';
-const redirectUrl = `${BASE_URL}/#${slug}`;
+const redirectUrl = `/#${slug}`;
 
 let ogImage = `${BASE_URL}/LA-FICHA-LOGO.png`;
 let ogTitle = '';

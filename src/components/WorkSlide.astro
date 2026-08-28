@@ -1105,12 +1105,20 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		}
 
 		let isInitialLoad = true;
+		function routeTarget() {
+			const hashId = location.hash.replace(/^#/, '');
+			if (hashId) return hashId;
+			const pathId = location.pathname.replace(/^\/+|\/+$/g, '');
+			if (pathId) return decodeURIComponent(pathId);
+			return '';
+		}
+
 		function applyHash() {
 			if (isInitialLoad) {
 				root.classList.add('no-transition');
 			}
 
-			const id = location.hash.replace(/^#/, '');
+			const id = routeTarget();
 			if (!id || id === 'work') {
 				if (id === 'work') ensureWorkVisible();
 				closeAll({ syncHash: false });
@@ -1154,6 +1162,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 		applyHash();
 		window.addEventListener('hashchange', applyHash);
+		window.addEventListener('popstate', applyHash);
 
 		window.__workGoBack = goBack;
 		window.__workDepth = () => Number(root.dataset.depth || 0);
