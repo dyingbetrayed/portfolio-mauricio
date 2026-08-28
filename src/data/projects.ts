@@ -22,6 +22,7 @@ export interface Project {
 	 * Cada ruta es una pantalla distinta (ej. `/work/branding/pitao/2.jpg`).
 	 */
 	images?: string[];
+	category?: string;
 }
 
 export interface ProjectCategory {
@@ -33,10 +34,7 @@ export interface ProjectCategory {
 
 import categoriesData from '../content/categories.json';
 
-const category1Files = import.meta.glob('../content/projects/category_1/*.json', { eager: true });
-const category2Files = import.meta.glob('../content/projects/category_2/*.json', { eager: true });
-const category3Files = import.meta.glob('../content/projects/category_3/*.json', { eager: true });
-const category4Files = import.meta.glob('../content/projects/category_4/*.json', { eager: true });
+const allProjectFiles = import.meta.glob('../content/projects/*.json', { eager: true });
 
 function mapProjects(files: Record<string, any>): Project[] {
 	const projects = Object.entries(files).map(([path, data]) => {
@@ -64,10 +62,12 @@ function mapProjects(files: Record<string, any>): Project[] {
 	}));
 }
 
-const category1Projects = mapProjects(category1Files);
-const category2Projects = mapProjects(category2Files);
-const category3Projects = mapProjects(category3Files);
-const category4Projects = mapProjects(category4Files);
+const allProjects = mapProjects(allProjectFiles);
+
+const category1Projects = allProjects.filter(p => p.category === 'category_1');
+const category2Projects = allProjects.filter(p => p.category === 'category_2');
+const category3Projects = allProjects.filter(p => p.category === 'category_3');
+const category4Projects = allProjects.filter(p => p.category === 'category_4');
 
 function slugify(text: string) {
 	return text.toString().toLowerCase().trim().replace(/[\s\W-]+/g, '-');

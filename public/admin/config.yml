@@ -77,13 +77,17 @@ collections:
 
   - name: "projects_category_1"
     label: "Proyectos Categoría 1"
-    folder: "src/content/projects/category_1"
+    folder: "src/content/projects"
     create: true
+    filter:
+      field: category
+      value: "category_1"
     extension: "json"
     format: "json"
     identifier_field: "name"
     slug: "{{slug}}"
     fields:
+      - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_1" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
@@ -110,13 +114,17 @@ collections:
 
   - name: "projects_category_2"
     label: "Proyectos Categoría 2"
-    folder: "src/content/projects/category_2"
+    folder: "src/content/projects"
     create: true
+    filter:
+      field: category
+      value: "category_2"
     extension: "json"
     format: "json"
     identifier_field: "name"
     slug: "{{slug}}"
     fields:
+      - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_2" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
@@ -143,13 +151,17 @@ collections:
 
   - name: "projects_category_3"
     label: "Proyectos Categoría 3"
-    folder: "src/content/projects/category_3"
+    folder: "src/content/projects"
     create: true
+    filter:
+      field: category
+      value: "category_3"
     extension: "json"
     format: "json"
     identifier_field: "name"
     slug: "{{slug}}"
     fields:
+      - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_3" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
@@ -176,13 +188,17 @@ collections:
 
   - name: "projects_category_4"
     label: "Proyectos Categoría 4"
-    folder: "src/content/projects/category_4"
+    folder: "src/content/projects"
     create: true
+    filter:
+      field: category
+      value: "category_4"
     extension: "json"
     format: "json"
     identifier_field: "name"
     slug: "{{slug}}"
     fields:
+      - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_4" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre", name: "name", widget: "string" }
       - { label: "Año", name: "year", widget: "string" }
