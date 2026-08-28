@@ -2,5 +2,9 @@
   "category_1_title": "BRANDING",
   "category_2_title": "ART DIRECTION",
   "category_3_title": "MERCH",
-  "category_4_title": "HYBRID"
+  "category_4_title": "HYBRID",
+  "category_1_hover_color": "#e26000",
+  "category_2_hover_color": "#d70016",
+  "category_3_hover_color": "#b2cdb6",
+  "category_4_hover_color": "#ab9900"
 }

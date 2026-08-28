@@ -27,6 +27,7 @@ export interface Project {
 export interface ProjectCategory {
 	title: string;
 	slug: string;
+	hoverColor: string;
 	projects: Project[];
 }
 
@@ -76,21 +77,25 @@ export const projectCategories: Record<string, ProjectCategory> = {
 	category_1: {
 		title: categoriesData.category_1_title || 'CATEGORÍA 1',
 		slug: slugify(categoriesData.category_1_title || 'CATEGORÍA 1'),
+		hoverColor: categoriesData.category_1_hover_color || '#e26000',
 		projects: category1Projects
 	},
 	category_2: {
 		title: categoriesData.category_2_title || 'CATEGORÍA 2',
 		slug: slugify(categoriesData.category_2_title || 'CATEGORÍA 2'),
+		hoverColor: categoriesData.category_2_hover_color || '#d70016',
 		projects: category2Projects
 	},
 	category_3: {
 		title: categoriesData.category_3_title || 'CATEGORÍA 3',
 		slug: slugify(categoriesData.category_3_title || 'CATEGORÍA 3'),
+		hoverColor: categoriesData.category_3_hover_color || '#b2cdb6',
 		projects: category3Projects
 	},
 	category_4: {
 		title: categoriesData.category_4_title || 'CATEGORÍA 4',
 		slug: slugify(categoriesData.category_4_title || 'CATEGORÍA 4'),
+		hoverColor: categoriesData.category_4_hover_color || '#ab9900',
 		projects: category4Projects
 	}
 };

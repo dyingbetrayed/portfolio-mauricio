@@ -22,6 +22,10 @@ collections:
           - { label: "Título Categoría 2", name: "category_2_title", widget: "string", default: "SOCIAL MEDIA" }
           - { label: "Título Categoría 3", name: "category_3_title", widget: "string", default: "FLYERS" }
           - { label: "Título Categoría 4", name: "category_4_title", widget: "string", default: "MERCH" }
+          - { label: "Color hover Categoría 1 (Work)", name: "category_1_hover_color", widget: "color", default: "#e26000" }
+          - { label: "Color hover Categoría 2 (Work)", name: "category_2_hover_color", widget: "color", default: "#d70016" }
+          - { label: "Color hover Categoría 3 (Work)", name: "category_3_hover_color", widget: "color", default: "#b2cdb6" }
+          - { label: "Color hover Categoría 4 (Work)", name: "category_4_hover_color", widget: "color", default: "#ab9900" }
 
       - label: "Ajustes del Sitio (Logo)"
         name: "site_settings"

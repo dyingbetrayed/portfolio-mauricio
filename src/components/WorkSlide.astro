@@ -21,25 +21,56 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	<div class="work-layer work-layer--menu" data-layer="0">
 		<div class="work-grid" data-v-scroll>
 			<div class="work-row-spacer" aria-hidden="true"></div>
-			<button type="button" class="work-link hover-branding work-row work-row--white work-row--branding" data-open-category={projectCategories.category_1.slug} data-cursor-nav>
+			<button
+				type="button"
+				class="work-link hover-branding work-row work-row--white work-row--branding"
+				data-open-category={projectCategories.category_1.slug}
+				data-cursor-nav
+				style={`--work-hover-bg: ${projectCategories.category_1.hoverColor};`}
+			>
 				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 40ms;">{projectCategories.category_1.title}</span>
 			</button>
 
-			<button type="button" class="work-link hover-proyectos work-row work-row--gray work-row--branding" data-open-category={projectCategories.category_2.slug} data-cursor-nav aria-label="social media">
+			<button
+				type="button"
+				class="work-link hover-proyectos work-row work-row--gray work-row--branding"
+				data-open-category={projectCategories.category_2.slug}
+				data-cursor-nav
+				aria-label="social media"
+				style={`--work-hover-bg: ${projectCategories.category_2.hoverColor};`}
+			>
 				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 115ms;">{projectCategories.category_2.title}</span>
 			</button>
 
 			<div class="work-row-pair">
-				<button type="button" class="work-link hover-flyers work-row work-row--white work-row--branding" data-open-category={projectCategories.category_3.slug} data-cursor-nav>
+				<button
+					type="button"
+					class="work-link hover-flyers work-row work-row--white work-row--branding"
+					data-open-category={projectCategories.category_3.slug}
+					data-cursor-nav
+					style={`--work-hover-bg: ${projectCategories.category_3.hoverColor};`}
+				>
 					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 190ms;">{projectCategories.category_3.title}</span>
 				</button>
 
-				<button type="button" class="work-link hover-merch work-row work-row--white work-row--branding" data-open-category={projectCategories.category_4.slug} data-cursor-nav>
+				<button
+					type="button"
+					class="work-link hover-merch work-row work-row--white work-row--branding"
+					data-open-category={projectCategories.category_4.slug}
+					data-cursor-nav
+					style={`--work-hover-bg: ${projectCategories.category_4.hoverColor};`}
+				>
 					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 265ms;">{projectCategories.category_4.title}</span>
 				</button>
 			</div>
 
-			<button type="button" class="work-link hover-ikeneas work-row work-row--gray work-row--branding" data-external-url="https://ikeneas.com/" data-cursor-nav>
+			<button
+				type="button"
+				class="work-link hover-ikeneas work-row work-row--gray work-row--branding"
+				data-external-url="https://ikeneas.com/"
+				data-cursor-nav
+				style="--work-hover-bg: #6c48b0;"
+			>
 				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">IKENEAS</span>
 			</button>
 		</div>
@@ -54,7 +85,13 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	{/* ── Capa 1: tablas de categoría (pre-renderizadas) ── */}
 	<div class="work-layer work-layer--category" data-layer="1" aria-hidden="true" inert>
 		{tableCategories.map(([category, group]) => (
-			<div class="category-panel" data-category={group.slug} id={group.slug} data-v-scroll hidden>
+			<div
+				class="category-panel"
+				data-category={group.slug}
+				id={group.slug}
+				data-v-scroll
+				hidden
+			>
 				<header class="category-nav">
 					<a href="/" class="category__name-title" aria-label="Ir al inicio"><SiteBrand /></a>
 					<Navbar theme="dark" active="work" />
@@ -1491,28 +1528,12 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		transition: background-color var(--dur-med, 0.55s) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 	}
 
+	.work-link:hover {
+		background-color: var(--work-hover-bg) !important;
+	}
+
 	.work-link:hover span {
 		color: #000000 !important;
-	}
-
-	.hover-branding:hover {
-		background-color: #e26000 !important;
-	}
-
-	.hover-proyectos:hover {
-		background-color: #d70016 !important;
-	}
-
-	.hover-flyers:hover {
-		background-color: #b2cdb6 !important;
-	}
-
-	.hover-merch:hover {
-		background-color: #ab9900 !important;
-	}
-
-	.hover-ikeneas:hover {
-		background-color: #6c48b0 !important;
 	}
 
 	/* ── Tabla de categoría (capa 1) ── */
