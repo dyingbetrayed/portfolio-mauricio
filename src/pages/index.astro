@@ -7,7 +7,7 @@ import ContactSection from '../components/ContactSection.astro';
 import homeData from '../content/home.json';
 
 const heroMedia = homeData.hero_media || (homeData as any).hero_image || '';
-const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
+const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 ---
 
 <Layout>
@@ -16,7 +16,7 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg)$/i);
 			<div class="hero-media" aria-hidden="true">
 				{isVideo ? (
 					<video autoplay loop muted playsinline preload="auto" class="hero-video">
-						<source src={heroMedia} type={`video/${heroMedia.split('.').pop()}`} />
+						<source src={heroMedia} />
 					</video>
 				) : (
 					heroMedia && (

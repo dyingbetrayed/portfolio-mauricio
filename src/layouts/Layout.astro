@@ -4,7 +4,7 @@ import aboutData from '../content/about.json';
 import siteSettings from '../content/site_settings.json';
 
 const heroMedia = homeData.hero_media || (homeData as { hero_image?: string }).hero_image || '';
-const isHeroVideo = /\.(mp4|webm|ogg)$/i.test(heroMedia);
+const isHeroVideo = /\.(mp4|webm|ogg|mov)$/i.test(heroMedia);
 const aboutImage = aboutData.image || '';
 const logoImage = siteSettings.logo_image || '';
 ---
