@@ -37,6 +37,13 @@ import categories from '../../content/categories.json';
       const config = jsyaml.load(text);
 
       // 2. Patch collection labels with live category names
+      const dynamicOptions = [
+        { label: categories.category_1_title || 'Categoría 1', value: 'category_1' },
+        { label: categories.category_2_title || 'Categoría 2', value: 'category_2' },
+        { label: categories.category_3_title || 'Categoría 3', value: 'category_3' },
+        { label: categories.category_4_title || 'Categoría 4', value: 'category_4' }
+      ];
+
       config.collections.forEach(collection => {
         if (collection.name === 'projects_category_1') {
           collection.label = categories.category_1_title || 'Categoría 1';
@@ -46,6 +53,13 @@ import categories from '../../content/categories.json';
           collection.label = categories.category_3_title || 'Categoría 3';
         } else if (collection.name === 'projects_category_4') {
           collection.label = categories.category_4_title || 'Categoría 4';
+        }
+
+        if (collection.name.startsWith('projects_category_')) {
+          const catField = collection.fields?.find(f => f.name === 'category');
+          if (catField) {
+            catField.options = dynamicOptions;
+          }
         }
       });
 
