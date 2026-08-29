@@ -13,7 +13,12 @@ const { project } = Astro.props;
 
 const ink = readableInk(project.color);
 const navTheme = ink === '#ffffff' ? 'light' : 'dark';
-const services = project.services?.length ? project.services.join(' · ') : null;
+const rawServices = project.services;
+const services = rawServices
+	? Array.isArray(rawServices)
+		? rawServices.join(' · ')
+		: rawServices.split(',').map(s => s.trim()).filter(Boolean).join(' · ')
+	: null;
 const hasMeta = Boolean(project.tagline || services);
 const sections = project.sections ?? [];
 const hasImages = Boolean(project.images?.length);
