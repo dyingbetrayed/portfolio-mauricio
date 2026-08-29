@@ -94,7 +94,11 @@ collections:
       - { label: "Ubicación", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Tagline", name: "tagline", widget: "text", required: false }
-      - { label: "Servicios (Separados por coma)", name: "services", widget: "string", required: false }
+      - label: "Servicios"
+        name: "services"
+        widget: "list"
+        required: false
+        field: { label: "Servicio", name: "servicio", widget: "string" }
       - label: "Secciones"
         name: "sections"
         widget: "list"
@@ -131,7 +135,11 @@ collections:
       - { label: "Ubicación", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Tagline", name: "tagline", widget: "text", required: false }
-      - { label: "Servicios (Separados por coma)", name: "services", widget: "string", required: false }
+      - label: "Servicios"
+        name: "services"
+        widget: "list"
+        required: false
+        field: { label: "Servicio", name: "servicio", widget: "string" }
       - label: "Secciones"
         name: "sections"
         widget: "list"
@@ -168,7 +176,11 @@ collections:
       - { label: "Ubicación", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Tagline", name: "tagline", widget: "text", required: false }
-      - { label: "Servicios (Separados por coma)", name: "services", widget: "string", required: false }
+      - label: "Servicios"
+        name: "services"
+        widget: "list"
+        required: false
+        field: { label: "Servicio", name: "servicio", widget: "string" }
       - label: "Secciones"
         name: "sections"
         widget: "list"
@@ -205,7 +217,11 @@ collections:
       - { label: "Ubicación", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Tagline", name: "tagline", widget: "text", required: false }
-      - { label: "Servicios (Separados por coma)", name: "services", widget: "string", required: false }
+      - label: "Servicios"
+        name: "services"
+        widget: "list"
+        required: false
+        field: { label: "Servicio", name: "servicio", widget: "string" }
       - label: "Secciones"
         name: "sections"
         widget: "list"

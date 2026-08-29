@@ -13,7 +13,7 @@ export interface Project {
 	color: string;
 	/** Frase corta bajo el título. Usa \n para forzar el salto de línea. */
 	tagline?: string;
-	services?: string | string[];
+	services?: string[];
 	sections?: ProjectSection[];
 	/** Nota legal al pie de la página */
 	note?: string;
