@@ -23,16 +23,28 @@ const images = project.images ?? [];
 	</header>
 
 	<div class="project-image__gallery" tabindex="0">
-		{images.map((src, idx) => (
-			<figure class="project-image__figure" style={`--project-color: ${project.color};`}>
-				<img
-					class="project-image__img"
-					data-src={src}
-					alt={`${project.name} — imagen ${idx + 1} de ${images.length}`}
-					decoding="async"
-				/>
-			</figure>
-		))}
+		{images.map((src, idx) => {
+			const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(src);
+			return (
+				<figure class="project-image__figure" style={`--project-color: ${project.color};`}>
+					{isVideo ? (
+						<video
+							class="project-image__img"
+							data-src={src}
+							autoplay loop muted playsinline
+							title={`${project.name} — video ${idx + 1} de ${images.length}`}
+						></video>
+					) : (
+						<img
+							class="project-image__img"
+							data-src={src}
+							alt={`${project.name} — imagen ${idx + 1} de ${images.length}`}
+							decoding="async"
+						/>
+					)}
+				</figure>
+			);
+		})}
 	</div>
 
 	<div class="project-image__footer">

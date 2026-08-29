@@ -190,7 +190,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 		/** Asigna src y espera decode para no pintar un frame vacío. */
 		function hydrateImage(image) {
-			if (!(image instanceof HTMLImageElement)) return Promise.resolve();
+			if (!(image instanceof HTMLImageElement) && !(image instanceof HTMLVideoElement)) return Promise.resolve();
 			const cached = imageHydration.get(image);
 			if (cached) return cached;
 
@@ -202,6 +202,21 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 					markImageReady(image);
 					resolve();
 				};
+
+				if (image instanceof HTMLVideoElement) {
+					if (image.getAttribute('src') !== src) {
+						image.src = src;
+						image.load();
+					}
+					if (image.readyState >= 2) {
+						finish();
+					} else {
+						image.addEventListener('loadeddata', finish, { once: true });
+						image.addEventListener('error', finish, { once: true });
+					}
+					return;
+				}
+
 				const decode = () => {
 					const decoded = image.decode?.();
 					if (decoded) {
