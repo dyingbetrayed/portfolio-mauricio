@@ -33,6 +33,9 @@ const logoImage = siteSettings.logo_image || '';
 		{heroMedia && !isHeroVideo && (
 			<link rel="preload" as="image" href={heroMedia} fetchpriority="high" />
 		)}
+		{heroMedia && isHeroVideo && (
+			<link rel="preload" as="video" href={heroMedia} fetchpriority="high" />
+		)}
 		{aboutImage && (
 			<link rel="preload" as="image" href={aboutImage} fetchpriority="high" />
 		)}
