@@ -54,20 +54,29 @@ function mapProjects(files: Record<string, any>): Project[] {
 		return (a.slug || '').localeCompare(b.slug || '');
 	});
 
-	// ID visual automático por posición dentro de la categoría (01, 02, 03...)
-	// Así, si agregas un proyecto más reciente (ej. 2026), quedará 01 y los demás se corren.
-	return projects.map((project, index) => ({
-		...project,
-		id: String(index + 1).padStart(2, '0')
-	}));
+	return projects;
 }
 
-const allProjects = mapProjects(allProjectFiles);
+const allProjectsRaw = mapProjects(allProjectFiles);
 
-const category1Projects = allProjects.filter(p => p.category === 'category_1');
-const category2Projects = allProjects.filter(p => p.category === 'category_2');
-const category3Projects = allProjects.filter(p => p.category === 'category_3');
-const category4Projects = allProjects.filter(p => p.category === 'category_4');
+const category1Projects = allProjectsRaw.filter(p => p.category === 'category_1').map((project, index) => ({
+	...project,
+	id: String(index + 1).padStart(2, '0')
+}));
+const category2Projects = allProjectsRaw.filter(p => p.category === 'category_2').map((project, index) => ({
+	...project,
+	id: String(index + 1).padStart(2, '0')
+}));
+const category3Projects = allProjectsRaw.filter(p => p.category === 'category_3').map((project, index) => ({
+	...project,
+	id: String(index + 1).padStart(2, '0')
+}));
+const category4Projects = allProjectsRaw.filter(p => p.category === 'category_4').map((project, index) => ({
+	...project,
+	id: String(index + 1).padStart(2, '0')
+}));
+
+const allProjects = [...category1Projects, ...category2Projects, ...category3Projects, ...category4Projects];
 
 function slugify(text: string) {
 	return text.toString().toLowerCase().trim().replace(/[\s\W-]+/g, '-');
