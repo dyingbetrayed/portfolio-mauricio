@@ -34,7 +34,7 @@ collections:
           - { label: "Texto del Logo", name: "logo_text", widget: "string", default: "Mauricio Atencia" }
           - { label: "Imagen del Logo (Opcional — dejar vacío para usar texto)", name: "logo_image", widget: "file", required: false, allow_multiple: false, media_library: {config: {multiple: false}} }
 
-  - name: "home"
+  - name: "home_collection"
     label: "Inicio (Hero)"
     files:
       - label: "Contenido Home"
@@ -46,7 +46,7 @@ collections:
           - { label: "Opacidad capa base", name: "overlay_opacity", widget: "number", value_type: "float" }
           - { label: "Opacidad capa activa", name: "overlay_opacity_active", widget: "number", value_type: "float" }
 
-  - name: "about"
+  - name: "about_collection"
     label: "Sobre mí"
     files:
       - label: "Contenido About"
@@ -62,7 +62,7 @@ collections:
             widget: "list"
             field: { label: "Párrafo", name: "paragraph", widget: "text" }
 
-  - name: "contact"
+  - name: "contact_collection"
     label: "Contacto"
     files:
       - label: "Información de contacto"

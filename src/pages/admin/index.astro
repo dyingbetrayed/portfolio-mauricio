@@ -26,9 +26,6 @@ import categories from '../../content/categories.json';
 <body>
   <div id="cms-loading">Cargando panel…</div>
 
-  <!-- js-yaml must be available before CMS script -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
-
   <script define:vars={{ categories }}>
     // Tell Decap not to auto-init until we call CMS.init()
     window.CMS_MANUAL_INIT = true;
@@ -36,6 +33,7 @@ import categories from '../../content/categories.json';
     async function bootstrap() {
       // 1. Fetch & parse config
       const text = await fetch('/admin/config.yml').then(r => r.text());
+      const jsyaml = await import('https://esm.sh/js-yaml@4.1.0');
       const config = jsyaml.load(text);
 
       // 2. Patch collection labels with live category names
