@@ -1,4 +1,4 @@
-backend:
+﻿backend:
   name: github
   repo: dyingbetrayed/portfolio-mauricio
   branch: main
@@ -89,13 +89,13 @@ collections:
     fields:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_1" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
-      - { label: "Nombre", name: "name", widget: "string" }
-      - { label: "Año", name: "year", widget: "string" }
-      - { label: "Ubicación", name: "location", widget: "string" }
+      - { label: "Nombre del proyecto", name: "name", widget: "string" }
+      - { label: "Año del proyecto", name: "year", widget: "string" }
+      - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
-      - { label: "Tagline", name: "tagline", widget: "text", required: false }
-      - { label: "Servicios", name: "services", widget: "list", required: false }
-      - label: "Secciones"
+      - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
+      - { label: "Tagline del proyecto", name: "services", widget: "list", required: false, hint: "Ej: Branding - naming" }
+      - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
         required: false
@@ -104,11 +104,12 @@ collections:
         fields:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
-      - { label: "Nota legal", name: "note", widget: "string", required: false }
-      - label: "Imágenes"
+      - { label: "Derechos reservados", name: "note", widget: "string", required: false }
+      - label: "Cargar imágenes"
         name: "images"
         widget: "list"
         required: false
+        summary: "{{fields.image}}"
         field: { label: "Archivo (Imagen o Video)", name: "image", widget: "file" }
 
   - name: "projects_category_2"
@@ -125,13 +126,13 @@ collections:
     fields:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_2" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
-      - { label: "Nombre", name: "name", widget: "string" }
-      - { label: "Año", name: "year", widget: "string" }
-      - { label: "Ubicación", name: "location", widget: "string" }
+      - { label: "Nombre del proyecto", name: "name", widget: "string" }
+      - { label: "Año del proyecto", name: "year", widget: "string" }
+      - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
-      - { label: "Tagline", name: "tagline", widget: "text", required: false }
-      - { label: "Servicios", name: "services", widget: "list", required: false }
-      - label: "Secciones"
+      - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
+      - { label: "Tagline del proyecto", name: "services", widget: "list", required: false, hint: "Ej: Branding - naming" }
+      - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
         required: false
@@ -140,11 +141,12 @@ collections:
         fields:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
-      - { label: "Nota legal", name: "note", widget: "string", required: false }
-      - label: "Imágenes"
+      - { label: "Derechos reservados", name: "note", widget: "string", required: false }
+      - label: "Cargar imágenes"
         name: "images"
         widget: "list"
         required: false
+        summary: "{{fields.image}}"
         field: { label: "Archivo (Imagen o Video)", name: "image", widget: "file" }
 
   - name: "projects_category_3"
@@ -161,13 +163,13 @@ collections:
     fields:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_3" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
-      - { label: "Nombre", name: "name", widget: "string" }
-      - { label: "Año", name: "year", widget: "string" }
-      - { label: "Ubicación", name: "location", widget: "string" }
+      - { label: "Nombre del proyecto", name: "name", widget: "string" }
+      - { label: "Año del proyecto", name: "year", widget: "string" }
+      - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
-      - { label: "Tagline", name: "tagline", widget: "text", required: false }
-      - { label: "Servicios", name: "services", widget: "list", required: false }
-      - label: "Secciones"
+      - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
+      - { label: "Tagline del proyecto", name: "services", widget: "list", required: false, hint: "Ej: Branding - naming" }
+      - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
         required: false
@@ -176,11 +178,12 @@ collections:
         fields:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
-      - { label: "Nota legal", name: "note", widget: "string", required: false }
-      - label: "Imágenes"
+      - { label: "Derechos reservados", name: "note", widget: "string", required: false }
+      - label: "Cargar imágenes"
         name: "images"
         widget: "list"
         required: false
+        summary: "{{fields.image}}"
         field: { label: "Archivo (Imagen o Video)", name: "image", widget: "file" }
 
   - name: "projects_category_4"
@@ -197,13 +200,13 @@ collections:
     fields:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_4" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
-      - { label: "Nombre", name: "name", widget: "string" }
-      - { label: "Año", name: "year", widget: "string" }
-      - { label: "Ubicación", name: "location", widget: "string" }
+      - { label: "Nombre del proyecto", name: "name", widget: "string" }
+      - { label: "Año del proyecto", name: "year", widget: "string" }
+      - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
-      - { label: "Tagline", name: "tagline", widget: "text", required: false }
-      - { label: "Servicios", name: "services", widget: "list", required: false }
-      - label: "Secciones"
+      - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
+      - { label: "Tagline del proyecto", name: "services", widget: "list", required: false, hint: "Ej: Branding - naming" }
+      - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
         required: false
@@ -212,9 +215,10 @@ collections:
         fields:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
-      - { label: "Nota legal", name: "note", widget: "string", required: false }
-      - label: "Imágenes"
+      - { label: "Derechos reservados", name: "note", widget: "string", required: false }
+      - label: "Cargar imágenes"
         name: "images"
         widget: "list"
         required: false
+        summary: "{{fields.image}}"
         field: { label: "Archivo (Imagen o Video)", name: "image", widget: "file" }
