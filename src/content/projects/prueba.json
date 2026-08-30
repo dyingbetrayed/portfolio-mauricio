@@ -4,17 +4,25 @@
   "sections": [
     {
       "label": "dfsfsfs",
-      "paragraphs": "pruwidofsofsfsf\n\nsdfsdfsfsssffsssfff"
+      "paragraphs": "hola\n\n23345235"
     }
   ],
+  "tagline": "este proyecto es una prueba",
   "location": "dfd",
+  "images": [
+    "/work/a-1-.png",
+    "/work/mam-web.mov"
+  ],
   "section_label": "jdjdoofd",
   "id": "",
   "year": "2027",
   "services": [
     "1",
     "2",
-    "3"
+    "3",
+    "5",
+    "6",
+    "7"
   ],
   "category": "category_1",
   "section_paragraphs": "prueba\n\n2343eer\n\n4345"
