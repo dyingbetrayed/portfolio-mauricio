@@ -101,10 +101,7 @@ collections:
         required: false
         fields:
           - { label: "Título", name: "label", widget: "string" }
-          - label: "Párrafos"
-            name: "paragraphs"
-            widget: "list"
-            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+          - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
       - { label: "Nota legal", name: "note", widget: "string", required: false }
       - label: "Imágenes"
         name: "images"
@@ -138,10 +135,7 @@ collections:
         required: false
         fields:
           - { label: "Título", name: "label", widget: "string" }
-          - label: "Párrafos"
-            name: "paragraphs"
-            widget: "list"
-            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+          - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
       - { label: "Nota legal", name: "note", widget: "string", required: false }
       - label: "Imágenes"
         name: "images"
@@ -175,10 +169,7 @@ collections:
         required: false
         fields:
           - { label: "Título", name: "label", widget: "string" }
-          - label: "Párrafos"
-            name: "paragraphs"
-            widget: "list"
-            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+          - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
       - { label: "Nota legal", name: "note", widget: "string", required: false }
       - label: "Imágenes"
         name: "images"
@@ -212,10 +203,7 @@ collections:
         required: false
         fields:
           - { label: "Título", name: "label", widget: "string" }
-          - label: "Párrafos"
-            name: "paragraphs"
-            widget: "list"
-            field: { label: "Párrafo", name: "paragraph", widget: "text" }
+          - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
       - { label: "Nota legal", name: "note", widget: "string", required: false }
       - label: "Imágenes"
         name: "images"

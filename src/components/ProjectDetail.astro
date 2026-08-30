@@ -59,7 +59,7 @@ const categoryTitle = categoryId ? projectCategories[categoryId]?.title : null;
 				<div class="project__section">
 					<h2 class="project__label">{section.label}</h2>
 					<div class="project__copy">
-						{section.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+						{section.paragraphs?.split(/\n\n+/).map((paragraph) => <p>{paragraph}</p>)}
 					</div>
 				</div>
 			))}

@@ -1,6 +1,7 @@
 export interface ProjectSection {
 	label: string;
-	paragraphs: string[];
+	/** Texto del cuerpo. Separa párrafos con una línea en blanco (\n\n). */
+	paragraphs: string;
 }
 
 export interface Project {
