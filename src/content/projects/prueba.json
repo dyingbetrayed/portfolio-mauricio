@@ -4,5 +4,14 @@
   "name": "prueba",
   "year": "2027",
   "location": "dfd",
-  "color": "#5f4040"
+  "color": "#5f4040",
+  "sections": [
+    {}
+  ],
+  "services": [
+    "sdsfsfsfds",
+    "fdfdfdf",
+    "dfdsdfsfsfsfdffsf",
+    "dfdsfsfsf"
+  ]
 }
