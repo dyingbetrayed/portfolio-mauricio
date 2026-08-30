@@ -99,6 +99,8 @@ collections:
         name: "sections"
         widget: "list"
         required: false
+        collapsed: false
+        minimize_collapsed: false
         fields:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
@@ -133,6 +135,8 @@ collections:
         name: "sections"
         widget: "list"
         required: false
+        collapsed: false
+        minimize_collapsed: false
         fields:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
@@ -167,6 +171,8 @@ collections:
         name: "sections"
         widget: "list"
         required: false
+        collapsed: false
+        minimize_collapsed: false
         fields:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
@@ -201,6 +207,8 @@ collections:
         name: "sections"
         widget: "list"
         required: false
+        collapsed: false
+        minimize_collapsed: false
         fields:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
