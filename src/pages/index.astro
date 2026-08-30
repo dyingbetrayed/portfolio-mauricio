@@ -15,8 +15,20 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 		<section class="slide hero-slide" style={`--bg-color: ${homeData.background_color}; --overlay-opacity: ${homeData.overlay_opacity}; --overlay-opacity-active: ${homeData.overlay_opacity_active};`}>
 			<div class="hero-media" aria-hidden="true">
 				{isVideo ? (
-					<video autoplay loop muted playsinline preload="auto" class="hero-video">
-						<source src={heroMedia} />
+					<video 
+						autoplay 
+						loop 
+						muted 
+						playsinline 
+						webkit-playsinline
+						preload="auto" 
+						class="hero-video"
+						data-autoplay
+						x-webkit-airplay="allow"
+						disablePictureInPicture
+					>
+						<source src={heroMedia} type="video/quicktime" />
+						<source src={heroMedia} type="video/mp4" />
 					</video>
 				) : (
 					heroMedia && (
@@ -62,6 +74,72 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 		<ContactSection />
 	</main>
 </Layout>
+
+<script is:inline>
+	// iOS Video Autoplay Fix - Se ejecuta antes que el script principal
+	(function() {
+		// Detectar iOS
+		const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+		const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+		
+		if (isIOS || isSafari) {
+			// Configurar todos los videos en la página para iOS
+			const setupVideoForIOS = () => {
+				const videos = document.querySelectorAll('.hero-video');
+				videos.forEach(video => {
+					if (video instanceof HTMLVideoElement) {
+						// Configuraciones críticas para iOS
+						video.muted = true;
+						video.setAttribute('muted', '');
+						video.setAttribute('playsinline', '');
+						video.setAttribute('webkit-playsinline', '');
+						video.defaultMuted = true;
+						video.volume = 0;
+						
+						// Cargar y reproducir
+						video.load();
+						
+						const attemptPlay = () => {
+							const playPromise = video.play();
+							if (playPromise !== undefined) {
+								playPromise.catch(err => {
+									console.log('Video autoplay deferred for iOS:', err.message);
+								});
+							}
+						};
+						
+						if (video.readyState >= 2) {
+							attemptPlay();
+						} else {
+							video.addEventListener('loadedmetadata', attemptPlay, { once: true });
+							video.addEventListener('canplay', attemptPlay, { once: true });
+						}
+					}
+				});
+			};
+			
+			// Ejecutar cuando el DOM esté listo
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', setupVideoForIOS);
+			} else {
+				setupVideoForIOS();
+			}
+			
+			// También intentar en la primera interacción del usuario
+			const userInteractionEvents = ['touchstart', 'touchend', 'click', 'scroll'];
+			const handleUserInteraction = () => {
+				setupVideoForIOS();
+				userInteractionEvents.forEach(event => {
+					document.removeEventListener(event, handleUserInteraction);
+				});
+			};
+			
+			userInteractionEvents.forEach(event => {
+				document.addEventListener(event, handleUserInteraction, { once: true, passive: true });
+			});
+		}
+	})();
+</script>
 
 <script>
 	// @ts-nocheck
@@ -129,6 +207,51 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 				slide.classList.toggle('is-active', on);
 				if (on) slide.setAttribute('data-active', '');
 				else slide.removeAttribute('data-active');
+				
+				// Reproducir video cuando el slide se activa (iOS fix)
+				if (on) {
+					const video = slide.querySelector('.hero-video');
+					if (video instanceof HTMLVideoElement) {
+						// Asegurar que el video está listo y reproducirlo
+						const playVideo = () => {
+							video.muted = true; // Asegurar que está silenciado
+							const playPromise = video.play();
+							if (playPromise !== undefined) {
+								playPromise
+									.then(() => {
+										// Video reproducido exitosamente
+										console.log('Video autoplay started');
+									})
+									.catch((error) => {
+										// Error de autoplay - intentar de nuevo después de interacción
+										console.warn('Video autoplay prevented:', error);
+										// Intentar reproducir después de un breve delay
+										setTimeout(() => {
+											video.play().catch(() => {
+												// Si aún falla, el usuario necesita interactuar
+												console.log('Video requires user interaction');
+											});
+										}, 100);
+									});
+							}
+						};
+						
+						if (video.readyState >= 3) {
+							// Video ya cargado
+							playVideo();
+						} else {
+							// Esperar a que el video esté listo
+							video.addEventListener('loadeddata', playVideo, { once: true });
+							video.load(); // Forzar carga
+						}
+					}
+				} else {
+					// Pausar video cuando el slide se desactiva
+					const video = slide.querySelector('.hero-video');
+					if (video instanceof HTMLVideoElement) {
+						video.pause();
+					}
+				}
 			});
 		}
 
@@ -773,6 +896,36 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 				});
 			});
 		}
+
+		/* iOS video autoplay fix: intentar reproducir el video inicial */
+		const tryPlayInitialVideo = () => {
+			const heroSlide = slides()[currentIndex];
+			if (heroSlide) {
+				const video = heroSlide.querySelector('.hero-video');
+				if (video instanceof HTMLVideoElement) {
+					video.muted = true;
+					video.play().catch((error) => {
+						console.log('Initial video autoplay prevented, will retry on interaction:', error);
+					});
+				}
+			}
+		};
+
+		// Intentar reproducir inmediatamente
+		tryPlayInitialVideo();
+
+		// También intentar después de cualquier interacción del usuario (iOS requirement)
+		const enableVideoOnInteraction = () => {
+			tryPlayInitialVideo();
+			// Remover listeners después de la primera interacción exitosa
+			document.removeEventListener('touchstart', enableVideoOnInteraction);
+			document.removeEventListener('click', enableVideoOnInteraction);
+			document.removeEventListener('scroll', enableVideoOnInteraction);
+		};
+
+		document.addEventListener('touchstart', enableVideoOnInteraction, { once: true, passive: true });
+		document.addEventListener('click', enableVideoOnInteraction, { once: true });
+		document.addEventListener('scroll', enableVideoOnInteraction, { once: true, passive: true });
 	}
 </script>
 
@@ -883,6 +1036,17 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 		object-fit: cover;
 		object-position: center;
 		display: block;
+		/* iOS-specific fixes */
+		-webkit-transform: translateZ(0);
+		transform: translateZ(0);
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
+	}
+
+	.hero-video {
+		/* Asegurar que el video esté por encima del background */
+		position: relative;
+		z-index: 1;
 	}
 
 	.hero-slide.is-active .hero-media {
