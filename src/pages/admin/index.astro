@@ -27,7 +27,7 @@ import categories from '../../content/categories.json';
   <div id="cms-loading">Cargando panel…</div>
 
   <script define:vars={{ categories }}>
-    // Tell Decap not to auto-init until we call CMS.init()
+    // Le decimos a Sveltia que no se auto-inicialice hasta llamar a CMS.init()
     window.CMS_MANUAL_INIT = true;
 
     async function bootstrap() {
@@ -63,10 +63,14 @@ import categories from '../../content/categories.json';
         }
       });
 
+      // 2b. IMPORTANTE: evitar que Sveltia vuelva a cargar y mezclar config.yml,
+      // ya que eso puede duplicar arrays (options, collections) por el deep merge.
+      config.load_config_file = false;
+
       // 3. Load the CMS script dynamically so it runs AFTER config is ready
       await new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+        script.src = 'https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js';
         script.onload = resolve;
         script.onerror = reject;
         document.head.appendChild(script);

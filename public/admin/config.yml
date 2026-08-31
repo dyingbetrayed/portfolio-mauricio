@@ -1,11 +1,11 @@
-﻿backend:
+﻿# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+backend:
   name: github
   repo: dyingbetrayed/portfolio-mauricio
   branch: main
   base_url: https://portfolio-mauricio-beta.vercel.app
   auth_endpoint: api/auth
-
-local_backend: true
 
 media_folder: "public/work"
 public_folder: "/work"
@@ -32,7 +32,7 @@ collections:
         file: "src/content/site_settings.json"
         fields:
           - { label: "Texto del Logo", name: "logo_text", widget: "string", default: "Mauricio Atencia" }
-          - { label: "Imagen del Logo (Opcional — dejar vacío para usar texto)", name: "logo_image", widget: "file", required: false, allow_multiple: false, media_library: {config: {multiple: false}} }
+          - { label: "Imagen del Logo (Opcional — dejar vacío para usar texto)", name: "logo_image", widget: "file", required: false }
 
   - name: "home_collection"
     label: "Inicio (Hero)"
@@ -114,7 +114,7 @@ collections:
 
   - name: "projects_category_2"
     label: "Proyectos Categoría 2"
-    folder: "src/content/projects/"
+    folder: "src/content/projects"
     create: true
     filter:
       field: category
@@ -151,7 +151,7 @@ collections:
 
   - name: "projects_category_3"
     label: "Proyectos Categoría 3"
-    folder: "./src/content/projects"
+    folder: "src/content/projects"
     create: true
     filter:
       field: category
@@ -188,7 +188,7 @@ collections:
 
   - name: "projects_category_4"
     label: "Proyectos Categoría 4"
-    folder: "./src/content/projects/"
+    folder: "src/content/projects"
     create: true
     filter:
       field: category
