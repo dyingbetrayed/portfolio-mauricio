@@ -91,7 +91,7 @@ collections:
       - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
-      - { label: "Tagline del proyecto", name: "services", widget: "list", required: false, hint: "Ej: Branding - naming" }
+      - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
       - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
@@ -123,7 +123,7 @@ collections:
       - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
-      - { label: "Tagline del proyecto", name: "services", widget: "list", required: false, hint: "Ej: Branding - naming" }
+      - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
       - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
@@ -155,7 +155,7 @@ collections:
       - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
-      - { label: "Tagline del proyecto", name: "services", widget: "list", required: false, hint: "Ej: Branding - naming" }
+      - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
       - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
@@ -187,7 +187,7 @@ collections:
       - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
-      - { label: "Tagline del proyecto", name: "services", widget: "list", required: false, hint: "Ej: Branding - naming" }
+      - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
       - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
