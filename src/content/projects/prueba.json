@@ -1,5 +1,5 @@
 {
-  "category": "category_3",
+  "category": "category_4",
   "id": "",
   "name": "prueba",
   "year": "2022",
@@ -18,6 +18,7 @@
   ],
   "note": "",
   "images": [
+    "/work/amesa-de-trabajo-10.png",
     "/work/branding/pitao/2.jpg",
     "/work/branding/pitao/3.jpg",
     "/work/a-1-.png",
@@ -25,7 +26,6 @@
     "/work/a-13-.png",
     "/work/a-12-.png",
     "/work/a-11-.png",
-    "/work/amesa-de-trabajo-10.png",
     "/work/amesa-de-trabajo-28.png",
     "/work/amesa-de-trabajo-29.png"
   ]
