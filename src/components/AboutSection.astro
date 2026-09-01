@@ -3,7 +3,9 @@ import Navbar from './Navbar.astro';
 import aboutData from '../content/about.json';
 import siteSettings from '../content/site_settings.json';
 
-const aboutParagraphs = aboutData.paragraphs;
+const aboutParagraphs = typeof aboutData.paragraphs === 'string' 
+	? aboutData.paragraphs.split(/\\n\\n|\n\n/).filter(p => p.trim())
+	: aboutData.paragraphs;
 
 const processedParagraphs = aboutParagraphs.map((paragraph, pIndex) => {
 	let globalCharIndex = 0;

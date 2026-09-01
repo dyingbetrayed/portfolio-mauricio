@@ -57,7 +57,7 @@ collections:
           - { label: "Color de fondo", name: "background_color", widget: "color" }
           - { label: "Color de texto", name: "text_color", widget: "color" }
           - { label: "Ubicación", name: "location", widget: "string" }
-          - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco." }
+          - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe el texto. Usa saltos de línea para separar párrafos." }
 
   - name: "contact_collection"
     label: "Contacto"
