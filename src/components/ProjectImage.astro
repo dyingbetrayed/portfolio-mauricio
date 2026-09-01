@@ -1,11 +1,11 @@
----
+﻿---
 import QuoteSimilarButton from './QuoteSimilarButton.astro';
 import Navbar from './Navbar.astro';
 import SiteBrand from './SiteBrand.astro';
 import type { Project } from '../data/projects';
 
 export interface Props {
-	project: Project;
+project: Project;
 }
 
 const { project } = Astro.props;
@@ -13,343 +13,347 @@ const images = project.images ?? [];
 ---
 
 <article
-	class="project-image"
-	data-project-image={project.slug}
-	hidden
+class="project-image"
+data-project-image={project.slug}
+hidden
 >
-	<header class="project-image__nav">
-		<a href="/" class="project-image__brand" aria-label="Ir al inicio"><SiteBrand /></a>
-		<Navbar theme="light" active="work" />
-	</header>
+<header class="project-image__nav">
+<a href="/" class="project-image__brand" aria-label="Ir al inicio"><SiteBrand /></a>
+<Navbar theme="light" active="work" />
+</header>
 
-	<div class="project-image__gallery" tabindex="0">
-		{images.map((src, idx) => {
-			const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(src);
-			return (
-				<figure class="project-image__figure" style={`--project-color: ${project.color};`}>
-					{isVideo ? (
-						<video
-							class="project-image__img"
-							data-src={src}
-							autoplay loop muted playsinline
-							title={`${project.name} — video ${idx + 1} de ${images.length}`}
-						></video>
-					) : (
-						<img
-							class="project-image__img"
-							data-src={src}
-							alt={`${project.name} — imagen ${idx + 1} de ${images.length}`}
-							decoding="async"
-						/>
-					)}
-				</figure>
-			);
-		})}
-	</div>
+<div class="project-image__gallery" tabindex="0">
+{images.map((src, idx) => {
+const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(src);
+return (
+<figure class="project-image__figure" style={`--project-color: ${project.color};`}>
+{isVideo ? (
+<video
+class="project-image__img"
+data-src={src}
+autoplay loop muted playsinline
+title={`${project.name} — video ${idx + 1} de ${images.length}`}
+></video>
+) : (
+<img
+class="project-image__img"
+data-src={src}
+alt={`${project.name} — imagen ${idx + 1} de ${images.length}`}
+decoding="async"
+/>
+)}
+</figure>
+);
+})}
+</div>
 
-	<div class="project-image__footer">
-		<QuoteSimilarButton
-			projectName={project.name}
-			color={project.color}
-			slug={project.slug}
-			class="project-image__quote"
-		/>
-		<button
-			type="button"
-			class="project-image__scroll-hint"
-			aria-label="Continuar a la siguiente imagen o proyecto"
-			data-work-forward
-			data-cursor-nav
-		>
-			<div class="project-image__scroll-hint-arrow" aria-hidden="true">
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M5 12h14M12 5l7 7-7 7"/>
-				</svg>
-			</div>
-		</button>
-	</div>
+<div class="project-image__footer">
+<QuoteSimilarButton
+projectName={project.name}
+color={project.color}
+slug={project.slug}
+class="project-image__quote"
+/>
+<button
+type="button"
+class="project-image__scroll-hint"
+aria-label="Continuar a la siguiente imagen o proyecto"
+data-work-forward
+data-cursor-nav
+>
+<div class="project-image__scroll-hint-arrow" aria-hidden="true">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M5 12h14M12 5l7 7-7 7"/>
+</svg>
+</div>
+</button>
+</div>
 </article>
 
 <style>
-	.project-image {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		background: #0a0a0a;
-		box-sizing: border-box;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-	}
+.project-image {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+background: #0a0a0a;
+box-sizing: border-box;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+}
 
-	.project-image[hidden] {
-		display: none;
-	}
+.project-image[hidden] {
+display: none;
+}
 
-	.project-image.is-entering-forward {
-		animation: project-image-enter-forward var(--dur-panel, 0.9s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
-	}
+.project-image.is-entering-forward {
+animation: project-image-enter-forward var(--dur-panel, 0.9s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
+}
 
-	.project-image.is-entering-backward {
-		animation: project-image-enter-backward var(--dur-panel, 0.9s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
-	}
+.project-image.is-entering-backward {
+animation: project-image-enter-backward var(--dur-panel, 0.9s) var(--ease-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
+}
 
-	@keyframes project-image-enter-forward {
-		from {
-			transform: translate3d(3%, 0, 0);
-			opacity: 0;
-		}
+@keyframes project-image-enter-forward {
+from {
+transform: translate3d(3%, 0, 0);
+opacity: 0;
+}
 
-		to {
-			transform: translate3d(0, 0, 0);
-			opacity: 1;
-		}
-	}
+to {
+transform: translate3d(0, 0, 0);
+opacity: 1;
+}
+}
 
-	@keyframes project-image-enter-backward {
-		from {
-			transform: translate3d(-3%, 0, 0);
-			opacity: 0;
-		}
+@keyframes project-image-enter-backward {
+from {
+transform: translate3d(-3%, 0, 0);
+opacity: 0;
+}
 
-		to {
-			transform: translate3d(0, 0, 0);
-			opacity: 1;
-		}
-	}
+to {
+transform: translate3d(0, 0, 0);
+opacity: 1;
+}
+}
 
-	.project-image__nav {
-		display: flex;
-		justify-content: flex-end;
-		align-items: flex-start;
-		flex-shrink: 0;
-		width: 100%;
-		box-sizing: border-box;
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 5;
-		padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
-		background: transparent;
-		pointer-events: none;
-		mix-blend-mode: difference;
-		color: #ffffff;
-	}
+.project-image__nav {
+display: flex;
+justify-content: flex-end;
+align-items: flex-start;
+flex-shrink: 0;
+width: 100%;
+box-sizing: border-box;
+position: absolute;
+top: 0;
+left: 0;
+z-index: 5;
+padding: var(--pad-header-y) var(--pad-header-x-r) 0.35rem var(--pad-header-x-l);
+background: transparent;
+pointer-events: none;
+mix-blend-mode: difference;
+color: #ffffff;
+}
 
-	.project-image__nav > :global(*) {
-		pointer-events: auto;
-	}
+.project-image__nav > :global(*) {
+pointer-events: auto;
+}
 
-	.project-image__nav :global(.navbar) {
-		width: auto;
-		flex: 1;
-		min-width: 0;
-	}
+.project-image__nav :global(.navbar) {
+width: auto;
+flex: 1;
+min-width: 0;
+}
 
-	.project-image__brand {
-		position: absolute;
-		left: var(--pad-header-x-l);
-		top: var(--pad-header-y);
-		z-index: 10;
-		color: #ffffff;
-		font-family: var(--font-nav);
-		font-weight: 600;
-		font-size: clamp(0.85rem, 1.5vw, 1.75rem);
-		line-height: 0.95;
-		letter-spacing: -0.022em;
-		-webkit-text-stroke: clamp(0.5px, 0.035vw, 1px) currentColor;
-		text-decoration: none;
-	}
+.project-image__brand {
+position: absolute;
+left: var(--pad-header-x-l);
+top: var(--pad-header-y);
+z-index: 10;
+color: #ffffff;
+font-family: var(--font-nav);
+font-weight: 600;
+font-size: clamp(0.85rem, 1.5vw, 1.75rem);
+line-height: 0.95;
+letter-spacing: -0.022em;
+-webkit-text-stroke: clamp(0.5px, 0.035vw, 1px) currentColor;
+text-decoration: none;
+}
 
-	.project-image__gallery {
-		flex: 1;
-		min-height: 0;
-		width: 100vw;
-		display: flex;
-		overflow-x: auto;
-		overflow-y: hidden;
-		scroll-snap-type: x mandatory;
-		-webkit-overflow-scrolling: touch;
-		scroll-behavior: smooth;
-		outline: none;
-	}
-	
-	.project-image__gallery::-webkit-scrollbar {
-		display: none;
-	}
+.project-image__gallery {
+flex: 1;
+min-height: 0;
+width: 100vw;
+display: flex;
+overflow-x: auto;
+overflow-y: hidden;
+scroll-snap-type: none;
+-webkit-overflow-scrolling: touch;
+scroll-behavior: smooth;
+outline: none;
+}
 
-	.project-image__figure {
-		margin: 0;
-		margin-right: -1px; /* Evita franjas de sub-píxeles entre imágenes */
-		flex: 0 0 auto;
-		height: 100%;
-		min-width: 10vw;
-		aspect-ratio: 3 / 4;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: #2a2a2a;
-		background: color-mix(in srgb, var(--project-color, #6b6b6b) 32%, #1a1a1a);
-		scroll-snap-align: center;
-	}
+.project-image__gallery::-webkit-scrollbar {
+display: none;
+}
 
-	.project-image__figure.is-ready {
-		aspect-ratio: auto;
-		background: transparent;
-	}
-	
-	.project-image__figure:last-child {
-		margin-right: 0;
-	}
+.project-image__figure {
+margin: 0;
+margin-right: -1px; /* Evita franjas de sub-píxeles entre imágenes */
+flex: 0 0 auto;
+height: 100%;
+min-width: 10vw;
+aspect-ratio: 3 / 4;
+display: flex;
+align-items: center;
+justify-content: center;
+background: #2a2a2a;
+background: color-mix(in srgb, var(--project-color, #6b6b6b) 32%, #1a1a1a);
+scroll-snap-align: center;
+}
 
-	.project-image__img {
-		display: block;
-		width: auto;
-		max-width: none;
-		height: 100%;
-		object-fit: contain;
-		object-position: center;
-		outline: none;
-		border: none;
-		opacity: 0;
-		transition: opacity 180ms ease;
-	}
+.project-image__figure.is-ready {
+aspect-ratio: auto;
+background: transparent;
+}
 
-	.project-image__img.is-ready {
-		opacity: 1;
-	}
+.project-image__figure:last-child {
+margin-right: 0;
+}
 
-	@media (prefers-reduced-motion: reduce) {
-		.project-image__img {
-			transition: none;
-		}
-	}
+.project-image__img {
+display: block;
+width: auto;
+max-width: none;
+height: 100%;
+object-fit: contain;
+object-position: center;
+outline: none;
+border: none;
+opacity: 0;
+transition: opacity 180ms ease;
+}
 
-	.project-image__footer {
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 5;
-		display: flex;
-		align-items: flex-end;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: clamp(0.65rem, 2.5vh, 1.75rem) var(--pad-section-x-r)
-			max(clamp(0.65rem, 2.5vh, 1.75rem), var(--sab)) var(--pad-section-x-l);
-		background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
-		pointer-events: none;
-	}
+.project-image__img.is-ready {
+opacity: 1;
+}
 
-	.project-image__footer > :global(*) {
-		pointer-events: auto;
-	}
+@media (prefers-reduced-motion: reduce) {
+.project-image__img {
+transition: none;
+}
+}
 
-	.project-image__scroll-hint {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-shrink: 0;
-		color: #ffffff;
-		padding: clamp(0.45rem, 1.2vh, 1rem) 14px clamp(0.45rem, 1.2vh, 1rem) 0;
-		margin-right: -14px;
-		border: none;
-		background: transparent;
-		cursor: pointer;
-		overflow: visible;
-		opacity: 0.7;
-		transition: opacity var(--dur-med) var(--ease-out);
-	}
+.project-image__footer {
+position: absolute;
+left: 0;
+right: 0;
+bottom: 0;
+z-index: 5;
+display: flex;
+align-items: flex-end;
+justify-content: space-between;
+gap: 1rem;
+padding: clamp(0.65rem, 2.5vh, 1.75rem) var(--pad-section-x-r)
+max(clamp(0.65rem, 2.5vh, 1.75rem), var(--sab)) var(--pad-section-x-l);
+background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+pointer-events: none;
+}
 
-	.project-image__scroll-hint:hover {
-		opacity: 1;
-	}
+.project-image__footer > :global(*) {
+pointer-events: auto;
+}
 
-	.project-image__scroll-hint:focus-visible {
-		outline: 2px solid currentColor;
-		outline-offset: 0.35rem;
-	}
+.project-image__scroll-hint {
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+color: #ffffff;
+padding: clamp(0.45rem, 1.2vh, 1rem) 14px clamp(0.45rem, 1.2vh, 1rem) 0;
+margin-right: -14px;
+border: none;
+background: transparent;
+cursor: pointer;
+overflow: visible;
+opacity: 0.7;
+transition: opacity var(--dur-med) var(--ease-out);
+}
 
-	.project-image__scroll-hint-arrow {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		animation: project-image-hint-bounce-x 2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
-	}
+.project-image__scroll-hint:hover {
+opacity: 1;
+}
 
-	@keyframes project-image-hint-bounce-x {
-		0%, 100% { transform: translateX(0); }
-		50% { transform: translateX(8px); }
-	}
+.project-image__scroll-hint:focus-visible {
+outline: 2px solid currentColor;
+outline-offset: 0.35rem;
+}
 
-	@media (prefers-reduced-motion: reduce) {
-		.project-image.is-entering-forward,
-		.project-image.is-entering-backward {
-			animation: none;
-		}
-	}
+.project-image__scroll-hint-arrow {
+display: flex;
+align-items: center;
+justify-content: center;
+animation: project-image-hint-bounce-x 2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+}
 
-	@media (max-width: 700px) {
-		/* En móvil, cada figura ocupa toda la pantalla para simular la galería de iOS */
-		.project-image__figure {
-			flex: 0 0 100vw;
-			min-width: 100vw;
-			width: 100vw;
-		}
+@keyframes project-image-hint-bounce-x {
+0%, 100% { transform: translateX(0); }
+50% { transform: translateX(8px); }
+}
 
-		.project-image__img {
-			width: 100%;
-		}
-		
-		.project-image__brand {
-			font-size: clamp(1rem, 4.2vw, 1.2rem);
-			top: calc(var(--pad-header-y) + 0.9rem);
-		}
+@media (prefers-reduced-motion: reduce) {
+.project-image.is-entering-forward,
+.project-image.is-entering-backward {
+animation: none;
+}
+}
 
-		/* El mix-blend-mode:difference en el nav hace que el icono
-		   hamburguesa quede invisible. Forzamos blanco con isolation. */
-		.project-image__nav {
-			mix-blend-mode: normal;
-			color: #ffffff;
-		}
+@media (max-width: 700px) {
+/* En móvil, cada figura ocupa toda la pantalla para simular la galería de iOS */
+.project-image__gallery {
+scroll-snap-type: x mandatory;
+}
 
-		.project-image__nav :global(.navbar__toggle) {
-			color: #ffffff;
-		}
+.project-image__figure {
+flex: 0 0 100vw;
+min-width: 100vw;
+width: 100vw;
+}
 
-		.project-image__nav :global(.navbar__toggle span) {
-			background: #ffffff;
-		}
+.project-image__img {
+width: 100%;
+}
 
-		.project-image.is-entering-forward {
-			animation-name: project-image-enter-up;
-		}
+.project-image__brand {
+font-size: clamp(1rem, 4.2vw, 1.2rem);
+top: calc(var(--pad-header-y) + 0.9rem);
+}
 
-		.project-image.is-entering-backward {
-			animation-name: project-image-enter-down;
-		}
+/* El mix-blend-mode:difference en el nav hace que el icono
+   hamburguesa quede invisible. Forzamos blanco con isolation. */
+.project-image__nav {
+mix-blend-mode: normal;
+color: #ffffff;
+}
 
-		@keyframes project-image-enter-up {
-			from {
-				transform: translate3d(0, 3%, 0);
-				opacity: 0;
-			}
-			to {
-				transform: translate3d(0, 0, 0);
-				opacity: 1;
-			}
-		}
+.project-image__nav :global(.navbar__toggle) {
+color: #ffffff;
+}
 
-		@keyframes project-image-enter-down {
-			from {
-				transform: translate3d(0, -3%, 0);
-				opacity: 0;
-			}
-			to {
-				transform: translate3d(0, 0, 0);
-				opacity: 1;
-			}
-		}
-	}
+.project-image__nav :global(.navbar__toggle span) {
+background: #ffffff;
+}
+
+.project-image.is-entering-forward {
+animation-name: project-image-enter-up;
+}
+
+.project-image.is-entering-backward {
+animation-name: project-image-enter-down;
+}
+
+@keyframes project-image-enter-up {
+from {
+transform: translate3d(0, 3%, 0);
+opacity: 0;
+}
+to {
+transform: translate3d(0, 0, 0);
+opacity: 1;
+}
+}
+
+@keyframes project-image-enter-down {
+from {
+transform: translate3d(0, -3%, 0);
+opacity: 0;
+}
+to {
+transform: translate3d(0, 0, 0);
+opacity: 1;
+}
+}
+}
 </style>
