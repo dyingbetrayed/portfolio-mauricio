@@ -1,10 +1,7 @@
 {
-  "location": "Medellín, Colombia",
+  "image": "/about/image.png",
   "background_color": "#eeedec",
   "text_color": "#000000",
-  "image": "/about/image.png",
-  "paragraphs": [
-    "Trabajo entre branding, dirección de arte y diseño gráfico, desarrollando ideas que pueden convertirse en marcas, imágenes, objetos, espacios o experiencias.",
-    "Me interesa encontrar buenas ideas y ver hasta dónde pueden llegar: una marca puede terminar en una camisa, una canción puede convertirse en una imagen y una idea puede terminar ocupando un espacio."
-  ]
+  "location": "Medellín, Colombia",
+  "paragraphs": "Trabajo entre branding, dirección de arte y diseño gráfico, desarrollando ideas que pueden convertirse en marcas, imágenes, objetos, espacios o experiencias.\n\nMe interesa encontrar buenas ideas y ver hasta dónde pueden llegar: una marca puede terminar en una camisa, una canción puede convertirse en una imagen y una idea puede terminar ocupando un espacio."
 }
