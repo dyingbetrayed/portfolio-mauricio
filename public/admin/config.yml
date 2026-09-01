@@ -60,6 +60,8 @@ collections:
       - label: "Contenido About"
         name: "about"
         file: "src/content/about.json"
+        media_folder: "public/about"
+        public_folder: "/about"
         fields:
           - { label: "Imagen", name: "image", widget: "image" }
           - { label: "Color de fondo", name: "background_color", widget: "color" }
