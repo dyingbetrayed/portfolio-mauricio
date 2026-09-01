@@ -5,6 +5,7 @@ import ProjectImage from './ProjectImage.astro';
 import ProjectNext from './ProjectNext.astro';
 import SiteBrand from './SiteBrand.astro';
 import { projectCategories, type ProjectCategory } from '../data/projects';
+import ikeneasData from '../content/ikeneas.json';
 
 const tableCategories: Array<[string, ProjectCategory]> = [
 	['category_1', projectCategories.category_1],
@@ -67,11 +68,11 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			<button
 				type="button"
 				class="work-link hover-ikeneas work-row work-row--gray work-row--branding"
-				data-external-url="https://ikeneas.com/"
+				data-external-url={ikeneasData.url}
 				data-cursor-nav
-				style="--work-hover-bg: #6c48b0;"
+				style={`--work-hover-bg: ${ikeneasData.hover_color};`}
 			>
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">IKENEAS</span>
+				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">{ikeneasData.name.toUpperCase()}</span>
 			</button>
 		</div>
 

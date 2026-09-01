@@ -34,6 +34,14 @@ collections:
           - { label: "Texto del Logo", name: "logo_text", widget: "string", default: "Mauricio Atencia" }
           - { label: "Imagen del Logo (Opcional — dejar vacío para usar texto)", name: "logo_image", widget: "file", required: false }
 
+      - label: "Configuración Ikeneas"
+        name: "ikeneas"
+        file: "src/content/ikeneas.json"
+        fields:
+          - { label: "Nombre", name: "name", widget: "string", default: "Ikeneas" }
+          - { label: "URL externa", name: "url", widget: "string", default: "https://ikeneas.com/" }
+          - { label: "Color hover", name: "hover_color", widget: "color", default: "#6c48b0" }
+
   - name: "home_collection"
     label: "Inicio (Hero)"
     files:
