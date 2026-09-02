@@ -1,25 +1,24 @@
 {
-  "color": "#fd0000",
+  "category": "category_3",
+  "id": "06",
   "name": "cada sentimiento es válido",
+  "year": "2023",
+  "location": "Medellín, CO",
+  "color": "#fd0000",
+  "tagline": "La pieza utiliza el apparel como una forma sencilla de hacer visible un mensaje que muchas veces necesitamos escuchar.",
+  "services": "Diseño de apparel · Merchandising · Diseño gráfico",
   "sections": [
     {
       "label": "La pieza",
       "paragraphs": "“Cada sentimiento es válido” parte de una frase sencilla para convertirla en una pieza gráfica que puede llevarse puesta.\n\nLa prenda funciona como soporte de comunicación y permite que el mensaje circule fuera de su contexto original, convirtiendo una declaración personal en un objeto de expresión."
     }
   ],
-  "tagline": "La pieza utiliza el apparel como una forma sencilla de hacer visible un mensaje que muchas veces necesitamos escuchar.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/merch-35-.png",
     "/work/merch-36-.png",
     "/work/merch-37-.png",
     "/work/merch-38-.png",
     "/work/merch-39-.png"
-  ],
-  "id": "06",
-  "year": "2023",
-  "services": [
-    "Diseño de apparel · Merchandising · Diseño gráfico"
-  ],
-  "category": "category_4"
+  ]
 }
