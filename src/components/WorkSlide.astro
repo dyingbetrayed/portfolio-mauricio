@@ -189,7 +189,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			image.closest('.project-image__figure, .project-next__media')?.classList.add('is-ready');
 		}
 
-		/** Asigna src y espera decode para no pintar un frame vacío. */
+		/** Asigna src y espera decode para no pintar un frame vacío. 
+		 * OPTIMIZADO: Añade timeout de seguridad y resuelve más rápido para no bloquear UI */
 		function hydrateImage(image) {
 			if (!(image instanceof HTMLImageElement) && !(image instanceof HTMLVideoElement)) return Promise.resolve();
 			const cached = imageHydration.get(image);
@@ -199,7 +200,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			if (!src) return Promise.resolve();
 
 			const prepared = new Promise((resolve) => {
+				// Timeout de seguridad: si después de 3 segundos no cargó, resolvemos igual
+				const safetyTimeout = setTimeout(() => {
+					console.warn('[hydrateImage] Timeout alcanzado para imagen:', src);
+					markImageReady(image);
+					resolve();
+				}, 3000);
+
 				const finish = () => {
+					clearTimeout(safetyTimeout);
 					markImageReady(image);
 					resolve();
 				};
@@ -501,11 +510,32 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const images = galleryImages(panel);
 			if (images.length === 0) return Promise.resolve();
 			const index = Math.min(Math.max(0, startIndex), images.length - 1);
+			
+			// Marcamos la primera imagen como prioritaria
 			images[index]?.setAttribute('fetchpriority', 'high');
+			
 			const slug = panel.getAttribute('data-project-image') || '';
 			maybePrefetchNext(slug, images, index);
-			const ready = ensurePairs(images, index);
-			return ready;
+			
+			// OPTIMIZADO: Solo esperamos la primera imagen para reducir el tiempo de bloqueo
+			// Las siguientes imágenes del par se cargarán en paralelo sin bloquear
+			const firstImage = images[index];
+			if (firstImage) {
+				const firstImagePromise = hydrateImage(firstImage);
+				
+				// Iniciamos la carga del resto del par en paralelo (sin esperar)
+				const start = pairStart(index);
+				for (let i = start; i < start + PAIR && i < images.length; i++) {
+					if (i !== index) {
+						void hydrateImage(images[i]);
+					}
+				}
+				
+				// Solo retornamos la promesa de la primera imagen
+				return firstImagePromise;
+			}
+			
+			return Promise.resolve();
 		}
 
 		function setLayerState(layer, open) {
@@ -715,8 +745,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			if (!imagePanel) return;
 			const { imageIndex = 0, ...depthOpts } = imageOpenOptions(opts);
 			const requestId = ++imageOpenRequest;
-			await prepareProjectImage(imagePanel, imageIndex);
-			if (requestId !== imageOpenRequest) return;
+			
+			// FIXED: No esperamos la carga de imágenes para abrir la galería
+			// Iniciamos la carga en paralelo pero no bloqueamos la UI
+			const loadingPromise = prepareProjectImage(imagePanel, imageIndex);
 
 			const projectPanel = projectPanels().find((el) => el.getAttribute('data-project') === slug);
 			if (!projectPanel) return;
@@ -731,6 +763,14 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			showOnly(projectPanels(), 'data-project', slug);
 			showOnly(nextPanels(), 'data-project-next', null);
 			setDepth(3, depthOpts);
+			
+			// Las imágenes se cargarán en background sin bloquear la interacción
+			void loadingPromise.then(() => {
+				// Verificamos que no se haya cambiado de contexto
+				if (requestId === imageOpenRequest) {
+					// Las imágenes están listas, se marcarán automáticamente como ready
+				}
+			});
 		}
 
 		async function openProjectNext(slug, opts) {
@@ -1222,7 +1262,16 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			const slug = row.getAttribute('data-open-project') || '';
 			const panel = imagePanelFor(slug);
 			if (!panel) return;
-			void prepareProjectImage(panel, 0);
+			// Precargamos SOLO la primera imagen en hover para evitar bloqueos
+			const images = galleryImages(panel);
+			if (images.length > 0) {
+				images[0]?.setAttribute('fetchpriority', 'high');
+				void hydrateImage(images[0]);
+				// Iniciamos la segunda imagen en background
+				if (images.length > 1) {
+					setTimeout(() => void hydrateImage(images[1]), 100);
+				}
+			}
 		}, true);
 
 		applyHash();

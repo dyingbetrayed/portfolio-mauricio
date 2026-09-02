@@ -31,6 +31,7 @@ return (
 <video
 class="project-image__img"
 data-src={src}
+loading="lazy"
 autoplay loop muted playsinline
 title={`${project.name} — video ${idx + 1} de ${images.length}`}
 ></video>
@@ -38,6 +39,7 @@ title={`${project.name} — video ${idx + 1} de ${images.length}`}
 <img
 class="project-image__img"
 data-src={src}
+loading="lazy"
 alt={`${project.name} — imagen ${idx + 1} de ${images.length}`}
 decoding="async"
 />
@@ -192,6 +194,8 @@ justify-content: center;
 background: #2a2a2a;
 background: color-mix(in srgb, var(--project-color, #6b6b6b) 32%, #1a1a1a);
 scroll-snap-align: center;
+/* OPTIMIZADO: Transición suave del placeholder */
+transition: background 0.4s ease-out;
 }
 
 .project-image__figure.is-ready {
