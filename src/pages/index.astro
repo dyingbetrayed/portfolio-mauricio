@@ -28,6 +28,7 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 						x-webkit-airplay="allow"
 						disablePictureInPicture
 					>
+						<source src="/mam-web-mobile.mp4" type="video/mp4" media="(max-width: 700px)" />
 						<source src={heroMedia} type="video/mp4" />
 					</video>
 				) : (
