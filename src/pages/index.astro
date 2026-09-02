@@ -23,11 +23,11 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 						webkit-playsinline
 						preload="auto" 
 						class="hero-video"
+						poster="/hero-poster.jpg"
 						data-autoplay
 						x-webkit-airplay="allow"
 						disablePictureInPicture
 					>
-						<source src={heroMedia} type="video/quicktime" />
 						<source src={heroMedia} type="video/mp4" />
 					</video>
 				) : (
