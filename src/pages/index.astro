@@ -15,22 +15,20 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 		<section class="slide hero-slide" style={`--bg-color: ${homeData.background_color}; --overlay-opacity: ${homeData.overlay_opacity}; --overlay-opacity-active: ${homeData.overlay_opacity_active};`}>
 			<div class="hero-media" aria-hidden="true">
 				{isVideo ? (
-					<video 
-						autoplay 
-						loop 
-						muted 
-						playsinline 
-						webkit-playsinline
-						preload="auto" 
-						class="hero-video"
-						poster="/hero-poster.jpg"
-						data-autoplay
-						x-webkit-airplay="allow"
-						disablePictureInPicture
-					>
-						<source src="/mam-web-mobile.mp4" type="video/mp4" media="(max-width: 700px)" />
-						<source src={heroMedia} type="video/mp4" />
-					</video>
+					<video
+    class="hero-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    webkit-playsinline
+    preload="auto"
+    poster="/hero-poster.jpg"
+    data-src-mobile="/mam-web-mobile.mp4"
+    disablePictureInPicture
+>
+    <source src={heroMedia} type="video/mp4" />
+</video>
 				) : (
 					heroMedia && (
 						<img
@@ -77,68 +75,79 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 </Layout>
 
 <script is:inline>
-	// iOS Video Autoplay Fix - Se ejecuta antes que el script principal
+	// Autoplay fix: elige la fuente mobile/desktop ANTES de reproducir, y
+	// hace un único intento de play() en vez de varios en distintos scripts.
+	// En iOS, cada video.load() posterior a un play() exitoso puede tirar
+	// abajo la reproducción y sacarla de la ventana en la que Safari permite
+	// autoplay sin gesto del usuario, dejando el video pausado hasta un tap.
 	(function() {
-		// Detectar iOS
-		const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-		const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-		
-		if (isIOS || isSafari) {
-			// Configurar todos los videos en la página para iOS
-			const setupVideoForIOS = () => {
-				const videos = document.querySelectorAll('.hero-video');
-				videos.forEach(video => {
-					if (video instanceof HTMLVideoElement) {
-						// Configuraciones críticas para iOS
-						video.muted = true;
-						video.setAttribute('muted', '');
-						video.setAttribute('playsinline', '');
-						video.setAttribute('webkit-playsinline', '');
-						video.defaultMuted = true;
-						video.volume = 0;
-						
-						// Cargar y reproducir
-						video.load();
-						
-						const attemptPlay = () => {
-							const playPromise = video.play();
-							if (playPromise !== undefined) {
-								playPromise.catch(err => {
-									console.log('Video autoplay deferred for iOS:', err.message);
-								});
-							}
-						};
-						
-						if (video.readyState >= 2) {
-							attemptPlay();
-						} else {
-							video.addEventListener('loadedmetadata', attemptPlay, { once: true });
-							video.addEventListener('canplay', attemptPlay, { once: true });
-						}
-					}
+		function isMobileViewport() {
+			return window.matchMedia('(max-width: 700px)').matches;
+		}
+
+		function tryPlay(video) {
+			const playPromise = video.play();
+			if (playPromise !== undefined) {
+				playPromise.catch(() => {
+					// Bloqueado (gesto requerido, Modo de bajo consumo, etc.):
+					// se reintenta una sola vez en la primera interacción, más abajo.
 				});
-			};
-			
-			// Ejecutar cuando el DOM esté listo
-			if (document.readyState === 'loading') {
-				document.addEventListener('DOMContentLoaded', setupVideoForIOS);
-			} else {
-				setupVideoForIOS();
 			}
-			
-			// También intentar en la primera interacción del usuario
-			const userInteractionEvents = ['touchstart', 'touchend', 'click', 'scroll'];
-			const handleUserInteraction = () => {
-				setupVideoForIOS();
-				userInteractionEvents.forEach(event => {
-					document.removeEventListener(event, handleUserInteraction);
-				});
-			};
-			
-			userInteractionEvents.forEach(event => {
-				document.addEventListener(event, handleUserInteraction, { once: true, passive: true });
+		}
+
+function prepareVideo(video) {
+    const mobileSrc = video.dataset.srcMobile;
+
+    if (mobileSrc && isMobileViewport()) {
+        video.src = mobileSrc;
+    }
+
+    video.muted = true;
+    video.defaultMuted = true;
+
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+
+    const play = () => {
+        video.play().catch(() => {
+            // Safari puede bloquear autoplay por configuración
+        });
+    };
+
+    if (video.readyState >= 2) {
+        play();
+    } else {
+        video.addEventListener('canplay', play, { once: true });
+    }
+}
+
+		function init() {
+			document.querySelectorAll('.hero-video').forEach((video) => {
+				if (video instanceof HTMLVideoElement) prepareVideo(video);
 			});
 		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', init);
+		} else {
+			init();
+		}
+
+		// Único reintento, en la primera interacción, solo para los videos
+		// que hayan quedado pausados (Modo de bajo consumo bloquea el
+		// autoplay por completo en iOS y solo se levanta con un gesto).
+		const retryOnInteraction = () => {
+			document.querySelectorAll('.hero-video').forEach((video) => {
+				if (video instanceof HTMLVideoElement && video.paused) {
+					video.muted = true;
+					tryPlay(video);
+				}
+			});
+		};
+		['touchstart', 'click', 'scroll'].forEach((evt) => {
+			document.addEventListener(evt, retryOnInteraction, { once: true, passive: true });
+		});
 	})();
 </script>
 
@@ -209,42 +218,14 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 				if (on) slide.setAttribute('data-active', '');
 				else slide.removeAttribute('data-active');
 				
-				// Reproducir video cuando el slide se activa (iOS fix)
+				// Reproducir video cuando el slide se activa. Sin video.load():
+				// ya se preparó en el script is:inline, y volver a cargarlo acá
+				// puede interrumpir una reproducción que ya estaba andando.
 				if (on) {
 					const video = slide.querySelector('.hero-video');
-					if (video instanceof HTMLVideoElement) {
-						// Asegurar que el video está listo y reproducirlo
-						const playVideo = () => {
-							video.muted = true; // Asegurar que está silenciado
-							const playPromise = video.play();
-							if (playPromise !== undefined) {
-								playPromise
-									.then(() => {
-										// Video reproducido exitosamente
-										console.log('Video autoplay started');
-									})
-									.catch((error) => {
-										// Error de autoplay - intentar de nuevo después de interacción
-										console.warn('Video autoplay prevented:', error);
-										// Intentar reproducir después de un breve delay
-										setTimeout(() => {
-											video.play().catch(() => {
-												// Si aún falla, el usuario necesita interactuar
-												console.log('Video requires user interaction');
-											});
-										}, 100);
-									});
-							}
-						};
-						
-						if (video.readyState >= 3) {
-							// Video ya cargado
-							playVideo();
-						} else {
-							// Esperar a que el video esté listo
-							video.addEventListener('loadeddata', playVideo, { once: true });
-							video.load(); // Forzar carga
-						}
+					if (video instanceof HTMLVideoElement && video.paused) {
+						video.muted = true;
+						video.play().catch(() => {});
 					}
 				} else {
 					// Pausar video cuando el slide se desactiva
@@ -898,35 +879,6 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 			});
 		}
 
-		/* iOS video autoplay fix: intentar reproducir el video inicial */
-		const tryPlayInitialVideo = () => {
-			const heroSlide = slides()[currentIndex];
-			if (heroSlide) {
-				const video = heroSlide.querySelector('.hero-video');
-				if (video instanceof HTMLVideoElement) {
-					video.muted = true;
-					video.play().catch((error) => {
-						console.log('Initial video autoplay prevented, will retry on interaction:', error);
-					});
-				}
-			}
-		};
-
-		// Intentar reproducir inmediatamente
-		tryPlayInitialVideo();
-
-		// También intentar después de cualquier interacción del usuario (iOS requirement)
-		const enableVideoOnInteraction = () => {
-			tryPlayInitialVideo();
-			// Remover listeners después de la primera interacción exitosa
-			document.removeEventListener('touchstart', enableVideoOnInteraction);
-			document.removeEventListener('click', enableVideoOnInteraction);
-			document.removeEventListener('scroll', enableVideoOnInteraction);
-		};
-
-		document.addEventListener('touchstart', enableVideoOnInteraction, { once: true, passive: true });
-		document.addEventListener('click', enableVideoOnInteraction, { once: true });
-		document.addEventListener('scroll', enableVideoOnInteraction, { once: true, passive: true });
 	}
 </script>
 
