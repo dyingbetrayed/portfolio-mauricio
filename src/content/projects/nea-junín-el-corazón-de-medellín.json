@@ -1,14 +1,19 @@
 {
-  "color": "#99c6d1",
+  "category": "category_2",
+  "id": "01",
   "name": "NEA$ | Junín",
+  "year": "2026",
+  "location": "Medellín, CO",
+  "color": "#99c6d1",
+  "tagline": "Una camisa que terminó convirtiéndose en todo un lugar.",
+  "services": "Diseño de apparel · Dirección de arte · Concepto · Fotografía",
   "sections": [
     {
       "label": "El proyecto",
       "paragraphs": "El proyecto comenzó con una camisa inspirada en la Medellín de los años 70 y terminó convirtiéndose en un ejercicio de construcción de un universo completo. La prenda se convirtió en el punto de partida para imaginar un restaurante inspirado en Junín, uno de los lugares más representativos del centro de Medellín.\n\nA partir de ahí se desarrollaron nombre, espacio, estética y una mini campaña fotográfica alrededor del mismo concepto, llevando una pieza de apparel hacia una experiencia visual mucho más amplia."
     }
   ],
-  "tagline": "Una camisa que terminó convirtiéndose en todo un lugar.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/merch-1-.png",
     "/work/merch-3-.png",
@@ -22,11 +27,5 @@
     "/work/merch-11-.png",
     "/work/merch-12-.png",
     "/work/merch-13-.png"
-  ],
-  "id": "01",
-  "year": "2026",
-  "services": [
-    "Diseño de apparel · Dirección de arte · Concepto · Fotografía"
-  ],
-  "category": "category_4"
+  ]
 }
