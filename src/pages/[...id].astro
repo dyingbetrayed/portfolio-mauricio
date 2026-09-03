@@ -46,7 +46,7 @@ interface Props {
 
 const { type, data, slug } = Astro.props;
 const BASE_URL = 'https://portfolio-mauricio-beta.vercel.app';
-const redirectUrl = `/?route=${encodeURIComponent(type === 'project' ? `${(data as any).categorySlug || ''}/${slug}` : slug)}`;
+const redirectUrl = `/?route=${encodeURIComponent(slug)}`;
 // Note: We'll just pass the slug to route= which will be picked up by the index page
 
 let ogImage = `${BASE_URL}/LA-FICHA-LOGO.png`;
