@@ -129,6 +129,16 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 							<span aria-hidden="true">→</span>
 						</button>
 					</div>
+					<div class="category-bottom-nav">
+						<button
+							type="button"
+							class="category__nav-btn"
+							data-nav-back
+						>
+							<span class="category__nav-icon" aria-hidden="true">←</span>
+							<span>Volver a Work</span>
+						</button>
+					</div>
 				</div>
 			</div>
 		))}
@@ -1770,6 +1780,37 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		font-weight: 500;
 		font-size: 0.95rem;
 		letter-spacing: 0.02em;
+	}
+
+	.category-bottom-nav {
+		padding-top: clamp(1rem, 3vh, 2rem);
+		display: flex;
+		align-items: center;
+	}
+
+	.category__nav-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		border: none;
+		background: transparent;
+		color: #000000;
+		cursor: pointer;
+		font-family: var(--font-nav, 'Aptos', sans-serif);
+		font-weight: 600;
+		font-size: clamp(0.9rem, 1.2vw, 1.45rem);
+		letter-spacing: 0.03em;
+		padding: clamp(0.45rem, 1.2vh, 1rem) 0;
+		transition: opacity 0.2s ease;
+	}
+
+	.category__nav-btn:hover {
+		opacity: 0.65;
+	}
+
+	.category__nav-icon {
+		font-size: 1.1em;
+		line-height: 1;
 	}
 
 	.project-row {
