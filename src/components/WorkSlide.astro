@@ -566,12 +566,15 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				const activeProject = root.querySelector('[data-project]:not([hidden])');
 				let newUrl = '/#work';
 				if (depth >= 2 && activeProject) {
-					newUrl = `/${activeProject.getAttribute('data-project')}`;
+					const projectSlug = activeProject.getAttribute('data-project');
+					const row = root.querySelector(`[data-open-project="${projectSlug}"]`);
+					const category = row ? row.getAttribute('data-from-category') : null;
+					newUrl = category ? `/${category}/${projectSlug}` : `/${projectSlug}`;
 				} else if (depth === 1 && activeCategory) {
 					newUrl = `/${activeCategory.getAttribute('data-category')}`;
 				}
-				if (window.location.pathname + window.location.hash !== newUrl) {
-					history.replaceState(null, '', newUrl);
+				if (window.location.pathname + window.location.search + window.location.hash !== newUrl) {
+					history.pushState(null, '', newUrl);
 				}
 			}
 		}
@@ -1200,15 +1203,23 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		let isInitialLoad = true;
 		function routeTarget() {
 			const hashId = location.hash.replace(/^#/, '');
-			if (hashId) return { id: hashId, source: 'hash' };
+			if (hashId) return { id: hashId, source: 'hash', fullPath: hashId };
 
 			const queryId = new URLSearchParams(location.search).get('route');
-			if (queryId) return { id: decodeURIComponent(queryId), source: 'query' };
+			if (queryId) {
+				const decoded = decodeURIComponent(queryId);
+				const parts = decoded.split('/');
+				return { id: parts[parts.length - 1], source: 'query', fullPath: decoded };
+			}
 
 			const pathId = location.pathname.replace(/^\/+|\/+$/g, '');
-			if (pathId) return { id: decodeURIComponent(pathId), source: 'path' };
+			if (pathId) {
+				const decoded = decodeURIComponent(pathId);
+				const parts = decoded.split('/');
+				return { id: parts[parts.length - 1], source: 'path', fullPath: decoded };
+			}
 
-			return { id: '', source: 'none' };
+			return { id: '', source: 'none', fullPath: '' };
 		}
 
 		function applyHash() {
@@ -1216,7 +1227,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				root.classList.add('no-transition');
 			}
 
-			const { id, source } = routeTarget();
+			const { id, source, fullPath } = routeTarget();
 			if (!id || id === 'work') {
 				if (id === 'work') ensureWorkVisible();
 				closeAll({ syncHash: false });
@@ -1229,7 +1240,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			}
 
 			if (source === 'query') {
-				const cleanUrl = id && id !== 'work' ? `/${encodeURIComponent(id)}` : '/';
+				const cleanUrl = fullPath && fullPath !== 'work' ? `/${fullPath.split('/').map(encodeURIComponent).join('/')}` : '/';
 				if (window.location.pathname + window.location.search + window.location.hash !== cleanUrl) {
 					history.replaceState(null, '', cleanUrl);
 				}

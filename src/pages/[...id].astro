@@ -19,9 +19,35 @@ export function getStaticPaths() {
 				props: { type: 'category', data: category, slug: category.slug }
 			});
 		}
+
+		// Agrega los proyectos de esta categoría
+		category.projects.forEach(project => {
+			paths.push({
+				params: { id: `${category.slug}/${project.slug}` },
+				props: { type: 'project', data: project, slug: project.slug }
+			});
+			
+			// Compatibilidad con rutas antiguas sin categoría
+			paths.push({
+				params: { id: project.slug },
+				props: { type: 'project', data: project, slug: project.slug }
+			});
+		});
+	});
+
+	return paths;
+}
+
+interface Props {
+	type: 'category' | 'project';
+	data: Project | ProjectCategory;
+	slug: string;
+}
+
 const { type, data, slug } = Astro.props;
 const BASE_URL = 'https://portfolio-mauricio-beta.vercel.app';
-const redirectUrl = `/?route=${encodeURIComponent(slug)}`;
+const redirectUrl = `/?route=${encodeURIComponent(type === 'project' ? `${(data as any).categorySlug || ''}/${slug}` : slug)}`;
+// Note: We'll just pass the slug to route= which will be picked up by the index page
 
 let ogImage = `${BASE_URL}/LA-FICHA-LOGO.png`;
 let ogTitle = '';
@@ -56,7 +82,7 @@ if (type === 'project') {
 
 	<!-- Open Graph / WhatsApp / Facebook -->
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content={`${BASE_URL}/${slug}`} />
+	<meta property="og:url" content={`${BASE_URL}/${Astro.params.id}`} />
 	<meta property="og:title" content={ogTitle} />
 	<meta property="og:description" content={ogDescription} />
 	<meta property="og:image" content={ogImage} />
@@ -73,7 +99,7 @@ if (type === 'project') {
 
 	<!-- Redirect non-crawler visitors immediately to the SPA -->
 	<meta http-equiv="refresh" content={`0; url=${redirectUrl}`} />
-	<link rel="canonical" href={`${BASE_URL}/${slug}`} />
+	<link rel="canonical" href={`${BASE_URL}/${Astro.params.id}`} />
 </head>
 <body>
 	<p>
