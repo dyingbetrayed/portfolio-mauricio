@@ -282,7 +282,9 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 
 		const PAIR = 2;
 		const nextPreviewReady = new Map();
-		const CATEGORY_MAX_PAGE_SIZE = 8;
+		function getCategoryMaxPageSize() {
+			return window.innerWidth <= 700 ? 15 : 8;
+		}
 		const categoryPaginationObservers = new WeakMap();
 
 		function galleryImages(panel) {
@@ -369,9 +371,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		}
 
 		function categoryPageSize(panel) {
-			if (!(panel instanceof HTMLElement)) return CATEGORY_MAX_PAGE_SIZE;
-			const value = Number(panel.dataset.pageSize || CATEGORY_MAX_PAGE_SIZE);
-			return Math.max(1, Math.min(CATEGORY_MAX_PAGE_SIZE, value || CATEGORY_MAX_PAGE_SIZE));
+			const maxPage = getCategoryMaxPageSize();
+			if (!(panel instanceof HTMLElement)) return maxPage;
+			const value = Number(panel.dataset.pageSize || maxPage);
+			return Math.max(1, Math.min(maxPage, value || maxPage));
 		}
 
 		function initCategoryPagination(panel) {
@@ -437,9 +440,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 			initCategoryPagination(panel);
 
 			const rows = Array.from(panel.querySelectorAll('.project-row'));
-			const max = Math.min(CATEGORY_MAX_PAGE_SIZE, rows.length || CATEGORY_MAX_PAGE_SIZE);
+			const maxPage = getCategoryMaxPageSize();
+			const max = Math.min(maxPage, rows.length || maxPage);
 
-			// Probamos desde 8 hacia abajo hasta que el panel deje de desbordarse.
+			// Probamos desde el máximo hacia abajo hasta que el panel deje de desbordarse.
 			let best = max;
 			for (let size = max; size >= 1; size--) {
 				panel.dataset.pageSize = String(size);
