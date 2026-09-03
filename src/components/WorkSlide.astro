@@ -128,7 +128,8 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 								data-nav-back
 							>
 								<span class="category__nav-icon" aria-hidden="true">←</span>
-								<span>Volver a Work</span>
+								<span class="category__nav-text--desktop">Volver a Work</span>
+								<span class="category__nav-text--mobile">Work</span>
 							</button>
 						</div>
 						<div class="category-pagination" data-category-pagination aria-label="Paginación de proyectos">
@@ -1824,6 +1825,10 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		line-height: 1;
 	}
 
+	.category__nav-text--mobile {
+		display: none;
+	}
+
 	.project-row {
 		display: grid;
 		grid-template-columns: clamp(40px, 5vw, 80px) 3fr 1fr 1fr;
@@ -1926,6 +1931,14 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		.category-separator {
 			width: 100%;
 			margin-left: 0;
+		}
+
+		.category__nav-text--desktop {
+			display: none;
+		}
+
+		.category__nav-text--mobile {
+			display: inline;
 		}
 
 		.project-list {
