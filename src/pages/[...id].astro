@@ -97,8 +97,7 @@ if (type === 'project') {
 	<meta name="twitter:description" content={ogDescription} />
 	<meta name="twitter:image" content={ogImage} />
 
-	<!-- Redirect non-crawler visitors immediately to the SPA -->
-	<meta http-equiv="refresh" content={`0; url=${redirectUrl}`} />
+	<!-- Canonical URL (no meta refresh — crawlers must read og:tags without being redirected) -->
 	<link rel="canonical" href={`${BASE_URL}/${encodeURI(Astro.params.id)}`} />
 </head>
 <body>
