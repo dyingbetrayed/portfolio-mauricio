@@ -120,24 +120,26 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 							</button>
 						))}
 					</div>
-					<div class="category-pagination" data-category-pagination aria-label="Paginación de proyectos">
-						<button type="button" class="category-pagination__btn" data-category-page="prev" aria-label="Página anterior">
-							<span aria-hidden="true">←</span>
-						</button>
-						<span class="category-pagination__status" data-category-page-status>1 / 1</span>
-						<button type="button" class="category-pagination__btn" data-category-page="next" aria-label="Página siguiente">
-							<span aria-hidden="true">→</span>
-						</button>
-					</div>
-					<div class="category-bottom-nav">
-						<button
-							type="button"
-							class="category__nav-btn"
-							data-nav-back
-						>
-							<span class="category__nav-icon" aria-hidden="true">←</span>
-							<span>Volver a Work</span>
-						</button>
+					<div class="category-footer">
+						<div class="category-bottom-nav">
+							<button
+								type="button"
+								class="category__nav-btn"
+								data-nav-back
+							>
+								<span class="category__nav-icon" aria-hidden="true">←</span>
+								<span>Volver a Work</span>
+							</button>
+						</div>
+						<div class="category-pagination" data-category-pagination aria-label="Paginación de proyectos">
+							<button type="button" class="category-pagination__btn" data-category-page="prev" aria-label="Página anterior">
+								<span aria-hidden="true">←</span>
+							</button>
+							<span class="category-pagination__status" data-category-page-status>1 / 1</span>
+							<button type="button" class="category-pagination__btn" data-category-page="next" aria-label="Página siguiente">
+								<span aria-hidden="true">→</span>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -1742,12 +1744,21 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 		padding-bottom: 0.25rem;
 	}
 
+	.category-footer {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		align-items: center;
+		padding: 0.5rem 0 0.25rem;
+		width: 100%;
+		margin-top: auto;
+	}
+
 	.category-pagination {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		gap: 0.85rem;
-		padding: 1rem 0 0.25rem;
+		grid-column: 2;
 	}
 
 	.category-pagination[hidden] {
@@ -1783,9 +1794,9 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.category-bottom-nav {
-		padding-top: clamp(1rem, 3vh, 2rem);
 		display: flex;
 		align-items: center;
+		grid-column: 1;
 	}
 
 	.category__nav-btn {
