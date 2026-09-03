@@ -1696,7 +1696,7 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 	}
 
 	.category-content {
-		padding: clamp(1rem, 6vh, 5rem) var(--pad-header-x-r) var(--pad-section-b) var(--pad-header-x-l);
+		padding: clamp(1rem, 6vh, 5rem) var(--pad-header-x-r) max(0px, calc(var(--pad-section-b) - 2.5rem)) var(--pad-header-x-l);
 		display: flex;
 		flex-direction: column;
 		width: 100%;
