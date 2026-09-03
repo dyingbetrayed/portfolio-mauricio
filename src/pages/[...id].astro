@@ -82,7 +82,7 @@ if (type === 'project') {
 
 	<!-- Open Graph / WhatsApp / Facebook -->
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content={`${BASE_URL}/${Astro.params.id}`} />
+	<meta property="og:url" content={`${BASE_URL}/${encodeURI(Astro.params.id)}`} />
 	<meta property="og:title" content={ogTitle} />
 	<meta property="og:description" content={ogDescription} />
 	<meta property="og:image" content={ogImage} />
@@ -99,7 +99,7 @@ if (type === 'project') {
 
 	<!-- Redirect non-crawler visitors immediately to the SPA -->
 	<meta http-equiv="refresh" content={`0; url=${redirectUrl}`} />
-	<link rel="canonical" href={`${BASE_URL}/${Astro.params.id}`} />
+	<link rel="canonical" href={`${BASE_URL}/${encodeURI(Astro.params.id)}`} />
 </head>
 <body>
 	<p>
