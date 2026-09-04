@@ -23,6 +23,11 @@ export interface Project {
 	 * Cada ruta es una pantalla distinta (ej. `/work/branding/pitao/2.jpg`).
 	 */
 	images?: string[];
+	/**
+	 * Imagen específica para Open Graph (redes sociales).
+	 * Si no se provee, se usará la primera de `images`.
+	 */
+	ogImage?: string;
 	category?: string;
 }
 

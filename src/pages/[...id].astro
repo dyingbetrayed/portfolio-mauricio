@@ -55,8 +55,9 @@ let ogDescription = '';
 
 if (type === 'project') {
 	const project = data as Project;
-	ogImage = project.images?.[0]
-		? `${BASE_URL}${encodeURI(project.images[0])}`
+	const selectedOgImage = project.ogImage || project.images?.[0];
+	ogImage = selectedOgImage
+		? `${BASE_URL}${encodeURI(selectedOgImage)}`
 		: ogImage;
 	ogTitle = project.name;
 	ogDescription = project.tagline
