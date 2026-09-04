@@ -1,12 +1,14 @@
 /**
  * optimize-images.js
  *
- * Comprime y organiza las imágenes de cada proyecto en subcarpetas dentro de public/work/.
+ * Comprime y organiza las imágenes de cada proyecto en:
+ *   public/work/{category-slug}/{project-slug}/{nombre-original}.webp
+ *
  * - Lee todos los .json de src/content/projects/
- * - Por cada imagen en "images", genera una versión WebP comprimida
- *   en public/work/{slug}/{original-name}.webp
- * - Actualiza los paths en los archivos JSON con las nuevas rutas
- * - Elimina las imágenes originales después de comprimir exitosamente
+ * - Lee la categoría del proyecto y la mapea a su slug
+ * - Genera versiones WebP comprimidas organizadas por categoría y proyecto
+ * - Actualiza los paths en los archivos JSON
+ * - Elimina las imágenes originales (PNG o WebP sin categoría) si ya fueron migradas
  *
  * Uso: node scripts/optimize-images.js
  * En build: se ejecuta automáticamente via "prebuild" en package.json
@@ -16,6 +18,9 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,13 +34,29 @@ const WEBP_QUALITY = 82;  // Prácticamente indistinguible del original en panta
 const MAX_WIDTH = 2400;   // Suficiente para pantallas 4K
 const MAX_HEIGHT = 2400;
 
+// Leer categorías y generar slugs (misma lógica que projects.ts)
+const categoriesData = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, '../src/content/categories.json'), 'utf-8')
+);
+
+function slugify(text) {
+  return text.toString().toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+}
+
+const categorySlugMap = {
+  category_1: slugify(categoriesData.category_1_title || 'category-1'),
+  category_2: slugify(categoriesData.category_2_title || 'category-2'),
+  category_3: slugify(categoriesData.category_3_title || 'category-3'),
+  category_4: slugify(categoriesData.category_4_title || 'category-4'),
+};
+
+// Resultado: { category_1: 'branding', category_2: 'art-direction', ... }
+console.log('📂 Category mapping:', categorySlugMap);
+
 async function optimizeImages() {
   const files = fs.readdirSync(projectsDir).filter(f => f.endsWith('.json'));
 
-  // Mapa de paths originales que se van a migrar → para borrarlos al final
-  // Usamos un Set para evitar duplicados (si dos proyectos comparten imagen)
   const originalsToDelete = new Set();
-
   let totalGenerated = 0;
   let totalSkipped = 0;
 
@@ -57,13 +78,16 @@ async function optimizeImages() {
     }
 
     const projectSlug = path.basename(file, '.json');
-    const projectFolder = path.join(workDir, projectSlug);
+    const categoryId = project.category || 'category_1';
+    const categorySlug = categorySlugMap[categoryId] || categoryId;
 
+    // Estructura destino: public/work/{category}/{project}/
+    const projectFolder = path.join(workDir, categorySlug, projectSlug);
     if (!fs.existsSync(projectFolder)) {
       fs.mkdirSync(projectFolder, { recursive: true });
     }
 
-    console.log(`\n📁 ${file}`);
+    console.log(`\n📁 [${categorySlug}] ${file}`);
 
     const newImages = [];
     let jsonModified = false;
@@ -72,9 +96,9 @@ async function optimizeImages() {
       const cleanPath = imagePath.split('?')[0].split('#')[0];
       const absoluteSrc = path.join(publicDir, cleanPath);
 
-      // Si la imagen ya fue migrada (ya apunta a una subcarpeta), no la volvemos a procesar
-      const isAlreadyMigrated = cleanPath.startsWith(`/work/${projectSlug}/`);
-      if (isAlreadyMigrated) {
+      // Ya está en la ruta final correcta → skip
+      const finalPath = `/work/${categorySlug}/${projectSlug}/`;
+      if (cleanPath.startsWith(finalPath)) {
         newImages.push(imagePath);
         totalSkipped++;
         continue;
@@ -82,21 +106,21 @@ async function optimizeImages() {
 
       if (!fs.existsSync(absoluteSrc)) {
         console.warn(`  ⚠ Source not found: ${cleanPath}`);
-        newImages.push(imagePath); // conservar path original si no existe
+        newImages.push(imagePath);
         continue;
       }
 
       const originalBasename = path.basename(cleanPath, path.extname(cleanPath));
       const outputFilename = `${originalBasename}.webp`;
       const outputPath = path.join(projectFolder, outputFilename);
-      const newPublicPath = `/work/${projectSlug}/${outputFilename}`;
+      const newPublicPath = `/work/${categorySlug}/${projectSlug}/${outputFilename}`;
 
       if (!fs.existsSync(outputPath)) {
         try {
           await sharp(absoluteSrc)
             .resize(MAX_WIDTH, MAX_HEIGHT, {
-              fit: 'inside',            // Preserva aspect ratio, no recorta
-              withoutEnlargement: true  // No escala hacia arriba si ya es más pequeña
+              fit: 'inside',
+              withoutEnlargement: true
             })
             .webp({ quality: WEBP_QUALITY, effort: 4 })
             .toFile(outputPath);
@@ -104,9 +128,7 @@ async function optimizeImages() {
           const originalSize = fs.statSync(absoluteSrc).size;
           const newSize = fs.statSync(outputPath).size;
           const reduction = Math.round((1 - newSize / originalSize) * 100);
-          console.log(`  ✓ ${path.basename(cleanPath)} → ${outputFilename} (-${reduction}%)`);
-
-          originalsToDelete.add(absoluteSrc);
+          console.log(`  ✓ ${path.basename(cleanPath)} → ${categorySlug}/${projectSlug}/${outputFilename} (-${reduction}%)`);
           totalGenerated++;
           jsonModified = true;
         } catch (err) {
@@ -115,13 +137,14 @@ async function optimizeImages() {
           continue;
         }
       } else {
-        // Ya existe la versión WebP, igual marcamos el original para borrar
-        originalsToDelete.add(absoluteSrc);
+        // WebP ya existe en destino, marcar original para borrar igual
+        console.log(`  → Already exists: ${outputFilename} (skipping compression)`);
         totalSkipped++;
+        jsonModified = true;
       }
 
+      originalsToDelete.add(absoluteSrc);
       newImages.push(newPublicPath);
-      jsonModified = true;
     }
 
     // Actualizar el JSON con las nuevas rutas
@@ -133,20 +156,37 @@ async function optimizeImages() {
     }
   }
 
-  // Eliminar imágenes originales que fueron migradas exitosamente
+  // Eliminar originales migrados
   if (originalsToDelete.size > 0) {
     console.log(`\n🗑  Deleting ${originalsToDelete.size} original files...`);
     for (const originalPath of originalsToDelete) {
       try {
         fs.unlinkSync(originalPath);
-        console.log(`  ✓ Deleted: ${path.basename(originalPath)}`);
       } catch (err) {
-        console.warn(`  ⚠ Could not delete ${originalPath}: ${err.message}`);
+        console.warn(`  ⚠ Could not delete ${path.basename(originalPath)}: ${err.message}`);
+      }
+    }
+
+    // Limpiar carpetas vacías en public/work/ (carpetas de proyecto sin categoría)
+    const entries = fs.readdirSync(workDir);
+    for (const entry of entries) {
+      const entryPath = path.join(workDir, entry);
+      if (!fs.statSync(entryPath).isDirectory()) continue;
+      // Si no es una de nuestras carpetas de categoría, verificar si está vacía
+      const knownCategories = Object.values(categorySlugMap);
+      if (!knownCategories.includes(entry)) {
+        try {
+          const children = fs.readdirSync(entryPath);
+          if (children.length === 0) {
+            fs.rmdirSync(entryPath);
+            console.log(`  🧹 Removed empty folder: work/${entry}`);
+          }
+        } catch (err) { /* ignorar */ }
       }
     }
   }
 
-  console.log(`\n✅ Done! Generated: ${totalGenerated} | Skipped: ${totalSkipped} | Deleted originals: ${originalsToDelete.size}`);
+  console.log(`\n✅ Done! Generated: ${totalGenerated} | Skipped: ${totalSkipped} | Cleaned originals: ${originalsToDelete.size}`);
 }
 
 console.log('🖼  Optimizing and organizing project images...\n');
