@@ -98,9 +98,15 @@ const links: { id: NavSection; label: string; externalUrl?: string }[] = [
 		}
 
 		const link = target.closest('.navbar a');
-		if (link) {
+		if (link instanceof HTMLElement) {
 			const navbar = link.closest('.navbar');
 			if (navbar) closeNavbar(navbar);
+			// Si es un link externo, abrirlo y prevenir la navegación por hash
+			const externalUrl = link.getAttribute('data-external-url');
+			if (externalUrl) {
+				event.preventDefault();
+				window.open(externalUrl, '_blank', 'noopener,noreferrer');
+			}
 			return;
 		}
 
