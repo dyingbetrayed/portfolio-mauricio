@@ -55,12 +55,10 @@ let ogDescription = '';
 
 if (type === 'project') {
 	const project = data as Project;
-	const getGeneratedOgPath = (originalPath: string) => {
-		const basename = originalPath.split('/').pop()?.replace(/\.[^/.]+$/, "");
-		return `/og/og-${basename}.jpg`;
-	};
-	const fallbackImage = project.images?.[0] ? getGeneratedOgPath(project.images[0]) : null;
-	const selectedOgImage = project.ogImage || fallbackImage || project.images?.[0];
+	// generate-og.js genera las OG con nombre basado en el slug: /og/og-{slug}.jpg
+	const projectSlug = slug.split('/').pop() || slug;
+	const generatedOgPath = `/og/og-${projectSlug}.jpg`;
+	const selectedOgImage = project.ogImage || generatedOgPath || project.images?.[0];
 	ogImage = selectedOgImage
 		? `${BASE_URL}${encodeURI(selectedOgImage)}`
 		: ogImage;
