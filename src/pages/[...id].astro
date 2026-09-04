@@ -55,7 +55,12 @@ let ogDescription = '';
 
 if (type === 'project') {
 	const project = data as Project;
-	const selectedOgImage = project.ogImage || project.images?.[0];
+	const getGeneratedOgPath = (originalPath: string) => {
+		const basename = originalPath.split('/').pop()?.replace(/\.[^/.]+$/, "");
+		return `/og/og-${basename}.jpg`;
+	};
+	const fallbackImage = project.images?.[0] ? getGeneratedOgPath(project.images[0]) : null;
+	const selectedOgImage = project.ogImage || fallbackImage || project.images?.[0];
 	ogImage = selectedOgImage
 		? `${BASE_URL}${encodeURI(selectedOgImage)}`
 		: ogImage;
