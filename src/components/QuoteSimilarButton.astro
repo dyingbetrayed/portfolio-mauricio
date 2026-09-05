@@ -1,5 +1,5 @@
 ---
-import { readableInk } from '../utils/color';
+import { readableInk } from "../utils/color";
 
 export interface Props {
 	projectName: string;
@@ -13,7 +13,7 @@ export interface Props {
 const { projectName, color, slug, class: className } = Astro.props;
 const ink = readableInk(color);
 
-const projectUrl = slug ? `https://portfolio-mauricio-beta.vercel.app/${slug}` : '';
+const projectUrl = slug ? `https://m-atencia.vercel.app/${slug}` : "";
 const message = projectUrl
 	? `Hola, me interesa cotizar un proyecto similar a ${projectName}. ${projectUrl}`
 	: `Hola, me interesa cotizar un proyecto similar a ${projectName}.`;
@@ -22,7 +22,7 @@ const href = `https://api.whatsapp.com/send/?phone=573146253071&text=${encodeURI
 
 <a
 	href={href}
-	class:list={['quote-similar', className]}
+	class:list={["quote-similar", className]}
 	style={`background-color: ${color}; color: ${ink};`}
 	target="_blank"
 	rel="noopener noreferrer"
@@ -45,7 +45,9 @@ const href = `https://api.whatsapp.com/send/?phone=573146253071&text=${encodeURI
 		letter-spacing: 0.03em;
 		line-height: 1.2;
 		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
-		transition: opacity 0.2s ease, transform 0.2s ease;
+		transition:
+			opacity 0.2s ease,
+			transform 0.2s ease;
 	}
 
 	.quote-similar:hover {

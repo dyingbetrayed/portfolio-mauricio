@@ -1,51 +1,95 @@
 ---
-import homeData from '../content/home.json';
-import aboutData from '../content/about.json';
-import siteSettings from '../content/site_settings.json';
+import homeData from "../content/home.json";
+import aboutData from "../content/about.json";
+import siteSettings from "../content/site_settings.json";
 
-const heroMedia = homeData.hero_media || (homeData as { hero_image?: string }).hero_image || '';
+const heroMedia =
+	homeData.hero_media ||
+	(homeData as { hero_image?: string }).hero_image ||
+	"";
 const isHeroVideo = /\.(mp4|webm|ogg|mov)$/i.test(heroMedia);
-const aboutImage = aboutData.image || '';
-const logoImage = siteSettings.logo_image || '';
+const aboutImage = aboutData.image || "";
+const logoImage = siteSettings.logo_image || "";
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, viewport-fit=cover"
+		/>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Mauricio Atencia — Portfolio</title>
 		<!-- Open Graph base -->
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://portfolio-mauricio-beta.vercel.app/" />
+		<meta property="og:url" content="https://m-atencia.vercel.app/" />
 		<meta property="og:title" content="Mauricio Atencia — Portfolio" />
-		<meta property="og:description" content="Portfolio de diseño gráfico de Mauricio Atencia — Branding, Social Media, Flyers y Merch." />
-		<meta property="og:image" content="https://portfolio-mauricio-beta.vercel.app/LA-FICHA-LOGO.png" />
+		<meta
+			property="og:description"
+			content="Portfolio de diseño gráfico de Mauricio Atencia — Branding, Social Media, Flyers y Merch."
+		/>
+		<meta
+			property="og:image"
+			content="https://m-atencia.vercel.app/LA-FICHA-LOGO.png"
+		/>
 		<meta property="og:site_name" content="Mauricio Atencia" />
 		<meta property="og:locale" content="es_CO" />
 		<meta name="twitter:card" content="summary_large_image" />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
-		{heroMedia && !isHeroVideo && (
-			<link rel="preload" as="image" href={heroMedia} fetchpriority="high" />
-		)}
-		{heroMedia && isHeroVideo && (
-			<link rel="preload" as="video" href={heroMedia} fetchpriority="high" />
-		)}
-		{aboutImage && (
-			<link rel="preload" as="image" href={aboutImage} fetchpriority="high" />
-		)}
-		{logoImage && (
-			<link rel="preload" as="image" href={logoImage} fetchpriority="high" />
-		)}
-		<script is:inline>document.documentElement.classList.add('js');</script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap"
+			rel="stylesheet"
+		/>
+		{
+			heroMedia && !isHeroVideo && (
+				<link
+					rel="preload"
+					as="image"
+					href={heroMedia}
+					fetchpriority="high"
+				/>
+			)
+		}
+		{
+			heroMedia && isHeroVideo && (
+				<link
+					rel="preload"
+					as="video"
+					href={heroMedia}
+					fetchpriority="high"
+				/>
+			)
+		}
+		{
+			aboutImage && (
+				<link
+					rel="preload"
+					as="image"
+					href={aboutImage}
+					fetchpriority="high"
+				/>
+			)
+		}
+		{
+			logoImage && (
+				<link
+					rel="preload"
+					as="image"
+					href={logoImage}
+					fetchpriority="high"
+				/>
+			)
+		}
+		<script is:inline>
+			document.documentElement.classList.add("js");
+		</script>
 	</head>
 	<body>
-
 		<a href="#about" class="skip-link">Saltar al contenido</a>
 		<slot />
 		<div class="site-cursor" aria-hidden="true"></div>
@@ -53,23 +97,29 @@ const logoImage = siteSettings.logo_image || '';
 </html>
 
 <script>
-	const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const prefersReducedMotion = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
 
-	const cursor = document.querySelector('.site-cursor') as HTMLElement | null;
-	const supportsFinePointer = window.matchMedia('(any-pointer: fine)').matches;
-	const prefersReducedCursorMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const cursor = document.querySelector(".site-cursor") as HTMLElement | null;
+	const supportsFinePointer = window.matchMedia(
+		"(any-pointer: fine)",
+	).matches;
+	const prefersReducedCursorMotion = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
 
 	if (cursor && supportsFinePointer && !prefersReducedCursorMotion) {
 		const root = document.documentElement;
 		const interactiveSelector = [
-			'a[href]',
-			'button:not([disabled]):not(.project-row)',
-			'input:not([disabled])',
-			'textarea:not([disabled])',
-			'select:not([disabled])',
+			"a[href]",
+			"button:not([disabled]):not(.project-row)",
+			"input:not([disabled])",
+			"textarea:not([disabled])",
+			"select:not([disabled])",
 			'[role="button"]',
-			'[data-cursor-interactive]',
-		].join(',');
+			"[data-cursor-interactive]",
+		].join(",");
 
 		let x = -40;
 		let y = -40;
@@ -93,59 +143,68 @@ const logoImage = siteSettings.logo_image || '';
 			if (!frame) frame = window.requestAnimationFrame(paint);
 		};
 
-		const hideCursor = () => cursor.classList.remove('is-visible');
+		const hideCursor = () => cursor.classList.remove("is-visible");
 
-		root.classList.add('has-custom-cursor');
-		document.addEventListener('pointermove', (event) => {
-			if (event.pointerType && event.pointerType !== 'mouse') return;
+		root.classList.add("has-custom-cursor");
+		document.addEventListener("pointermove", (event) => {
+			if (event.pointerType && event.pointerType !== "mouse") return;
 			targetX = event.clientX;
 			targetY = event.clientY;
-			cursor.classList.add('is-visible');
+			cursor.classList.add("is-visible");
 			const target = event.target;
-			const isInteractive = target instanceof Element && Boolean(target.closest(interactiveSelector));
-			const isNav = target instanceof Element && Boolean(target.closest('.navbar a, [data-cursor-nav]'));
-			
-			cursor.classList.toggle('is-hovering', isInteractive && !isNav);
-			cursor.classList.toggle('is-hovering-nav', isNav);
+			const isInteractive =
+				target instanceof Element &&
+				Boolean(target.closest(interactiveSelector));
+			const isNav =
+				target instanceof Element &&
+				Boolean(target.closest(".navbar a, [data-cursor-nav]"));
+
+			cursor.classList.toggle("is-hovering", isInteractive && !isNav);
+			cursor.classList.toggle("is-hovering-nav", isNav);
 			queuePaint();
 		});
 
-		document.addEventListener('pointerdown', () => cursor.classList.add('is-pressing'));
-		document.addEventListener('pointerup', () => cursor.classList.remove('is-pressing'));
-		document.documentElement.addEventListener('mouseleave', hideCursor);
-		window.addEventListener('blur', hideCursor);
+		document.addEventListener("pointerdown", () =>
+			cursor.classList.add("is-pressing"),
+		);
+		document.addEventListener("pointerup", () =>
+			cursor.classList.remove("is-pressing"),
+		);
+		document.documentElement.addEventListener("mouseleave", hideCursor);
+		window.addEventListener("blur", hideCursor);
 	}
 </script>
 
 <style is:global>
 	@font-face {
-		font-family: 'Aptos';
-		src: url('/fonts/Aptos%20font/Aptos-SemiBold.ttf') format('truetype');
+		font-family: "Aptos";
+		src: url("/fonts/Aptos%20font/Aptos-SemiBold.ttf") format("truetype");
 		font-weight: 600;
 		font-style: normal;
 		font-display: swap;
 	}
 
 	@font-face {
-		font-family: 'Acumin Variable Concept';
-		src: url('/fonts/AcuminVariableConcept.otf') format('opentype');
+		font-family: "Acumin Variable Concept";
+		src: url("/fonts/AcuminVariableConcept.otf") format("opentype");
 		font-weight: 100 900;
 		font-style: normal;
 		font-display: swap;
 	}
 
 	@font-face {
-		font-family: 'Helvetica43';
-		src: url('/fonts/Helvetica43-ExtendedLight%20Light.ttf') format('truetype');
+		font-family: "Helvetica43";
+		src: url("/fonts/Helvetica43-ExtendedLight%20Light.ttf")
+			format("truetype");
 		font-weight: 300;
 		font-style: normal;
 		font-display: swap;
 	}
 
 	:root {
-		--font-nav: 'Aptos', 'Inter', sans-serif;
-		--font-text: 'Acumin Variable Concept', 'Inter', sans-serif;
-		--font-helvetica: 'Helvetica43', 'Inter', sans-serif;
+		--font-nav: "Aptos", "Inter", sans-serif;
+		--font-text: "Acumin Variable Concept", "Inter", sans-serif;
+		--font-helvetica: "Helvetica43", "Inter", sans-serif;
 
 		/* Safe areas (notch / status bar / home indicator) */
 		--sat: env(safe-area-inset-top, 0px);
@@ -176,11 +235,16 @@ const logoImage = siteSettings.logo_image || '';
 		--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 		--ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
 		--dur-fast: 0.28s;
-		--dur-split: 1.5s;  /* separación del nombre: debe coincidir con SPLIT_MS del script */
+		--dur-split: 1.5s; /* separación del nombre: debe coincidir con SPLIT_MS del script */
 		--dur-med: 0.72s;
 		--dur-slow: 1.2s;
-		--dur-panel: 0.8s;  /* apertura del cuadrado: debe coincidir con PANEL_MS del script */
-		--ease-square: cubic-bezier(0.76, 0, 0.24, 1); /* simétrica, movimiento repartido en todo el trayecto, no concentrado al inicio */
+		--dur-panel: 0.8s; /* apertura del cuadrado: debe coincidir con PANEL_MS del script */
+		--ease-square: cubic-bezier(
+			0.76,
+			0,
+			0.24,
+			1
+		); /* simétrica, movimiento repartido en todo el trayecto, no concentrado al inicio */
 	}
 
 	/*
@@ -260,13 +324,13 @@ const logoImage = siteSettings.logo_image || '';
 		visibility: hidden !important;
 		pointer-events: none !important;
 	}
-	
+
 	a {
 		color: inherit;
 		text-decoration: none;
 		transition: opacity var(--dur-fast) var(--ease-out);
 	}
-	
+
 	a:hover {
 		opacity: 0.7;
 	}
@@ -305,11 +369,8 @@ const logoImage = siteSettings.logo_image || '';
 		z-index: 20000;
 		display: grid;
 		place-items: center;
-		padding:
-			max(1rem, var(--sat))
-			max(1rem, var(--sar))
-			max(1rem, var(--sab))
-			max(1rem, var(--sal));
+		padding: max(1rem, var(--sat)) max(1rem, var(--sar))
+			max(1rem, var(--sab)) max(1rem, var(--sal));
 		/* El negro ya no lo pone este contenedor: lo dan los 4
 		   .site-loader__bar de abajo, así se puede "abrir" un hueco
 		   real en el centro sin depender de clip-path con geometría
@@ -442,7 +503,8 @@ const logoImage = siteSettings.logo_image || '';
 		mix-blend-mode: difference;
 		pointer-events: none;
 		opacity: 0;
-		transform: translate3d(-40px, -40px, 0) translate(-50%, -50%) scale(var(--cursor-scale));
+		transform: translate3d(-40px, -40px, 0) translate(-50%, -50%)
+			scale(var(--cursor-scale));
 		transition:
 			opacity 140ms ease,
 			width var(--dur-fast) var(--ease-out),
@@ -485,13 +547,13 @@ const logoImage = siteSettings.logo_image || '';
 			display: none;
 		}
 	}
-	
+
 	ul {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
-	
+
 	* {
 		box-sizing: border-box;
 	}
