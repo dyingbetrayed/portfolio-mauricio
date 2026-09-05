@@ -1,0 +1,37 @@
+name: Sync Media Folders
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/content/projects/**'
+      - 'public/work/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Necesario para que git-auto-commit-action pueda hacer push a la rama
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run sync-media script
+        run: node scripts/sync-media.js
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: reorganizar automáticamente carpetas de imágenes"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
