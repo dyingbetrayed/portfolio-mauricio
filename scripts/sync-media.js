@@ -60,38 +60,58 @@ function syncMedia() {
     const newImages = [];
 
     for (const imgPath of project.images) {
-      // Already correct?
-      if (imgPath.startsWith(expectedPrefix)) {
+      const filename = path.basename(imgPath);
+      const destFile = path.join(expectedDir, filename);
+      const newPublicPath = `${expectedPrefix}${filename}`;
+
+      // If already at expected prefix AND the file exists on disk at destFile, we're good
+      if (imgPath === newPublicPath && fs.existsSync(destFile)) {
         newImages.push(imgPath);
         continue;
       }
 
-      // Parse the current path
-      const filename = path.basename(imgPath);
-      const newPublicPath = `${expectedPrefix}${filename}`;
-
       // Find where the file currently lives on disk
-      // Could be: /work/filename.png (flat in category), /work/catFolder/filename.png, /work/catFolder/slug/filename.png, etc.
       const possibleSources = [];
 
-      // 1. Check if it's at the path indicated by the JSON
+      // 1. Check if it's at the path indicated by the JSON in public/
       const fromJson = path.join(workDir, '..', 'public', imgPath.startsWith('/') ? imgPath.substring(1) : imgPath);
       possibleSources.push(fromJson);
 
-      // 2. Check flat in global work dir
+      // 2. Check if Sveltia CMS placed it inside src/content/projects/public
+      const cmsPublicDir = path.join(projectsDir, 'public');
+      if (fs.existsSync(cmsPublicDir)) {
+        const fromCmsJson = path.join(cmsPublicDir, imgPath.startsWith('/') ? imgPath.substring(1) : imgPath);
+        possibleSources.push(fromCmsJson);
+
+        // Also search recursively in cmsPublicDir for this filename
+        const searchCmsDir = (dir) => {
+          try {
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) {
+                searchCmsDir(full);
+              } else if (entry.name.toLowerCase() === filename.toLowerCase()) {
+                possibleSources.push(full);
+              }
+            }
+          } catch (e) {}
+        };
+        searchCmsDir(cmsPublicDir);
+      }
+
+      // 3. Check flat in global work dir
       possibleSources.push(path.join(workDir, filename));
 
-      // 3. Check flat in expected category dir
+      // 4. Check flat in expected category dir
       possibleSources.push(path.join(workDir, expectedCatFolder, filename));
 
-      // 4. Check in any other category folder (flat)
+      // 5. Check in any other category folder (flat)
       for (const catFolder of allCategoryFolders) {
         possibleSources.push(path.join(workDir, catFolder, filename));
       }
 
-      // 5. Check in any other category/slug subfolder
+      // 6. Check in any other category/slug subfolder
       for (const catFolder of allCategoryFolders) {
-        const subfolders = [];
         const catDir = path.join(workDir, catFolder);
         if (fs.existsSync(catDir)) {
           try {
@@ -114,21 +134,20 @@ function syncMedia() {
       }
 
       if (sourceFile) {
-        const destFile = path.join(expectedDir, filename);
         // Only move if source != destination
         if (path.resolve(sourceFile) !== path.resolve(destFile)) {
           ensureDirSync(expectedDir);
           try {
             fs.renameSync(sourceFile, destFile);
             movedCount++;
-            console.log(`  → Moved: ${path.relative(workDir, sourceFile)} → ${path.relative(workDir, destFile)}`);
+            console.log(`  → Moved: ${path.relative(process.cwd(), sourceFile)} → ${path.relative(process.cwd(), destFile)}`);
           } catch (err) {
             // If rename fails (cross-device), try copy+delete
             try {
               fs.copyFileSync(sourceFile, destFile);
               fs.unlinkSync(sourceFile);
               movedCount++;
-              console.log(`  → Moved (copy): ${path.relative(workDir, sourceFile)} → ${path.relative(workDir, destFile)}`);
+              console.log(`  → Moved (copy): ${path.relative(process.cwd(), sourceFile)} → ${path.relative(process.cwd(), destFile)}`);
             } catch (copyErr) {
               console.error(`  ✗ Failed to move ${sourceFile}:`, copyErr.message);
               newImages.push(imgPath); // Keep old path
@@ -141,7 +160,9 @@ function syncMedia() {
       }
 
       newImages.push(newPublicPath);
-      needsUpdate = true;
+      if (imgPath !== newPublicPath) {
+        needsUpdate = true;
+      }
     }
 
     if (needsUpdate) {
@@ -167,6 +188,15 @@ function syncMedia() {
           }
         }
       }
+    } catch (e) { /* ignore */ }
+  }
+
+  // Clean up src/content/projects/public if empty or if misplaced files were moved
+  const cmsPublicDir = path.join(projectsDir, 'public');
+  if (fs.existsSync(cmsPublicDir)) {
+    try {
+      fs.rmSync(cmsPublicDir, { recursive: true, force: true });
+      console.log(`  🗑 Cleaned up CMS misplaced folder: src/content/projects/public`);
     } catch (e) { /* ignore */ }
   }
 
