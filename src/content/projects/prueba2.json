@@ -1,0 +1,21 @@
+{
+  "category": "category_1",
+  "id": "",
+  "name": "Prueba2",
+  "date": "2026-09-05",
+  "location": "Dxxx",
+  "color": "#c3d117",
+  "tagline": "",
+  "services": "",
+  "sections": [],
+  "note": "",
+  "images": [
+    "/work/branding/IMG_1968.png",
+    "/work/branding/IMG_1970.png",
+    "/work/branding/IMG_1969.png",
+    "/work/branding/IMG_1971.png",
+    "/work/branding/IMG_1972.png",
+    "/work/branding/IMG_1973.png",
+    "/work/branding/IMG_1974.png"
+  ]
+}
