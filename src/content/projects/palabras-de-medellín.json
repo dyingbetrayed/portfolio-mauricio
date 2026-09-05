@@ -1,15 +1,19 @@
 {
-  "color": "#e595c4",
+  "category": "category_1",
+  "id": "01",
   "name": "palabras para habitar mejor la ciudad",
+  "date": "2026-06-20",
+  "location": "Medellín, CO",
+  "color": "#e595c4",
+  "tagline": "Una identidad que convierte las palabras en una forma de recorrer y habitar la ciudad.",
+  "services": "Branding · Identidad visual · Dirección de arte",
   "sections": [
     {
       "label": "Sobre el proyecto",
       "paragraphs": "El proyecto parte de una mirada sobre Medellín construida desde sus palabras, sus lugares y las historias que hacen parte de la vida cotidiana. El reto era crear una identidad capaz de hablar de la ciudad sin recurrir a sus representaciones más evidentes.\n\nLa propuesta convierte el lenguaje en un recurso visual y conceptual, creando un sistema que permite combinar palabras, mensajes y composiciones para construir diferentes formas de contar y habitar la ciudad."
     }
   ],
-  "tagline": "Una identidad que convierte las palabras en una forma de recorrer y habitar la ciudad.",
   "note": "Derechos reservados para Quintaesencia.",
-  "location": "Medellín, CO",
   "images": [
     "/work/branding/palabras-de-medellín/mesa-de-trabajo-2.webp",
     "/work/branding/palabras-de-medellín/mesa-de-trabajo-1.webp",
@@ -28,11 +32,5 @@
     "/work/branding/palabras-de-medellín/mesa-de-trabajo-15.webp",
     "/work/branding/palabras-de-medellín/mesa-de-trabajo-16.webp",
     "/work/branding/palabras-de-medellín/mesa-de-trabajo-17.webp"
-  ],
-  "id": "01",
-  "services": [
-    "Branding · Identidad visual · Dirección de arte"
-  ],
-  "category": "category_1",
-  "date": "2026-01-01"
+  ]
 }
