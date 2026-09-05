@@ -85,6 +85,8 @@ collections:
   - name: "projects_category_1"
     label: "Proyectos Categoría 1"
     folder: "src/content/projects"
+    media_folder: "public/work/branding/{{slug}}"
+    public_folder: "/work/branding/{{slug}}"
     create: true
     filter:
       field: category
@@ -117,6 +119,8 @@ collections:
   - name: "projects_category_2"
     label: "Proyectos Categoría 2"
     folder: "src/content/projects"
+    media_folder: "public/work/art-direction/{{slug}}"
+    public_folder: "/work/art-direction/{{slug}}"
     create: true
     filter:
       field: category
@@ -149,6 +153,8 @@ collections:
   - name: "projects_category_3"
     label: "Proyectos Categoría 3"
     folder: "src/content/projects"
+    media_folder: "public/work/merch/{{slug}}"
+    public_folder: "/work/merch/{{slug}}"
     create: true
     filter:
       field: category
@@ -181,6 +187,8 @@ collections:
   - name: "projects_category_4"
     label: "Proyectos Categoría 4"
     folder: "src/content/projects"
+    media_folder: "public/work/hybrid/{{slug}}"
+    public_folder: "/work/hybrid/{{slug}}"
     create: true
     filter:
       field: category

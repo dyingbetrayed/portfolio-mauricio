@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/optimize-images.js && node scripts/generate-og.js",
+    "sync-media": "node scripts/sync-media.js",
+    "prebuild": "npm run sync-media && node scripts/optimize-images.js && node scripts/generate-og.js",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
