@@ -2,7 +2,6 @@
   "category": "category_3",
   "id": "06",
   "name": "cada sentimiento es válido",
-  "year": "2023",
   "location": "Medellín, CO",
   "color": "#fd0000",
   "tagline": "La pieza utiliza el apparel como una forma sencilla de hacer visible un mensaje que muchas veces necesitamos escuchar.",
@@ -20,5 +19,6 @@
     "/work/merch/cada-sentimiento-es-válido/merch-37-.webp",
     "/work/merch/cada-sentimiento-es-válido/merch-38-.webp",
     "/work/merch/cada-sentimiento-es-válido/merch-39-.webp"
-  ]
+  ],
+  "date": "2023-01-01"
 }

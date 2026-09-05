@@ -2,7 +2,6 @@
   "category": "category_3",
   "id": "01",
   "name": "trance factory",
-  "year": "2026",
   "location": "Bogotá, CO",
   "color": "#00e32c",
   "tagline": "Una identidad musical que también se puede vestir.",
@@ -20,5 +19,6 @@
     "/work/merch/departamento-trance-factory/merch-47-.webp",
     "/work/merch/departamento-trance-factory/merch-48-.webp",
     "/work/merch/departamento-trance-factory/merch-49-.webp"
-  ]
+  ],
+  "date": "2026-01-01"
 }

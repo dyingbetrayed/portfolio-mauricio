@@ -1,10 +1,10 @@
-﻿# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
 
 backend:
   name: github
   repo: dyingbetrayed/portfolio-mauricio
   branch: main
-  base_url: https://portfolio-mauricio-beta.vercel.app
+  base_url: https://m-atencia.vercel.app
   auth_endpoint: api/auth
 
 media_folder: "public/work"
@@ -97,7 +97,7 @@ collections:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_1" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre del proyecto", name: "name", widget: "string" }
-      - { label: "Año del proyecto", name: "year", widget: "string" }
+      - { label: "Fecha del proyecto", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, hint: "Elige la fecha exacta — el orden de los proyectos se basa en esta fecha (más reciente = primero)." }
       - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
@@ -129,7 +129,7 @@ collections:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_2" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre del proyecto", name: "name", widget: "string" }
-      - { label: "Año del proyecto", name: "year", widget: "string" }
+      - { label: "Fecha del proyecto", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, hint: "Elige la fecha exacta — el orden de los proyectos se basa en esta fecha (más reciente = primero)." }
       - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
@@ -161,7 +161,7 @@ collections:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_3" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre del proyecto", name: "name", widget: "string" }
-      - { label: "Año del proyecto", name: "year", widget: "string" }
+      - { label: "Fecha del proyecto", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, hint: "Elige la fecha exacta — el orden de los proyectos se basa en esta fecha (más reciente = primero)." }
       - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
@@ -193,7 +193,7 @@ collections:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_4" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre del proyecto", name: "name", widget: "string" }
-      - { label: "Año del proyecto", name: "year", widget: "string" }
+      - { label: "Fecha del proyecto", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, hint: "Elige la fecha exacta — el orden de los proyectos se basa en esta fecha (más reciente = primero)." }
       - { label: "Ciudad del proyecto", name: "location", widget: "string" }
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }

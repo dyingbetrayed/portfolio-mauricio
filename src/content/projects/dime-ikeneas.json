@@ -2,7 +2,6 @@
   "category": "category_3",
   "id": "03",
   "name": "dime ikeneas",
-  "year": "2025",
   "location": "Medellín, CO",
   "color": "#dbdbdb",
   "tagline": "Una pieza para llevar puesta una idea.",
@@ -20,5 +19,6 @@
     "/work/merch/dime-ikeneas/merch-42-.webp",
     "/work/merch/dime-ikeneas/merch-43-.webp",
     "/work/merch/dime-ikeneas/merch-44-.webp"
-  ]
+  ],
+  "date": "2025-01-01"
 }

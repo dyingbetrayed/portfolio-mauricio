@@ -2,7 +2,6 @@
   "category": "category_3",
   "id": "06",
   "name": "la ruta del valle",
-  "year": "2022",
   "location": "Medellín, CO",
   "color": "#3f9b5c",
   "tagline": "Un homenaje basado en los icónicos letreros de lo las rutas de buses de Medellín, de los 2000s.",
@@ -20,5 +19,6 @@
     "/work/merch/la-ruta-del-valle/merch-32-.webp",
     "/work/merch/la-ruta-del-valle/merch-33-.webp",
     "/work/merch/la-ruta-del-valle/merch-34-.webp"
-  ]
+  ],
+  "date": "2022-01-01"
 }

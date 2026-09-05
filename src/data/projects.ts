@@ -9,7 +9,8 @@ export interface Project {
 	/** Ancla del slide de detalle. Debe ser único en todas las categorías. */
 	slug: string;
 	name: string;
-	year: string;
+	year?: string;
+	date?: string;
 	location: string;
 	color: string;
 	/** Frase corta bajo el título. Usa \n para forzar el salto de línea. */
@@ -45,13 +46,17 @@ const allProjectFiles = import.meta.glob('../content/projects/*.json', { eager: 
 function mapProjects(files: Record<string, any>): Project[] {
 	const projects = Object.entries(files).map(([path, data]) => {
 		const slug = path.split('/').pop()?.replace('.json', '') || '';
-		return { ...(data as any).default || data, slug } as Project;
+		const project = { ...(data as any).default || data, slug } as Project;
+		if (project.date && !project.year) {
+			project.year = project.date.substring(0, 4);
+		}
+		return project;
 	});
 	projects.sort((a, b) => {
-		const yearA = a.year ? parseInt(a.year, 10) : 0;
-		const yearB = b.year ? parseInt(b.year, 10) : 0;
-		if (yearA !== yearB) {
-			return yearB - yearA; // Descendente por año
+		const dateA = a.date ? new Date(a.date).getTime() : (a.year ? new Date(`${a.year}-01-01`).getTime() : 0);
+		const dateB = b.date ? new Date(b.date).getTime() : (b.year ? new Date(`${b.year}-01-01`).getTime() : 0);
+		if (dateA !== dateB) {
+			return dateB - dateA; // Descendente por fecha/año
 		}
 		// Si es igual, un orden estable por nombre/slug (evita depender de un ID manual)
 		const nameA = (a.name || '').toString().toLowerCase();

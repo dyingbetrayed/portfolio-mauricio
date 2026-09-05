@@ -2,7 +2,6 @@
   "category": "category_3",
   "id": "07",
   "name": "guía espiritual",
-  "year": "2020",
   "location": "Medellín, CO",
   "color": "#f2cbaf",
   "tagline": "Una especie de guía para moverse entre el amor, la música y la pista de baile.",
@@ -18,5 +17,6 @@
     "/work/merch/guía-espiritual-de-amor-y-baile/merch-2565-.webp",
     "/work/merch/guía-espiritual-de-amor-y-baile/merch-28-.webp",
     "/work/merch/guía-espiritual-de-amor-y-baile/merch-29-.webp"
-  ]
+  ],
+  "date": "2020-01-01"
 }

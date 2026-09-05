@@ -2,7 +2,6 @@
   "category": "category_4",
   "id": "01",
   "name": "NEA$ | Junín",
-  "year": "2026",
   "location": "Medellín, CO",
   "color": "#99c6d1",
   "tagline": "Una camisa que terminó convirtiéndose en todo un lugar.",
@@ -27,5 +26,6 @@
     "/work/hybrid/nea-junín-el-corazón-de-medellín/merch-11-.webp",
     "/work/hybrid/nea-junín-el-corazón-de-medellín/merch-12-.webp",
     "/work/hybrid/nea-junín-el-corazón-de-medellín/merch-13-.webp"
-  ]
+  ],
+  "date": "2026-01-01"
 }

@@ -2,7 +2,6 @@
   "category": "category_3",
   "id": "05",
   "name": "NEA$",
-  "year": "2022",
   "location": "Medellín, CO",
   "color": "#96dfb0",
   "tagline": "Una pieza de merch desarrollada alrededor del universo visual de NEA$.",
@@ -19,5 +18,6 @@
     "/work/merch/nea/merch-24-.webp",
     "/work/merch/nea/merch-25-.webp",
     "/work/merch/nea/merch-26-.webp"
-  ]
+  ],
+  "date": "2022-01-01"
 }
