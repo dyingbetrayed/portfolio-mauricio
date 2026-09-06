@@ -1,14 +1,19 @@
 {
-  "color": "#d4cf54",
+  "category": "category_2",
+  "id": "01",
   "name": "NEA$ LABEL",
+  "date": "2023-01-01",
+  "location": "Medellín, CO",
+  "color": "#d4cf54",
+  "tagline": "Cada proyecto cambia. La firma sigue siendo la misma.",
+  "services": "Art Direction · Concepto · Dirección gráfica",
   "sections": [
     {
-      "paragraphs": "Desde 2022 he conceptualizado y dirigido la imagen gráfica del sello NEA$ Medellín y sus diferentes proyectos.\n\nEl trabajo consiste en construir conceptualmente cada lanzamiento y traducir la identidad del sello a diferentes piezas, artistas y momentos, manteniendo una firma visual reconocible sin limitar la expresión particular de cada proyecto.",
-      "label": "La dirección"
+      "label": "La dirección",
+      "paragraphs": "Desde 2022 he conceptualizado y dirigido la imagen gráfica del sello NEA$ Medellín y sus diferentes proyectos.\n\nCada lanzamiento parte de un concepto propio que después se traduce a piezas, artistas y momentos distintos. La dirección busca mantener una firma reconocible sin limitar la personalidad de cada proyecto."
     }
   ],
-  "tagline": "Cada proyecto parte de un concepto propio, pero todos pertenecen al mismo universo.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/art-direction/nea-label/f-1-.webp",
     "/work/art-direction/nea-label/f-2-.webp",
@@ -21,11 +26,5 @@
     "/work/art-direction/nea-label/f-9-.webp",
     "/work/art-direction/nea-label/amesa-de-trabajo-10.webp",
     "/work/art-direction/nea-label/aamesa-de-trabajo-59.webp"
-  ],
-  "id": "01",
-  "services": [
-    "Art Direction · Concepto · Dirección gráfica"
-  ],
-  "category": "category_2",
-  "date": "2023-01-01"
+  ]
 }
