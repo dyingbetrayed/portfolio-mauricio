@@ -1,14 +1,19 @@
 {
-  "color": "#1b145f",
+  "category": "category_1",
+  "id": "07",
   "name": "milagrosa music media",
+  "date": "2025-01-01",
+  "location": "Medellín, CO",
+  "color": "#1b145f",
+  "tagline": "Una línea invisible entre La Milagrosa y la Comuna 9 terminó convirtiéndose en una firma para la música.",
+  "services": "Diseño de logo · Identidad gráfica",
   "sections": [
     {
       "label": "La idea",
       "paragraphs": "Milagrosa Music Media necesitaba una firma visual capaz de representar una plataforma vinculada a la música y convivir con diferentes artistas y lanzamientos.\n\nEl logo toma como referencia la línea invisible que separa La Milagrosa de la Comuna 9 de Medellín y convierte esa frontera territorial en el elemento central de la identidad. Una línea real del territorio se transforma así en un símbolo para la marca."
     }
   ],
-  "tagline": "Una línea invisible entre La Milagrosa y la Comuna 9 terminó convirtiéndose en el elemento central de la identidad.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/branding/milagrosa-music-media/mesa-de-trabajo-59.webp",
     "/work/branding/milagrosa-music-media/mesa-de-trabajo-60.webp",
@@ -16,11 +21,5 @@
     "/work/branding/milagrosa-music-media/mesa-de-trabajo-64.webp",
     "/work/branding/milagrosa-music-media/mesa-de-trabajo-65.webp",
     "/work/branding/milagrosa-music-media/mesa-de-trabajo-67.webp"
-  ],
-  "id": "07",
-  "services": [
-    "Diseño de logo · Identidad gráfica"
-  ],
-  "category": "category_1",
-  "date": "2025-01-01"
+  ]
 }
