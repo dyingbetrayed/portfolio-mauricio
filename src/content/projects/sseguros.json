@@ -1,25 +1,24 @@
 {
-  "color": "#d02e2d",
+  "category": "category_2",
+  "id": "02",
   "name": "sseguros",
+  "date": "2025-01-01",
+  "location": "Bogotá, CO",
+  "color": "#d02e2d",
+  "tagline": "Hablarle a una audiencia más joven sin dejar atrás su carácter empresarial.",
+  "services": "Art Direction · Comunicación digital · Dirección gráfica · Pauta",
   "sections": [
     {
-      "paragraphs": "SSeguros buscaba actualizar su comunicación con un lenguaje más joven, moderno y empresarial, capaz de acercar la marca a nuevas audiencias sin perder su carácter profesional.\n\nLa dirección gráfica incorporó personas y situaciones cotidianas para generar una comunicación más cercana, desarrollando piezas pensadas para funcionar simultáneamente como contenido digital y como pauta para ampliar el alcance de la empresa.",
-      "label": "La dirección"
+      "label": "La dirección",
+      "paragraphs": "SSeguros buscaba actualizar su comunicación con un lenguaje más joven y cercano, sin perder su carácter profesional.\n\nLa dirección gráfica incorporó personas y situaciones cotidianas para hacer la comunicación más humana, desarrollando piezas pensadas para convivir entre contenido digital y pauta."
     }
   ],
-  "tagline": "SSeguros necesitaba hablarle a una audiencia más joven sin dejar atrás su carácter empresarial.",
-  "location": "Bogotá, CO",
+  "note": "",
   "images": [
     "/work/art-direction/sseguros/el-1-.webp",
     "/work/art-direction/sseguros/amesa-de-trabajo-31.webp",
     "/work/art-direction/sseguros/amesa-de-trabajo-32.webp",
     "/work/art-direction/sseguros/amesa-de-trabajo-33.webp",
     "/work/art-direction/sseguros/amesa-de-trabajo-34.webp"
-  ],
-  "id": "02",
-  "services": [
-    "Art Direction · Comunicación digital · Dirección gráfica · Pauta"
-  ],
-  "category": "category_2",
-  "date": "2025-01-01"
+  ]
 }
