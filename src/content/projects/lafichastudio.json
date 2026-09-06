@@ -1,15 +1,19 @@
 {
-  "color": "#f5e04b",
+  "category": "category_1",
+  "id": "03",
   "name": "la ficha studio",
-  "slug": "lafichastudio",
+  "date": "2025-01-01",
+  "location": "Medellín, CO",
+  "color": "#f5e04b",
+  "tagline": "Una ficha es pequeña, pero puede poner todo en movimiento.",
+  "services": "Naming · Branding · Identidad visual",
   "sections": [
     {
       "label": "La idea",
-      "paragraphs": "La Ficha Studio parte de una idea sencilla: una ficha es ese elemento que entra en juego para hacer que algo suceda. Esta relación entre nombre y concepto se convierte en el punto de partida para construir la identidad del estudio.\n\nLa identidad lleva la idea del juego a un lenguaje gráfico flexible y cercano, convirtiendo la ficha en un recurso que puede aparecer, transformarse y acompañar las diferentes expresiones de la marca."
+      "paragraphs": "La Ficha Studio parte de una idea sencilla: una ficha es ese elemento que entra en juego para hacer que algo suceda.\n\nEsa relación entre nombre y concepto se convierte en el punto de partida de la identidad, llevando la lógica del juego a un lenguaje gráfico donde la ficha puede aparecer, transformarse y acompañar las diferentes expresiones de la marca."
     }
   ],
-  "tagline": "Una ficha es pequeña, pero puede poner todo en movimiento.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/branding/lafichastudio/mesa-de-trabajo-31.webp",
     "/work/branding/lafichastudio/mesa-de-trabajo-32.webp",
@@ -26,10 +30,5 @@
     "/work/branding/lafichastudio/mesa-de-trabajo-44.webp",
     "/work/branding/lafichastudio/mesa-de-trabajo-45.webp"
   ],
-  "id": "03",
-  "services": [
-    "Naming · Branding · Identidad visual"
-  ],
-  "category": "category_1",
-  "date": "2025-01-01"
+  "slug": "lafichastudio"
 }
