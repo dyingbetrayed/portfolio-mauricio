@@ -2,6 +2,7 @@
   "category": "category_4",
   "id": "06",
   "name": "mammboh rhythms",
+  "date": "2024-01-01",
   "location": "Medellín, CO",
   "color": "#f3d6b2",
   "tagline": "Una colección construida para vestir el ritmo.",
@@ -9,7 +10,7 @@
   "sections": [
     {
       "label": "El proyecto",
-      "paragraphs": "Desde 2021 he trabajado con el sello discográfico Mammboh Rhythms desarrollando conceptualmente sus lanzamientos musicales a través del merchandising.\n\nCada pieza parte de un mismo universo visual, permitiendo que la colección funcione como un sistema y no como una suma de prendas independientes. La dirección de arte traduce la música a recursos gráficos que mantienen una relación entre los diferentes lanzamientos y aplicaciones."
+      "paragraphs": "Desde 2021 he trabajado con el sello discográfico Mammboh Rhythms desarrollando conceptualmente sus lanzamientos a través del merchandising.\n\nCada pieza nace dentro de un mismo universo visual, haciendo que la colección funcione como un sistema y no como una suma de prendas independientes. La dirección de arte traduce la música a recursos gráficos que conectan los diferentes lanzamientos."
     }
   ],
   "note": "",
@@ -18,6 +19,5 @@
     "/work/hybrid/colección-mammboh-rhythms/merch-51-.webp",
     "/work/hybrid/colección-mammboh-rhythms/merch-52-.webp",
     "/work/hybrid/colección-mammboh-rhythms/merch-53-.webp"
-  ],
-  "date": "2024-01-01"
+  ]
 }
