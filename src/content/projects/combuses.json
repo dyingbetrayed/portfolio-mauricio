@@ -1,15 +1,19 @@
 {
-  "color": "#f27d1d",
+  "category": "category_1",
+  "id": "04",
   "name": "combuses",
+  "date": "2025-01-01",
+  "location": "Medellín, CO",
+  "color": "#f27d1d",
+  "tagline": "Una identidad que necesitaba aprender a moverse.",
+  "services": "Identidad visual · Dirección de arte",
   "sections": [
     {
       "label": "La identidad",
-      "paragraphs": "Combuses necesitaba ampliar su identidad para llevarla a diferentes puntos de contacto sin perder reconocimiento. El proyecto parte de los elementos existentes de la marca y los convierte en un sistema visual con mayores posibilidades gráficas.\n\nEl isologo deja de funcionar únicamente como firma y se convierte en un elemento activo dentro de composiciones, piezas digitales y aplicaciones físicas."
+      "paragraphs": "Combuses ya tenía una identidad reconocible. El trabajo estuvo en descubrir cómo podía llevarse a diferentes puntos de contacto sin perder aquello que la hacía propia.\n\nA partir de los elementos existentes, el isologo se convierte en un recurso gráfico activo que puede aparecer, transformarse y construir diferentes composiciones, tanto en piezas digitales como físicas."
     }
   ],
-  "tagline": "Combuses necesitaba una identidad capaz de moverse entre diferentes formatos sin perder aquello que ya la hacía reconocible.",
   "note": "Todos los derechos son reservados a Símbolo Agencia Digital.",
-  "location": "Medellín, CO",
   "images": [
     "/work/branding/combuses/a-9-.webp",
     "/work/branding/combuses/a-10-.webp",
@@ -23,11 +27,5 @@
     "/work/branding/combuses/a-19-.webp",
     "/work/branding/combuses/a-18-.webp",
     "/work/branding/combuses/a-20-.webp"
-  ],
-  "id": "04",
-  "services": [
-    "Identidad visual · Aplicaciones de marca · Dirección de arte"
-  ],
-  "category": "category_1",
-  "date": "2025-01-01"
+  ]
 }
