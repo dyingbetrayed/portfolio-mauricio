@@ -1,25 +1,24 @@
 {
-  "color": "#bbfa50",
+  "category": "category_2",
+  "id": "03",
   "name": "lega tour",
+  "date": "2026-01-01",
+  "location": "Bogotá, CO",
+  "color": "#bbfa50",
+  "tagline": "Cada tour, una nueva forma de acompañar la música de Lega.",
+  "services": "Art Direction · Diseño gráfico · Dirección visual",
   "sections": [
     {
-      "paragraphs": "Desde 2022 he desarrollado y conceptualizado las piezas gráficas de Lega y sus diferentes tours por Europa. El trabajo parte de cada presentación para construir una expresión visual capaz de acompañar al artista y mantener una identidad reconocible entre diferentes fechas y escenarios.",
-      "label": "La dirección"
+      "label": "La dirección",
+      "paragraphs": "Desde 2022 he desarrollado y conceptualizado las piezas gráficas de Lega y sus diferentes tours por Europa.\n\nCada presentación se convierte en una oportunidad para construir una nueva expresión alrededor de su música, manteniendo una identidad reconocible entre diferentes fechas y escenarios."
     }
   ],
-  "tagline": "Desde 2022, cada tour de Lega ha sido una oportunidad para construir una nueva expresión alrededor de su música.",
-  "location": "Bogotá, CO",
+  "note": "",
   "images": [
     "/work/art-direction/lega-tour/f-15-.webp",
     "/work/art-direction/lega-tour/f-16-.webp",
     "/work/art-direction/lega-tour/f-17-.webp",
     "/work/art-direction/lega-tour/f-18-.webp",
     "/work/art-direction/lega-tour/f-19-.webp"
-  ],
-  "id": "03",
-  "services": [
-    "Art Direction · Diseño gráfico · Dirección visual"
-  ],
-  "category": "category_2",
-  "date": "2026-01-01"
+  ]
 }
