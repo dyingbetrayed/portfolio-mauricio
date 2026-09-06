@@ -1,23 +1,22 @@
 {
-  "color": "#1d4a8e",
+  "category": "category_2",
+  "id": "02",
   "name": "hospital panamericano",
+  "date": "2025-01-01",
+  "location": "Panamá",
+  "color": "#1d4a8e",
+  "tagline": "El proyecto replantea la dirección gráfica para hacer que sus contenido fuera más cercano.",
+  "services": "Art Direction · Comunicación digital · Dirección gráfica · Pauta",
   "sections": [
     {
-      "paragraphs": "El Hospital Panamericano buscaba renovar su comunicación digital para mejorar su alcance, fortalecer su reconocimiento y potenciar el contenido utilizado en pauta para atraer nuevos clientes en Panamá.\n\nEl proyecto se enfocó en desarrollar un lenguaje gráfico más claro y contemporáneo, creando piezas capaces de funcionar tanto en comunicación orgánica como dentro de campañas publicitarias.",
-      "label": "La dirección"
+      "label": "La dirección",
+      "paragraphs": "El Hospital Panamericano buscaba renovar su comunicación digital para mejorar su alcance, fortalecer su reconocimiento y potenciar el contenido utilizado en pauta para atraer nuevos clientes en Panamá.\n\nLa dirección gráfica desarrolló un lenguaje más claro y contemporáneo, con piezas capaces de funcionar tanto en comunicación orgánica como dentro de campañas publicitarias."
     }
   ],
-  "tagline": "El proyecto replantea la dirección gráfica para hacer que sus contenidos fueran más claros, actuales y cercanos.",
-  "location": "Panamá",
+  "note": "",
   "images": [
     "/work/art-direction/hospital-panamericano/amesa-de-trabajo-35.webp",
     "/work/art-direction/hospital-panamericano/amesa-de-trabajo-36.webp",
     "/work/art-direction/hospital-panamericano/amesa-de-trabajo-37.webp"
-  ],
-  "id": "02",
-  "services": [
-    "Art Direction · Comunicación digital · Dirección gráfica · Pauta"
-  ],
-  "category": "category_2",
-  "date": "2025-01-01"
+  ]
 }
