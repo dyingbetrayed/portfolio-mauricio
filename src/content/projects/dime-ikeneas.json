@@ -2,14 +2,15 @@
   "category": "category_3",
   "id": "03",
   "name": "dime ikeneas",
+  "date": "2025-01-01",
   "location": "Medellín, CO",
   "color": "#dbdbdb",
-  "tagline": "Una pieza para llevar puesta una idea.",
+  "tagline": "Una idea que encontró su lugar sobre una prenda.",
   "services": "Diseño de apparel · Merchandising · Diseño gráfico",
   "sections": [
     {
       "label": "La pieza",
-      "paragraphs": "Dime Ikeneas utiliza el apparel como espacio de expresión gráfica. La propuesta lleva el lenguaje visual de la pieza a una prenda donde el diseño se convierte en el protagonista.\n\nEl resultado busca que el objeto tenga una identidad propia y funcione más allá de ser simplemente un soporte para una marca."
+      "paragraphs": "Dime Ikeneas utiliza el apparel como espacio para desarrollar una propuesta gráfica.\n\nLa prenda deja de ser solamente un soporte y se convierte en el lugar donde vive la pieza, permitiendo que el diseño tenga una identidad propia."
     }
   ],
   "note": "",
@@ -19,6 +20,5 @@
     "/work/merch/dime-ikeneas/merch-42-.webp",
     "/work/merch/dime-ikeneas/merch-43-.webp",
     "/work/merch/dime-ikeneas/merch-44-.webp"
-  ],
-  "date": "2025-01-01"
+  ]
 }
