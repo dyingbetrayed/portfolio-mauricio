@@ -8,12 +8,23 @@ const __dirname = path.dirname(__filename);
 const projectsDir = path.join(__dirname, '../src/content/projects');
 const workDir = path.join(__dirname, '../public/work');
 
+// Read categories dynamically from categories.json (same as optimize-images.js)
+const categoriesData = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../src/content/categories.json'), 'utf-8')
+);
+
+function slugify(text) {
+  return text.toString().toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+}
+
 const categoryMap = {
-  'category_1': 'branding',
-  'category_2': 'art-direction',
-  'category_3': 'merch',
-  'category_4': 'hybrid'
+  'category_1': slugify(categoriesData.category_1_title || 'category-1'),
+  'category_2': slugify(categoriesData.category_2_title || 'category-2'),
+  'category_3': slugify(categoriesData.category_3_title || 'category-3'),
+  'category_4': slugify(categoriesData.category_4_title || 'category-4'),
 };
+
+console.log('📂 Category mapping:', categoryMap);
 
 // All known category folder names for detection
 const allCategoryFolders = new Set(Object.values(categoryMap));
@@ -22,10 +33,6 @@ function ensureDirSync(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
-}
-
-function slugify(text) {
-  return text.toString().toLowerCase().trim().replace(/[\s\W-]+/g, '-');
 }
 
 function syncMedia() {

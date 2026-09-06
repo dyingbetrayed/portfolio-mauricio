@@ -96,12 +96,49 @@ async function optimizeImages() {
       const cleanPath = imagePath.split('?')[0].split('#')[0];
       const absoluteSrc = path.join(publicDir, cleanPath);
 
-      // Ya está en la ruta final correcta → skip
       const finalPath = `/work/${categorySlug}/${projectSlug}/`;
-      if (cleanPath.startsWith(finalPath)) {
+      const originalBasename = path.basename(cleanPath, path.extname(cleanPath));
+      const outputFilename = `${originalBasename}.webp`;
+      const outputPath = path.join(projectFolder, outputFilename);
+      const newPublicPath = `/work/${categorySlug}/${projectSlug}/${outputFilename}`;
+
+      // Already a WebP in the correct final path → skip entirely
+      if (cleanPath === newPublicPath && fs.existsSync(outputPath)) {
         newImages.push(imagePath);
         totalSkipped++;
         continue;
+      }
+
+      // Image is in the correct folder but NOT WebP (e.g. .png) → convert in-place
+      if (cleanPath.startsWith(finalPath) && path.extname(cleanPath).toLowerCase() !== '.webp') {
+        if (fs.existsSync(absoluteSrc)) {
+          if (!fs.existsSync(outputPath)) {
+            try {
+              await sharp(absoluteSrc)
+                .resize(MAX_WIDTH, MAX_HEIGHT, { fit: 'inside', withoutEnlargement: true })
+                .webp({ quality: WEBP_QUALITY, effort: 4 })
+                .toFile(outputPath);
+
+              const originalSize = fs.statSync(absoluteSrc).size;
+              const newSize = fs.statSync(outputPath).size;
+              const reduction = Math.round((1 - newSize / originalSize) * 100);
+              console.log(`  ✓ [in-place] ${path.basename(cleanPath)} → ${outputFilename} (-${reduction}%)`);
+              totalGenerated++;
+            } catch (err) {
+              console.error(`  ✗ Error converting in-place: ${cleanPath}: ${err.message}`);
+              newImages.push(imagePath);
+              continue;
+            }
+          } else {
+            console.log(`  → Already exists: ${outputFilename} (skipping)`);
+            totalSkipped++;
+          }
+          // Delete the non-WebP original
+          originalsToDelete.add(absoluteSrc);
+          newImages.push(newPublicPath);
+          jsonModified = true;
+          continue;
+        }
       }
 
       if (!fs.existsSync(absoluteSrc)) {
@@ -109,11 +146,6 @@ async function optimizeImages() {
         newImages.push(imagePath);
         continue;
       }
-
-      const originalBasename = path.basename(cleanPath, path.extname(cleanPath));
-      const outputFilename = `${originalBasename}.webp`;
-      const outputPath = path.join(projectFolder, outputFilename);
-      const newPublicPath = `/work/${categorySlug}/${projectSlug}/${outputFilename}`;
 
       if (!fs.existsSync(outputPath)) {
         try {

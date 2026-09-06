@@ -21,12 +21,270 @@ import categories from '../../content/categories.json';
       color: #666;
       z-index: 9999;
     }
+    #compress-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 1.1rem;
+      z-index: 99999;
+      gap: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    #compress-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #compress-overlay .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #compress-overlay .progress-text {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
   <div id="cms-loading">Cargando panel…</div>
+  <div id="compress-overlay">
+    <div class="spinner"></div>
+    <div id="compress-status">Comprimiendo imágenes…</div>
+    <div class="progress-text" id="compress-progress"></div>
+  </div>
 
   <script define:vars={{ categories }}>
+    // ─── IMAGE COMPRESSION ENGINE ───────────────────────────────────
+    // Compresses images to WebP BEFORE Sveltia CMS sends them to GitHub.
+    // This prevents "Failed to fetch" errors caused by large files.
+
+    const COMPRESS_MAX_WIDTH = 2400;
+    const COMPRESS_MAX_HEIGHT = 2400;
+    const COMPRESS_WEBP_QUALITY = 0.82;
+    const COMPRESS_MIN_SIZE = 200 * 1024; // Only compress files > 200KB
+
+    function showCompressOverlay(text, progress) {
+      const overlay = document.getElementById('compress-overlay');
+      const status = document.getElementById('compress-status');
+      const prog = document.getElementById('compress-progress');
+      if (overlay) overlay.classList.add('active');
+      if (status) status.textContent = text || 'Comprimiendo imágenes…';
+      if (prog) prog.textContent = progress || '';
+    }
+
+    function hideCompressOverlay() {
+      const overlay = document.getElementById('compress-overlay');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    function isCompressibleImage(file) {
+      if (!file || !file.type) return false;
+      const type = file.type.toLowerCase();
+      if (type === 'image/svg+xml' || type === 'image/gif') return false;
+      return type.startsWith('image/') && file.size > COMPRESS_MIN_SIZE;
+    }
+
+    async function compressImageFile(file) {
+      if (!isCompressibleImage(file)) return file;
+
+      return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          let { width, height } = img;
+
+          // Resize if exceeds max dimensions
+          if (width > COMPRESS_MAX_WIDTH || height > COMPRESS_MAX_HEIGHT) {
+            const ratio = Math.min(
+              COMPRESS_MAX_WIDTH / width,
+              COMPRESS_MAX_HEIGHT / height
+            );
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            if (blob && blob.size < file.size) {
+              // Replace extension with .webp
+              const newName = file.name.replace(/\.[^.]+$/, '.webp');
+              const compressed = new File([blob], newName, {
+                type: 'image/webp',
+                lastModified: Date.now()
+              });
+              const pct = Math.round((1 - compressed.size / file.size) * 100);
+              console.log(
+                `📦 Compressed: ${file.name} (${(file.size/1024).toFixed(0)}KB) → ` +
+                `${newName} (${(compressed.size/1024).toFixed(0)}KB) -${pct}%`
+              );
+              resolve(compressed);
+            } else {
+              console.log(`📦 Skipped (no benefit): ${file.name}`);
+              resolve(file);
+            }
+          }, 'image/webp', COMPRESS_WEBP_QUALITY);
+        };
+
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          console.warn(`📦 Could not compress: ${file.name}`);
+          resolve(file);
+        };
+
+        img.src = url;
+      });
+    }
+
+    async function compressFileList(files) {
+      const total = files.length;
+      let imageCount = 0;
+      for (const f of files) {
+        if (isCompressibleImage(f)) imageCount++;
+      }
+
+      if (imageCount === 0) return files;
+
+      showCompressOverlay(
+        `Comprimiendo ${imageCount} ${imageCount === 1 ? 'imagen' : 'imágenes'}…`,
+        '0%'
+      );
+
+      const compressed = [];
+      let done = 0;
+
+      for (const file of files) {
+        const result = await compressImageFile(file);
+        compressed.push(result);
+        if (isCompressibleImage(file)) {
+          done++;
+          const prog = document.getElementById('compress-progress');
+          if (prog) prog.textContent = `${done}/${imageCount} — ${Math.round(done/imageCount*100)}%`;
+        }
+      }
+
+      hideCompressOverlay();
+      return compressed;
+    }
+
+    // ─── FILE INPUT INTERCEPTION ────────────────────────────────────
+    // Captures file input changes in the capturing phase (BEFORE CMS handlers)
+    // to replace original files with compressed versions.
+
+    let isReDispatching = false;
+
+    document.addEventListener('change', async (e) => {
+      // Avoid infinite loop from our re-dispatched event
+      if (isReDispatching) return;
+
+      const input = e.target;
+      if (!(input instanceof HTMLInputElement) || input.type !== 'file') return;
+      if (!input.files || input.files.length === 0) return;
+
+      // Check if any file needs compression
+      const hasCompressible = Array.from(input.files).some(isCompressibleImage);
+      if (!hasCompressible) return;
+
+      // Stop the event from reaching CMS handlers
+      e.stopImmediatePropagation();
+
+      try {
+        // Compress all files
+        const compressed = await compressFileList(Array.from(input.files));
+
+        // Create a new FileList with compressed files using DataTransfer
+        const dt = new DataTransfer();
+        for (const file of compressed) {
+          dt.items.add(file);
+        }
+        input.files = dt.files;
+
+        // Re-dispatch the change event for the CMS to pick up
+        isReDispatching = true;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        isReDispatching = false;
+      } catch (err) {
+        console.error('Image compression error:', err);
+        hideCompressOverlay();
+        // Let the original event through on error — don't block the user
+        isReDispatching = true;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        isReDispatching = false;
+      }
+    }, true); // ← CAPTURING phase: fires before CMS handlers
+
+    // ─── DRAG & DROP INTERCEPTION ───────────────────────────────────
+    // Also intercept drag-and-drop events to compress dropped images
+
+    document.addEventListener('drop', async (e) => {
+      if (isReDispatching) return;
+      if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
+
+      const files = Array.from(e.dataTransfer.files);
+      const hasCompressible = files.some(isCompressibleImage);
+      if (!hasCompressible) return;
+
+      // For drop events, we can't easily re-dispatch with modified files.
+      // Instead, we compress and replace the files in the DataTransfer.
+      // Some browsers don't allow modifying DataTransfer after drop, so
+      // we use a workaround: intercept the FileReader calls.
+    }, true);
+
+    // ─── FILEREADER INTERCEPTION ────────────────────────────────────
+    // As a safety net, intercept FileReader to compress images when they
+    // are read (covers drag-and-drop and any other file access patterns)
+
+    const compressedCache = new WeakMap();
+
+    const origReadAsArrayBuffer = FileReader.prototype.readAsArrayBuffer;
+    const origReadAsDataURL = FileReader.prototype.readAsDataURL;
+
+    function createCompressingReader(originalMethod) {
+      return function(blob) {
+        const self = this;
+
+        // Only intercept large image files
+        if (!(blob instanceof File) || !isCompressibleImage(blob)) {
+          return originalMethod.call(self, blob);
+        }
+
+        // Check cache first
+        if (compressedCache.has(blob)) {
+          return originalMethod.call(self, compressedCache.get(blob));
+        }
+
+        // Compress then read
+        compressImageFile(blob).then(compressed => {
+          compressedCache.set(blob, compressed);
+          originalMethod.call(self, compressed);
+        }).catch(() => {
+          originalMethod.call(self, blob);
+        });
+      };
+    }
+
+    FileReader.prototype.readAsArrayBuffer = createCompressingReader(origReadAsArrayBuffer);
+    FileReader.prototype.readAsDataURL = createCompressingReader(origReadAsDataURL);
+
+    // ─── CMS BOOTSTRAP ─────────────────────────────────────────────
     // Le decimos a Sveltia que no se auto-inicialice hasta llamar a CMS.init()
     window.CMS_MANUAL_INIT = true;
 
