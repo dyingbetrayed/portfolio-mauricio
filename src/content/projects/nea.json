@@ -2,14 +2,15 @@
   "category": "category_3",
   "id": "05",
   "name": "NEA$",
+  "date": "2022-01-01",
   "location": "Medellín, CO",
   "color": "#96dfb0",
-  "tagline": "Una pieza de merch desarrollada alrededor del universo visual de NEA$.",
+  "tagline": "Una identidad musical que encontró otra forma de sonar.",
   "services": "Diseño de apparel · Diseño gráfico · Merchandising",
   "sections": [
     {
       "label": "La pieza",
-      "paragraphs": "NEA$ parte de una exploración gráfica alrededor de la identidad del sello y su universo visual. La camisa se convierte en el soporte principal para desarrollar una pieza con carácter propio, donde el diseño gráfico adquiere el protagonismo.\n\nEsta pieza funciona además como antecedente del proyecto NEA$ | Junín, donde el lenguaje desarrollado alrededor de la prenda se convirtió posteriormente en un universo mucho más amplio."
+      "paragraphs": "NEA$ parte de una exploración gráfica alrededor de la identidad del sello y su universo visual. La camisa se convierte en el soporte principal para desarrollar una pieza con carácter propio, donde el diseño gráfico adquiere el protagonismo.\n\nEstas pieza funcionan además como antecedente del proyecto NEA$ | Junín, donde el lenguaje desarrollado alrededor de la prenda se convirtió posteriormente en un universo mucho más amplio."
     }
   ],
   "note": "",
@@ -18,6 +19,5 @@
     "/work/merch/nea/merch-24-.webp",
     "/work/merch/nea/merch-25-.webp",
     "/work/merch/nea/merch-26-.webp"
-  ],
-  "date": "2022-01-01"
+  ]
 }
