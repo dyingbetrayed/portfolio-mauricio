@@ -30,9 +30,12 @@ collections:
       - label: "Ajustes del Sitio (Logo)"
         name: "site_settings"
         file: "src/content/site_settings.json"
+        media_folder: "/public/index"
+        public_folder: "/index"
         fields:
           - { label: "Texto del Logo", name: "logo_text", widget: "string", default: "Mauricio Atencia" }
           - { label: "Imagen del Logo (Opcional — dejar vacío para usar texto)", name: "logo_image", widget: "file", required: false }
+          - { label: "Favicon / Ícono de Pestaña (ICO, PNG, SVG — dejar vacío para usar el predeterminado)", name: "favicon", widget: "file", required: false, hint: "Se muestra en la pestaña del navegador. Recomendado: 32×32 px en formato .ico o .png" }
 
       - label: "Configuración Ikeneas"
         name: "ikeneas"
