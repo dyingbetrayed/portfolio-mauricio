@@ -2,13 +2,14 @@
   "category": "category_3",
   "id": "01",
   "name": "trance factory",
+  "date": "2026-01-01",
   "location": "Bogotá, CO",
   "color": "#00e32c",
   "tagline": "Una identidad musical que también se puede vestir.",
   "services": "Merchandising · Diseño de apparel · Dirección de arte",
   "sections": [
     {
-      "label": "El proyecto",
+      "label": "La pieza",
       "paragraphs": "La propuesta lleva el universo de Trance Factory al terreno del merchandising, convirtiendo la identidad del proyecto musical en una pieza que puede existir más allá de la música.\n\nEl diseño busca que la prenda funcione como un objeto de identidad para quienes hacen parte de la escena, utilizando el apparel como una extensión del lenguaje visual del proyecto."
     }
   ],
@@ -19,6 +20,5 @@
     "/work/merch/departamento-trance-factory/merch-47-.webp",
     "/work/merch/departamento-trance-factory/merch-48-.webp",
     "/work/merch/departamento-trance-factory/merch-49-.webp"
-  ],
-  "date": "2026-01-01"
+  ]
 }
