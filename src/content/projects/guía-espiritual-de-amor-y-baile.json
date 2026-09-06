@@ -2,6 +2,7 @@
   "category": "category_3",
   "id": "07",
   "name": "guía espiritual",
+  "date": "2020-01-01",
   "location": "Medellín, CO",
   "color": "#f2cbaf",
   "tagline": "Una especie de guía para moverse entre el amor, la música y la pista de baile.",
@@ -9,7 +10,7 @@
   "sections": [
     {
       "label": "La pieza",
-      "paragraphs": "“Guía espiritual de amor y baile” parte de la idea de convertir una frase en una especie de manifiesto. El proyecto utiliza recursos editoriales y gráficos para mezclar humor, cultura de baile y expresión personal.\n\nLa prenda funciona así como un objeto cultural: una pieza que no solamente identifica, sino que comunica una actitud."
+      "paragraphs": "“Guía espiritual de amor y baile” convierte una frase en una especie de manifiesto.\n\nRecursos editoriales, gráfica, humor y cultura de baile se encuentran en una pieza que funciona al mismo tiempo como prenda y como declaración."
     }
   ],
   "note": "",
@@ -17,6 +18,5 @@
     "/work/merch/guía-espiritual-de-amor-y-baile/merch-2565-.webp",
     "/work/merch/guía-espiritual-de-amor-y-baile/merch-28-.webp",
     "/work/merch/guía-espiritual-de-amor-y-baile/merch-29-.webp"
-  ],
-  "date": "2020-01-01"
+  ]
 }
