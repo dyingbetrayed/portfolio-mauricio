@@ -5,9 +5,14 @@
   "date": "2026-07-05",
   "location": "Cali, CO",
   "color": "#ff6a00",
-  "tagline": "",
-  "services": "branding,naming,dirección de arte, packaging",
-  "sections": [],
+  "tagline": "De un nombre a una experiencia que se puede recorrer.",
+  "services": "Naming · Branding · Identidad visual · Dirección de arte · Retail",
+  "sections": [
+    {
+      "label": "La idea",
+      "paragraphs": "Pitao parte de la construcción de una marca desde cero. El proyecto comenzó con la creación del nombre y continuó con el desarrollo del logo, la conceptualización y la construcción de su identidad visual.\n\nLa propuesta llevó ese universo al espacio físico, desarrollando una experiencia de retail donde la marca no solo se reconoce, sino que también se puede recorrer y vivir."
+    }
+  ],
   "note": "Todos los derechos reservados a Enplanos.",
   "images": [
     "/work/branding/IMG_1978.png",
