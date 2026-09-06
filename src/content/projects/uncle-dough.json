@@ -1,25 +1,24 @@
 {
-  "color": "#5c7bcc",
+  "category": "category_1",
+  "id": "06",
   "name": "uncle dough",
+  "date": "2025-01-01",
+  "location": "Medellín, CO",
+  "color": "#5c7bcc",
+  "tagline": "Una panadería que necesitaba reconocerse antes de abrir la caja.",
+  "services": "Branding · Identidad visual",
   "sections": [
     {
-      "paragraphs": "Uncle Dough parte de la idea de convertir una panadería en un personaje. El reto era alejarse de los códigos gráficos tradicionales de la categoría y construir una marca más cercana, memorable y reconocible.\n\nLa identidad utiliza el nombre como punto de partida para desarrollar una personalidad visual cálida y particular, llevando el concepto del “tío” a diferentes recursos gráficos y aplicaciones para crear una marca con una historia que contar.",
-      "label": "Sobre el proyecto"
+      "label": "La identidad",
+      "paragraphs": "Uncle Dough parte de la necesidad de construir una identidad propia para una panadería y encontrar una expresión que pudiera reconocerse más allá del producto.\n\nEl trabajo se concentró en desarrollar el logo y llevar su lenguaje gráfico al packaging, haciendo que los empaques también fueran parte de la identidad y de la experiencia de marca."
     }
   ],
-  "tagline": "Una panadería con nombre de personaje y personalidad propia.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/branding/uncle-dough/mesa-de-trabajo-50.webp",
     "/work/branding/uncle-dough/mesa-de-trabajo-51.webp",
     "/work/branding/uncle-dough/mesa-de-trabajo-52.webp",
     "/work/branding/uncle-dough/mesa-de-trabajo-53.webp",
     "/work/branding/uncle-dough/mesa-de-trabajo-54.webp"
-  ],
-  "id": "06",
-  "services": [
-    "Branding · Identidad visual"
-  ],
-  "category": "category_1",
-  "date": "2025-01-01"
+  ]
 }
