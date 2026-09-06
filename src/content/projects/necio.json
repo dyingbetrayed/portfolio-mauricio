@@ -1,7 +1,8 @@
 {
-  "category": "category_2",
+  "category": "category_4",
   "id": "02",
   "name": "NECIO",
+  "date": "2023-01-01",
   "location": "Medellín, CO",
   "color": "#e2d4c3",
   "tagline": "NECIO nació de una colaboración entre NEA$ y Artificio y terminó convirtiéndose en una palabra con vida propia.",
@@ -23,6 +24,5 @@
     "/work/art-direction/necio/merch-20-.webp",
     "/work/art-direction/necio/merch-21-.webp",
     "/work/art-direction/necio/merch-22-.webp"
-  ],
-  "date": "2023-01-01"
+  ]
 }
