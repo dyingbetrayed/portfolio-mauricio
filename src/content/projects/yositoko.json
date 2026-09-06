@@ -1,25 +1,24 @@
 {
-  "color": "#ff3d2b",
+  "category": "category_1",
+  "id": "09",
   "name": "yositoko",
+  "date": "2025-01-01",
+  "location": "Medellín, CO",
+  "color": "#ff3d2b",
+  "tagline": "Nostalgia colombiana, cultura anime y electrónica en un mismo universo visual.",
+  "services": "Branding · Diseño de logo",
   "sections": [
     {
       "label": "El concepto",
-      "paragraphs": "Yositoko es un programa colombiano que mezcla nostalgia, cultura anime y música electrónica en un mismo universo. El punto de partida de su identidad fue un kanji realizado específicamente para escribir “Yositoko” por una especialista en este lenguaje, vinculada profesionalmente al mundo del anime.\n\nA partir de ese kanji desarrollé el logotipo buscando que la escritura occidental y japonesa convivieran dentro de una misma construcción gráfica. Los dos lenguajes se convierten así en parte integral de la identidad, en lugar de funcionar como elementos decorativos separados."
+      "paragraphs": "Yositoko es un programa colombiano que mezcla nostalgia, cultura anime y música electrónica en un mismo universo.\n\nEl punto de partida fue un kanji realizado específicamente para escribir “Yositoko”. A partir de esa construcción desarrollé el logotipo buscando que la escritura occidental y japonesa convivieran dentro de una misma forma, haciendo que ambos lenguajes fueran parte de la identidad."
     }
   ],
-  "tagline": "Nostalgia colombiana, cultura anime y electrónica en un mismo universo visual.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/branding/yositoko/mesa-de-trabajo-68.webp",
     "/work/branding/yositoko/mesa-de-trabajo-69.webp",
     "/work/branding/yositoko/mesa-de-trabajo-70.webp",
     "/work/branding/yositoko/mesa-de-trabajo-71.webp",
     "/work/branding/yositoko/mesa-de-trabajo-72.webp"
-  ],
-  "id": "09",
-  "services": [
-    "Branding · Diseño de logo · Dirección de arte"
-  ],
-  "category": "category_1",
-  "date": "2025-01-01"
+  ]
 }
