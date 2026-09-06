@@ -1,15 +1,19 @@
 {
-  "color": "#8728db",
+  "category": "category_1",
+  "id": "08",
   "name": "viral music",
+  "date": "2023-01-01",
+  "location": "Bogotá, CO",
+  "color": "#8728db",
+  "tagline": "Del logo a imaginar cómo una marca podía ocupar un espacio.",
+  "services": "Branding · Concepto de marca",
   "sections": [
     {
       "label": "La identidad",
-      "paragraphs": "Viral Music necesitaba construir una identidad capaz de representar la empresa más allá de su presencia digital. El proyecto comprendió el desarrollo del branding y concepto del logo, junto con diferentes aplicaciones para visualizar cómo podía existir físicamente.\n\nLos mockups y la papelería permitieron llevar la identidad a espacios y puntos de contacto concretos, ayudando a construir una visión de la marca como sistema y no únicamente como logotipo."
+      "paragraphs": "Viral Music necesitaba construir una identidad capaz de existir más allá de su presencia digital.\n\nEl proyecto comprendió el desarrollo del branding y el concepto del logo, junto con diferentes aplicaciones para explorar cómo podía vivir físicamente. Los mockups y la papelería ayudaron a llevar la identidad a espacios y puntos de contacto concretos, construyendo una visión de la marca como sistema y no únicamente como logotipo."
     }
   ],
-  "tagline": "El proyecto llevó el branding desde el logo hasta diferentes aplicaciones físicas para construir una visión más completa de la empresa.",
   "note": "Todos los derechos son reservados a Casa Manglar.",
-  "location": "Bogotá, CO",
   "images": [
     "/work/branding/viral-music/mesa-de-trabajo-18.webp",
     "/work/branding/viral-music/mesa-de-trabajo-19.webp",
@@ -24,11 +28,5 @@
     "/work/branding/viral-music/mesa-de-trabajo-28.webp",
     "/work/branding/viral-music/mesa-de-trabajo-29.webp",
     "/work/branding/viral-music/mesa-de-trabajo-30.webp"
-  ],
-  "id": "08",
-  "services": [
-    "Branding · Concepto de marca"
-  ],
-  "category": "category_1",
-  "date": "2023-01-01"
+  ]
 }
