@@ -6,8 +6,13 @@
   "location": "Medellín, CO",
   "color": "#a33636",
   "tagline": "Una bebida que encontró en su empaque una forma de reconocerse.",
-  "services": "branding, packaging",
-  "sections": [],
+  "services": "Branding · Diseño de logo · Dirección de arte · Retail",
+  "sections": [
+    {
+      "label": "La identidad",
+      "paragraphs": "Agua de Kéfir parte de la creación de una identidad capaz de darle una expresión propia a la marca. El trabajo comenzó con el desarrollo del logo y la conceptualización de su universo visual, para después llevarlo al espacio de retail. Así, la identidad se extiende más allá de la marca gráfica y encuentra diferentes formas de aparecer en la experiencia física."
+    }
+  ],
   "note": "Todos los derechos reservados a Enplanos.",
   "images": [
     "/work/branding/agu-de-kéfir/IMG_1966.png",
