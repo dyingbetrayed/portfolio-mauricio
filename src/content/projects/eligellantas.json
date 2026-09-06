@@ -1,14 +1,19 @@
 {
-  "color": "#da131b",
+  "category": "category_1",
+  "id": "08",
   "name": "eligellantas",
+  "date": "2025-01-01",
+  "location": "Medellín, CO",
+  "color": "#da131b",
+  "tagline": "Una marca que necesitaba cambiar de rumbo sin perder el camino.",
+  "services": "Rediseño de logo · Rebranding",
   "sections": [
     {
-      "label": "Sobre el proyecto",
-      "paragraphs": "Eligellantas necesitaba actualizar su identidad visual y llevar su logo hacia una expresión más contemporánea. El reto estaba en evolucionar una marca vinculada a un sector altamente competitivo, donde la claridad y el reconocimiento son fundamentales.\n\nEl trabajo se concentró en rediseñar el logo y ajustar sus elementos para conseguir una identidad más actual, limpia y funcional. La propuesta busca conservar el reconocimiento de la marca mientras mejora su presencia y capacidad de adaptación en diferentes aplicaciones."
+      "label": "El rediseño",
+      "paragraphs": "Eligellantas quería actualizar su logo sin desprenderse de los elementos que ya hacían reconocible a la marca.\n\nEl trabajo se concentró en rediseñar su construcción y establecer una paleta de color más definida y consistente, buscando una expresión más actual sin romper con lo que ya existía."
     }
   ],
-  "tagline": "Una marca que necesitaba cambiar de rumbo sin perder el camino.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/branding/eligellantas/a-21-.webp",
     "/work/branding/eligellantas/a-22-.webp",
@@ -23,11 +28,5 @@
     "/work/branding/eligellantas/el-10-.webp",
     "/work/branding/eligellantas/el-11-.webp",
     "/work/branding/eligellantas/el-12-.webp"
-  ],
-  "id": "08",
-  "services": [
-    "Rediseño de logo · Rebranding"
-  ],
-  "category": "category_1",
-  "date": "2025-01-01"
+  ]
 }
