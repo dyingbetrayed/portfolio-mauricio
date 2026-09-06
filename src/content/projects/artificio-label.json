@@ -1,23 +1,22 @@
 {
-  "color": "#000000",
+  "category": "category_2",
+  "id": "02",
   "name": "artificio label",
+  "date": "2021-01-01",
+  "location": "Medellín, CO",
+  "color": "#000000",
+  "tagline": "Un tour convertido en un universo gráfico.",
+  "services": "Art Direction · Concepto · Diseño gráfico",
   "sections": [
     {
-      "paragraphs": "En 2021 dirigí la propuesta gráfica del tour realizado por el sello paisa Artificio, desarrollando el lenguaje visual que acompañó sus diferentes piezas de comunicación.\n\nEl proyecto parte del universo del sello para convertir el tour en una experiencia gráfica coherente, donde cada aplicación funciona como parte de una misma dirección visual.",
-      "label": "La dirección"
+      "label": "La dirección",
+      "paragraphs": "En 2021 dirigí la propuesta gráfica del tour realizado por el sello paisa Artificio.\n\nEl proyecto tomó el universo del sello como punto de partida para desarrollar un lenguaje visual que recorriera sus diferentes piezas y convirtiera el tour en una experiencia gráfica coherente."
     }
   ],
-  "tagline": "Para el tour de Artificio desarrollé una propuesta gráfica que llevó la identidad del sello a diferentes momentos y piezas de comunicación.",
-  "location": "Medellín, CO",
+  "note": "",
   "images": [
     "/work/art-direction/artificio-label/f-12-.webp",
     "/work/art-direction/artificio-label/f-13-.webp",
     "/work/art-direction/artificio-label/f-14-.webp"
-  ],
-  "id": "02",
-  "services": [
-    "Art Direction · Concepto · Diseño gráfico"
-  ],
-  "category": "category_2",
-  "date": "2021-01-01"
+  ]
 }
