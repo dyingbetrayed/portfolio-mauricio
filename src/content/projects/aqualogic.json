@@ -1,15 +1,19 @@
 {
-  "color": "#274689",
+  "category": "category_1",
+  "id": "08",
   "name": "aqualogic",
+  "date": "2025-12-01",
+  "location": "Quito, EC",
+  "color": "#274689",
+  "tagline": "Evolucionar sin perder identidad.",
+  "services": "Rediseño de logo · Identidad visual",
   "sections": [
     {
       "label": "El concepto",
       "paragraphs": "Aqualogic buscaba evolucionar su identidad hacia una expresión más actual, limpia y consistente. El proyecto se concentró en actualizar el logo y construir una presencia visual más definida para la marca.\n\nEl resultado reorganiza sus principales elementos gráficos y establece una expresión más precisa y adaptable, manteniendo el vínculo con la identidad que ya tenía."
     }
   ],
-  "tagline": "Evolucionar sin perder identidad.",
   "note": "Todos los derechos reservados a Símbolo Agencia Digital.",
-  "location": "Quito, EC",
   "images": [
     "/work/branding/aqualogic/a-1-.webp",
     "/work/branding/aqualogic/a-2-.webp",
@@ -19,11 +23,5 @@
     "/work/branding/aqualogic/a-6-.webp",
     "/work/branding/aqualogic/a-7-.webp",
     "/work/branding/aqualogic/a-8-.webp"
-  ],
-  "id": "08",
-  "services": [
-    "Rediseño de logo · Identidad visual"
-  ],
-  "category": "category_1",
-  "date": "2025-01-01"
+  ]
 }
