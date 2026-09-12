@@ -11,6 +11,9 @@ const isHeroVideo = /\.(mp4|webm|ogg|mov)$/i.test(heroMedia);
 const aboutImage = aboutData.image || "";
 const logoImage = siteSettings.logo_image || "";
 const faviconSrc = (siteSettings as { favicon?: string }).favicon || "";
+const siteUrl = "https://m-atencia.vercel.app";
+// Las redes no reproducen el video del hero; usan esta imagen como su preview.
+const homePreviewImage = `${siteUrl}/hero-poster.jpg`;
 ---
 
 <!doctype html>
@@ -35,7 +38,7 @@ const faviconSrc = (siteSettings as { favicon?: string }).favicon || "";
 		<title>Mauricio Atencia — Portfolio</title>
 		<!-- Open Graph base -->
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://m-atencia.vercel.app/" />
+		<meta property="og:url" content={`${siteUrl}/`} />
 		<meta property="og:title" content="Mauricio Atencia — Portfolio" />
 		<meta
 			property="og:description"
@@ -43,11 +46,20 @@ const faviconSrc = (siteSettings as { favicon?: string }).favicon || "";
 		/>
 		<meta
 			property="og:image"
-			content="https://m-atencia.vercel.app/LA-FICHA-LOGO.png"
+			content={homePreviewImage}
 		/>
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:width" content="1920" />
+		<meta property="og:image:height" content="1080" />
 		<meta property="og:site_name" content="Mauricio Atencia" />
 		<meta property="og:locale" content="es_CO" />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Mauricio Atencia — Portfolio" />
+		<meta
+			name="twitter:description"
+			content="Portfolio de diseño gráfico de Mauricio Atencia — Branding, Social Media, Flyers y Merch."
+		/>
+		<meta name="twitter:image" content={homePreviewImage} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
