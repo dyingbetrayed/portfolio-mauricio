@@ -68,6 +68,21 @@ export function getMediaDeliveryUrl(source: string): string {
 }
 
 /**
+ * A mobile-first hero rendition derived by Cloudinary from the same source
+ * video. It is deliberately a portrait crop because the hero uses
+ * `object-fit: cover` on phones; sending a full 16:9 frame wastes most of the
+ * downloaded pixels outside the viewport.
+ */
+export function getMobileHeroVideoUrl(source: string): string {
+	if (cloudinaryResourceType(source) !== 'video') return '';
+
+	return cloudinaryUrlWithTransformation(
+		source,
+		'c_fill,g_center,ar_9:16,w_720/f_auto:video/q_auto:eco',
+	);
+}
+
+/**
  * Extracts the first video frame as a JPEG poster. Cloudinary creates this
  * derived image automatically; no poster file is uploaded or managed by the
  * editor. Returns an empty string for legacy/local videos.
@@ -78,6 +93,16 @@ export function getVideoPosterUrl(source: string): string {
 	return cloudinaryUrlWithTransformation(
 		source,
 		'c_limit,w_1920,h_1080/so_0/f_jpg/q_auto:good',
+	);
+}
+
+/** A lightweight portrait poster paired with getMobileHeroVideoUrl(). */
+export function getMobileHeroPosterUrl(source: string): string {
+	if (cloudinaryResourceType(source) !== 'video') return '';
+
+	return cloudinaryUrlWithTransformation(
+		source,
+		'c_fill,g_center,ar_9:16,w_720/so_0/f_jpg/q_auto:eco',
 	);
 }
 

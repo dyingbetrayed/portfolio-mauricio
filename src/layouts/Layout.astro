@@ -2,7 +2,12 @@
 import homeData from "../content/home.json";
 import aboutData from "../content/about.json";
 import siteSettings from "../content/site_settings.json";
-import { getMediaDeliveryUrl, getVideoPosterUrl, isVideoMedia } from "../utils/media";
+import {
+	getMediaDeliveryUrl,
+	getMobileHeroPosterUrl,
+	getVideoPosterUrl,
+	isVideoMedia,
+} from "../utils/media";
 
 const heroMedia =
 	homeData.hero_media ||
@@ -23,6 +28,7 @@ const homePreviewImage = isHeroVideo
 			: `${siteUrl}${deliveredHeroMedia}`
 		: `${siteUrl}/hero-poster.jpg`;
 const heroPoster = getVideoPosterUrl(heroMedia) || `${siteUrl}/hero-poster.jpg`;
+const mobileHeroPoster = getMobileHeroPosterUrl(heroMedia);
 ---
 
 <!doctype html>
@@ -85,16 +91,26 @@ const heroPoster = getVideoPosterUrl(heroMedia) || `${siteUrl}/hero-poster.jpg`;
 					/>
 				)
 			}
-			{
+		{
 				heroMedia && isHeroVideo && (
-					<link
-						rel="preload"
-						as="image"
-						href={heroPoster}
-						fetchpriority="high"
-					/>
-			)
-		}
+					<>
+						<link
+							rel="preload"
+							as="image"
+							href={heroPoster}
+							media="(min-width: 701px)"
+							fetchpriority="high"
+						/>
+						<link
+							rel="preload"
+							as="image"
+							href={mobileHeroPoster || heroPoster}
+							media="(max-width: 700px)"
+							fetchpriority="high"
+						/>
+					</>
+				)
+			}
 		{
 			aboutImage && (
 				<link

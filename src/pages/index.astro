@@ -5,21 +5,28 @@ import AboutSection from '../components/AboutSection.astro';
 import WorkSlide from '../components/WorkSlide.astro';
 import ContactSection from '../components/ContactSection.astro';
 import homeData from '../content/home.json';
-import { getMediaDeliveryUrl, getVideoPosterUrl, isVideoMedia } from '../utils/media';
+import {
+	getMediaDeliveryUrl,
+	getMobileHeroPosterUrl,
+	getMobileHeroVideoUrl,
+	getVideoPosterUrl,
+	isVideoMedia,
+} from '../utils/media';
 
 const heroMediaSource = homeData.hero_media || (homeData as any).hero_image || '';
 const heroMedia = getMediaDeliveryUrl(heroMediaSource);
 const isVideo = isVideoMedia(heroMediaSource);
 const heroPoster = getVideoPosterUrl(heroMediaSource) || '/hero-poster.jpg';
 // Conserva el corte móvil actual solo mientras el hero legacy siga activo.
-// Todo video nuevo (Cloudinary) usa un único original y recibe la versión
-// adecuada para cada dispositivo automáticamente.
+// Para los videos nuevos Cloudinary deriva un corte vertical liviano desde el
+// mismo original: no hay un segundo archivo que el editor tenga que subir.
 const mobileHeroMediaSource =
 	(homeData as { hero_media_mobile?: string }).hero_media_mobile ||
 	(heroMediaSource === '/mam-web.mp4' ? '/mam-web-mobile.mp4' : '');
 const mobileHeroMedia = mobileHeroMediaSource
 	? getMediaDeliveryUrl(mobileHeroMediaSource)
-	: '';
+	: getMobileHeroVideoUrl(heroMediaSource);
+const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 ---
 
 <Layout>
@@ -28,18 +35,19 @@ const mobileHeroMedia = mobileHeroMediaSource
 			<div class="hero-media" aria-hidden="true">
 				{isVideo ? (
 					<video
-    class="hero-video"
-		src={heroMedia}
-    autoplay
-    muted
-    loop
-    playsinline
-    webkit-playsinline
-    preload="metadata"
-    poster={heroPoster}
-    data-src-mobile={mobileHeroMedia || undefined}
-    disablePictureInPicture
-></video>
+						class="hero-video"
+						autoplay
+						muted
+						loop
+						playsinline
+						webkit-playsinline
+						preload="none"
+						data-src-desktop={heroMedia}
+						data-src-mobile={mobileHeroMedia || undefined}
+						data-poster-desktop={heroPoster}
+						data-poster-mobile={mobileHeroPoster || undefined}
+						disablePictureInPicture
+					></video>
 				) : (
 					heroMedia && (
 						<img
@@ -86,8 +94,8 @@ const mobileHeroMedia = mobileHeroMediaSource
 </Layout>
 
 <script is:inline>
-	// Autoplay fix: elige la fuente mobile/desktop ANTES de reproducir, y
-	// hace un único intento de play() en vez de varios en distintos scripts.
+	// Elige la fuente mobile/desktop ANTES de iniciar cualquier descarga. Así un
+	// teléfono no llega a pedir ni siquiera los metadatos del video desktop.
 	// En iOS, cada video.load() posterior a un play() exitoso puede tirar
 	// abajo la reproducción y sacarla de la ventana en la que Safari permite
 	// autoplay sin gesto del usuario, dejando el video pausado hasta un tap.
@@ -106,32 +114,39 @@ const mobileHeroMedia = mobileHeroMediaSource
 			}
 		}
 
-function prepareVideo(video) {
-    const mobileSrc = video.dataset.srcMobile;
+		function prepareVideo(video) {
+			const mobile = isMobileViewport();
+			const source = (mobile ? video.dataset.srcMobile : video.dataset.srcDesktop)
+				|| video.dataset.srcDesktop;
+			const poster = (mobile ? video.dataset.posterMobile : video.dataset.posterDesktop)
+				|| video.dataset.posterDesktop;
 
-    if (mobileSrc && isMobileViewport()) {
-        video.src = mobileSrc;
-    }
+			if (!source) return;
+			if (poster) video.poster = poster;
 
-    video.muted = true;
-    video.defaultMuted = true;
+			video.muted = true;
+			video.defaultMuted = true;
+			video.setAttribute('muted', '');
+			video.setAttribute('playsinline', '');
+			video.setAttribute('webkit-playsinline', '');
 
-    video.setAttribute('muted', '');
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
+			// src no existe en el HTML para que el navegador no haga una solicitud
+			// anticipada al archivo de escritorio antes de conocer el viewport.
+			video.src = source;
+			video.load();
 
-    const play = () => {
-        video.play().catch(() => {
-            // Safari puede bloquear autoplay por configuración
-        });
-    };
+			const play = () => {
+				video.play().catch(() => {
+					// Safari puede bloquear autoplay por configuración.
+				});
+			};
 
-    if (video.readyState >= 2) {
-        play();
-    } else {
-        video.addEventListener('canplay', play, { once: true });
-    }
-}
+			if (video.readyState >= 2) {
+				play();
+			} else {
+				video.addEventListener('canplay', play, { once: true });
+			}
+		}
 
 		function init() {
 			document.querySelectorAll('.hero-video').forEach((video) => {
