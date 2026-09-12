@@ -3,7 +3,7 @@
 backend:
   name: github
   repo: dyingbetrayed/portfolio-mauricio
-  branch: features/cloudinary
+  branch: main
   base_url: https://m-atencia.vercel.app
   auth_endpoint: api/auth
 
