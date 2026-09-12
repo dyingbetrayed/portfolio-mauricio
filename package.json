@@ -8,13 +8,15 @@
   "scripts": {
     "dev": "astro dev",
     "sync-media": "node scripts/sync-media.js",
+    "migrate:cloudinary:videos": "node --env-file=.env scripts/migrate-videos-to-cloudinary.js",
     "prebuild": "npm run sync-media && node scripts/optimize-images.js && node scripts/generate-og.js",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.1.3"
+    "astro": "^7.1.3",
+    "cloudinary": "^2.11.0"
   },
   "devDependencies": {
     "sharp": "^0.35.4"

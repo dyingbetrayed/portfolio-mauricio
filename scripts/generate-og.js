@@ -22,6 +22,10 @@ const projectsDir = path.resolve(__dirname, '../src/content/projects');
 const publicDir = path.resolve(__dirname, '../public');
 const ogDir = path.resolve(publicDir, 'og');
 
+function isRasterImage(value) {
+  return /\.(avif|jpe?g|png|tiff?|webp)(?:$|[?#])/i.test(value);
+}
+
 if (!fs.existsSync(ogDir)) {
   fs.mkdirSync(ogDir, { recursive: true });
 }
@@ -38,6 +42,9 @@ async function generateOgImages() {
 
       if (project.images && project.images.length > 0) {
         const firstImage = project.images[0];
+        if (!isRasterImage(firstImage) || /^https?:\/\//i.test(firstImage)) {
+          continue;
+        }
         const cleanImagePath = firstImage.split('?')[0].split('#')[0];
         const absoluteImagePath = path.join(publicDir, cleanImagePath);
 

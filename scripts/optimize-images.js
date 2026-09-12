@@ -34,6 +34,10 @@ const WEBP_QUALITY = 82;  // Prácticamente indistinguible del original en panta
 const MAX_WIDTH = 2400;   // Suficiente para pantallas 4K
 const MAX_HEIGHT = 2400;
 
+function isOptimizableRasterImage(value) {
+  return /\.(avif|jpe?g|png|tiff?|webp)(?:$|[?#])/i.test(value);
+}
+
 // Leer categorías y generar slugs (misma lógica que projects.ts)
 const categoriesData = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../src/content/categories.json'), 'utf-8')
@@ -94,6 +98,15 @@ async function optimizeImages() {
 
     for (const imagePath of project.images) {
       const cleanPath = imagePath.split('?')[0].split('#')[0];
+
+      // Sharp only handles local raster images. Videos are delivered through
+      // Cloudinary and external media must never be rewritten during build.
+      if (!isOptimizableRasterImage(cleanPath) || /^https?:\/\//i.test(cleanPath)) {
+        newImages.push(imagePath);
+        totalSkipped++;
+        continue;
+      }
+
       const absoluteSrc = path.join(publicDir, cleanPath);
 
       const finalPath = `/work/${categorySlug}/${projectSlug}/`;

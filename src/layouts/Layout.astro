@@ -2,18 +2,27 @@
 import homeData from "../content/home.json";
 import aboutData from "../content/about.json";
 import siteSettings from "../content/site_settings.json";
+import { getMediaDeliveryUrl, getVideoPosterUrl, isVideoMedia } from "../utils/media";
 
 const heroMedia =
 	homeData.hero_media ||
 	(homeData as { hero_image?: string }).hero_image ||
 	"";
-const isHeroVideo = /\.(mp4|webm|ogg|mov)$/i.test(heroMedia);
+const deliveredHeroMedia = getMediaDeliveryUrl(heroMedia);
+const isHeroVideo = isVideoMedia(heroMedia);
 const aboutImage = aboutData.image || "";
 const logoImage = siteSettings.logo_image || "";
 const faviconSrc = (siteSettings as { favicon?: string }).favicon || "";
 const siteUrl = "https://m-atencia.vercel.app";
 // Las redes no reproducen el video del hero; usan esta imagen como su preview.
-const homePreviewImage = `${siteUrl}/hero-poster.jpg`;
+const homePreviewImage = isHeroVideo
+	? getVideoPosterUrl(heroMedia) || `${siteUrl}/hero-poster.jpg`
+	: deliveredHeroMedia
+		? /^https?:\/\//i.test(deliveredHeroMedia)
+			? deliveredHeroMedia
+			: `${siteUrl}${deliveredHeroMedia}`
+		: `${siteUrl}/hero-poster.jpg`;
+const heroPoster = getVideoPosterUrl(heroMedia) || `${siteUrl}/hero-poster.jpg`;
 ---
 
 <!doctype html>
@@ -67,23 +76,23 @@ const homePreviewImage = `${siteUrl}/hero-poster.jpg`;
 			rel="stylesheet"
 		/>
 		{
-			heroMedia && !isHeroVideo && (
-				<link
-					rel="preload"
-					as="image"
-					href={heroMedia}
-					fetchpriority="high"
-				/>
-			)
-		}
-		{
-			heroMedia && isHeroVideo && (
-				<link
-					rel="preload"
-					as="video"
-					href={heroMedia}
-					fetchpriority="high"
-				/>
+				heroMedia && !isHeroVideo && (
+					<link
+						rel="preload"
+						as="image"
+						href={deliveredHeroMedia}
+						fetchpriority="high"
+					/>
+				)
+			}
+			{
+				heroMedia && isHeroVideo && (
+					<link
+						rel="preload"
+						as="image"
+						href={heroPoster}
+						fetchpriority="high"
+					/>
 			)
 		}
 		{

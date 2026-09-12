@@ -1,6 +1,7 @@
 ---
 import { projectCategories } from '../data/projects';
 import type { Project, ProjectCategory } from '../data/projects';
+import { getVideoPosterUrl, isVideoMedia } from '../utils/media';
 
 export function getStaticPaths() {
 	const paths: { params: { id: string }; props: { type: 'category' | 'project'; data: Project | ProjectCategory; slug: string } }[] = [];
@@ -53,15 +54,31 @@ let ogImage = `${BASE_URL}/LA-FICHA-LOGO.png`;
 let ogTitle = '';
 let ogDescription = '';
 
+function toAbsoluteUrl(source: string) {
+	return /^https?:\/\//i.test(source)
+		? source
+		: `${BASE_URL}${encodeURI(source)}`;
+}
+
+function projectOgImage(project: Project, generatedOgPath: string) {
+	if (project.ogImage) return toAbsoluteUrl(project.ogImage);
+
+	const firstMedia = project.images?.[0];
+	if (!firstMedia) return `${BASE_URL}/LA-FICHA-LOGO.png`;
+	if (isVideoMedia(firstMedia)) {
+		return getVideoPosterUrl(firstMedia) || `${BASE_URL}/LA-FICHA-LOGO.png`;
+	}
+	if (/^https?:\/\//i.test(firstMedia)) return firstMedia;
+
+	return `${BASE_URL}${generatedOgPath}`;
+}
+
 if (type === 'project') {
 	const project = data as Project;
 	// generate-og.js genera las OG con nombre basado en el slug: /og/og-{slug}.jpg
 	const projectSlug = slug.split('/').pop() || slug;
 	const generatedOgPath = `/og/og-${projectSlug}.jpg`;
-	const selectedOgImage = project.ogImage || generatedOgPath || project.images?.[0];
-	ogImage = selectedOgImage
-		? `${BASE_URL}${encodeURI(selectedOgImage)}`
-		: ogImage;
+	ogImage = projectOgImage(project, generatedOgPath);
 	ogTitle = project.name;
 	ogDescription = project.tagline
 		? project.tagline.replace(/\\n/g, ' ')
@@ -70,8 +87,8 @@ if (type === 'project') {
 	const category = data as ProjectCategory;
 	// Buscamos la primera imagen del primer proyecto que tenga imágenes
 	const firstProjectWithImage = category.projects.find(p => p.images && p.images.length > 0);
-	ogImage = firstProjectWithImage?.images?.[0]
-		? `${BASE_URL}${encodeURI(firstProjectWithImage.images[0])}`
+	ogImage = firstProjectWithImage
+		? projectOgImage(firstProjectWithImage, `/og/og-${firstProjectWithImage.slug}.jpg`)
 		: ogImage;
 	ogTitle = (category as ProjectCategory).title;
 	ogDescription = `Proyectos de ${(category as ProjectCategory).title} — Mauricio Atencia`;

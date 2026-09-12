@@ -5,9 +5,21 @@ import AboutSection from '../components/AboutSection.astro';
 import WorkSlide from '../components/WorkSlide.astro';
 import ContactSection from '../components/ContactSection.astro';
 import homeData from '../content/home.json';
+import { getMediaDeliveryUrl, getVideoPosterUrl, isVideoMedia } from '../utils/media';
 
-const heroMedia = homeData.hero_media || (homeData as any).hero_image || '';
-const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
+const heroMediaSource = homeData.hero_media || (homeData as any).hero_image || '';
+const heroMedia = getMediaDeliveryUrl(heroMediaSource);
+const isVideo = isVideoMedia(heroMediaSource);
+const heroPoster = getVideoPosterUrl(heroMediaSource) || '/hero-poster.jpg';
+// Conserva el corte móvil actual solo mientras el hero legacy siga activo.
+// Todo video nuevo (Cloudinary) usa un único original y recibe la versión
+// adecuada para cada dispositivo automáticamente.
+const mobileHeroMediaSource =
+	(homeData as { hero_media_mobile?: string }).hero_media_mobile ||
+	(heroMediaSource === '/mam-web.mp4' ? '/mam-web-mobile.mp4' : '');
+const mobileHeroMedia = mobileHeroMediaSource
+	? getMediaDeliveryUrl(mobileHeroMediaSource)
+	: '';
 ---
 
 <Layout>
@@ -17,18 +29,17 @@ const isVideo = heroMedia.match(/\.(mp4|webm|ogg|mov)$/i);
 				{isVideo ? (
 					<video
     class="hero-video"
+		src={heroMedia}
     autoplay
     muted
     loop
     playsinline
     webkit-playsinline
-    preload="auto"
-    poster="/hero-poster.jpg"
-    data-src-mobile="/mam-web-mobile.mp4"
+    preload="metadata"
+    poster={heroPoster}
+    data-src-mobile={mobileHeroMedia || undefined}
     disablePictureInPicture
->
-    <source src={heroMedia} type="video/mp4" />
-</video>
+></video>
 				) : (
 					heroMedia && (
 						<img
