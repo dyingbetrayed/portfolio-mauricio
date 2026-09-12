@@ -3,6 +3,7 @@ import QuoteSimilarButton from './QuoteSimilarButton.astro';
 import Navbar from './Navbar.astro';
 import SiteBrand from './SiteBrand.astro';
 import type { Project } from '../data/projects';
+import { getMediaDeliveryUrl, getVideoPosterUrl, isVideoMedia } from '../utils/media';
 
 export interface Props {
 project: Project;
@@ -24,21 +25,24 @@ hidden
 
 <div class="project-image__gallery" tabindex="0">
 {images.map((src, idx) => {
-const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(src);
+const isVideo = isVideoMedia(src);
+const mediaSource = getMediaDeliveryUrl(src);
+const poster = getVideoPosterUrl(src);
 return (
 <figure class="project-image__figure" style={`--project-color: ${project.color};`}>
 {isVideo ? (
 <video
 class="project-image__img"
-data-src={src}
-loading="lazy"
+data-src={mediaSource}
+poster={poster || undefined}
+preload="metadata"
 autoplay loop muted playsinline
 title={`${project.name} — video ${idx + 1} de ${images.length}`}
 ></video>
 ) : (
 <img
 class="project-image__img"
-data-src={src}
+data-src={mediaSource}
 loading="lazy"
 alt={`${project.name} — imagen ${idx + 1} de ${images.length}`}
 decoding="async"

@@ -29,6 +29,14 @@ console.log('📂 Category mapping:', categoryMap);
 // All known category folder names for detection
 const allCategoryFolders = new Set(Object.values(categoryMap));
 
+function isExternalUrl(value) {
+  return /^https?:\/\//i.test(value);
+}
+
+function isVideoPath(value) {
+  return /\.(mp4|m4v|webm|ogv|ogg|mov)(?:$|[?#])/i.test(value);
+}
+
 function ensureDirSync(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
@@ -67,6 +75,13 @@ function syncMedia() {
     const newImages = [];
 
     for (const imgPath of project.images) {
+      // Cloudinary URLs and legacy videos must remain untouched. Rewriting an
+      // external URL to a local path during prebuild would break the entry.
+      if (isExternalUrl(imgPath) || isVideoPath(imgPath)) {
+        newImages.push(imgPath);
+        continue;
+      }
+
       const filename = path.basename(imgPath);
       const destFile = path.join(expectedDir, filename);
       const newPublicPath = `${expectedPrefix}${filename}`;

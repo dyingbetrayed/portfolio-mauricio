@@ -1,5 +1,11 @@
 ---
 import categories from '../../content/categories.json';
+
+const cloudinary = {
+	cloudName: import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME?.trim() || '',
+	apiKey: import.meta.env.PUBLIC_CLOUDINARY_API_KEY?.trim() || '',
+};
+const hasCloudinaryConfiguration = Boolean(cloudinary.cloudName && cloudinary.apiKey);
 ---
 <!DOCTYPE html>
 <html>
@@ -55,17 +61,37 @@ import categories from '../../content/categories.json';
       font-size: 0.9rem;
       opacity: 0.8;
     }
+    #media-setup-notice {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 100000;
+      max-width: 420px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      background: #fff3cd;
+      color: #4b3700;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+      font: 14px/1.4 sans-serif;
+    }
+    #media-setup-notice a { color: inherit; font-weight: 700; }
   </style>
 </head>
 <body>
   <div id="cms-loading">Cargando panel…</div>
+  {!hasCloudinaryConfiguration && (
+    <aside id="media-setup-notice" role="status">
+      La carga de fotos y videos está protegida hasta configurar Cloudinary. Consulta
+      <a href="https://github.com/dyingbetrayed/portfolio-mauricio/blob/main/CLOUDINARY_MEDIA_SETUP.md" target="_blank" rel="noreferrer">la guía de activación</a>.
+    </aside>
+  )}
   <div id="compress-overlay">
     <div class="spinner"></div>
     <div id="compress-status">Comprimiendo imágenes…</div>
     <div class="progress-text" id="compress-progress"></div>
   </div>
 
-  <script define:vars={{ categories }}>
+  <script define:vars={{ categories, cloudinary }}>
     // ─── IMAGE COMPRESSION ENGINE ───────────────────────────────────
     // Compresses images to WebP BEFORE Sveltia CMS sends them to GitHub.
     // This prevents "Failed to fetch" errors caused by large files.
@@ -293,6 +319,21 @@ import categories from '../../content/categories.json';
       const text = await fetch('/admin/config.yml').then(r => r.text());
       const jsyaml = await import('https://esm.sh/js-yaml@4.1.0');
       const config = jsyaml.load(text);
+
+      // Los medios del hero y de proyectos viven fuera del repositorio. El
+      // API key de Cloudinary es público por diseño; la clave secreta nunca
+      // llega al navegador ni al repositorio.
+      if (cloudinary.cloudName && cloudinary.apiKey) {
+        config.media_libraries ??= {};
+        config.media_libraries.cloudinary = {
+          config: {
+            cloud_name: cloudinary.cloudName,
+            api_key: cloudinary.apiKey
+          },
+          output_filename_only: false,
+          use_transformations: false
+        };
+      }
 
       // 2. Patch collection labels with live category names
       const dynamicOptions = [

@@ -4,6 +4,7 @@ import SiteBrand from './SiteBrand.astro';
 import type { Project } from '../data/projects';
 import { getNextProjects } from '../data/projects';
 import { readableInk } from '../utils/color';
+import { getMediaPreviewUrl } from '../utils/media';
 
 export interface Props {
 	project: Project;
@@ -33,7 +34,9 @@ const nextSlug = related[0]?.slug;
 			}
 
 			const ink = readableInk(item.color);
-			const image = item.images && item.images.length > 0 ? item.images[0] : null;
+			const image = item.images && item.images.length > 0
+				? getMediaPreviewUrl(item.images[0])
+				: null;
 
 			return (
 				<button

@@ -3,7 +3,7 @@
 backend:
   name: github
   repo: dyingbetrayed/portfolio-mauricio
-  branch: main
+  branch: features/cloudinary
   base_url: https://m-atencia.vercel.app
   auth_endpoint: api/auth
 
@@ -52,7 +52,13 @@ collections:
         name: "home"
         file: "src/content/home.json"
         fields:
-          - { label: "Fondo (Imagen o Video)", name: "hero_media", widget: "file" }
+          - label: "Fondo del hero (imagen o video)"
+            name: "hero_media"
+            widget: "file"
+            accept: "image/*,video/mp4,video/webm,video/quicktime"
+            hint: "El video se sube a Cloudinary. El póster y la versión optimizada se generan automáticamente."
+            media_libraries:
+              default: false
           - { label: "Color de fondo", name: "background_color", widget: "color" }
           - { label: "Opacidad capa base", name: "overlay_opacity", widget: "number", value_type: "float" }
           - { label: "Opacidad capa activa", name: "overlay_opacity_active", widget: "number", value_type: "float" }
@@ -117,7 +123,13 @@ collections:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
       - { label: "Derechos reservados", name: "note", widget: "string", required: false }
-      - { label: "Cargar imágenes", name: "images", widget: "file", multiple: true, required: false, hint: "Puedes arrastrar o seleccionar varios archivos a la vez." }
+      - label: "Cargar medios"
+        name: "images"
+        widget: "file"
+        multiple: true
+        required: false
+        accept: "image/*,video/mp4,video/webm,video/quicktime"
+        hint: "Imágenes: usa Recursos para comprimirlas y guardarlas en el proyecto. Videos: usa Cloudinary; se optimizan y generan póster automáticamente."
 
   - name: "projects_category_2"
     label: "Proyectos Categoría 2"
@@ -151,7 +163,13 @@ collections:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
       - { label: "Derechos reservados", name: "note", widget: "string", required: false }
-      - { label: "Cargar imágenes", name: "images", widget: "file", multiple: true, required: false, hint: "Puedes arrastrar o seleccionar varios archivos a la vez." }
+      - label: "Cargar medios"
+        name: "images"
+        widget: "file"
+        multiple: true
+        required: false
+        accept: "image/*,video/mp4,video/webm,video/quicktime"
+        hint: "Imágenes: usa Recursos para comprimirlas y guardarlas en el proyecto. Videos: usa Cloudinary; se optimizan y generan póster automáticamente."
 
   - name: "projects_category_3"
     label: "Proyectos Categoría 3"
@@ -185,7 +203,13 @@ collections:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
       - { label: "Derechos reservados", name: "note", widget: "string", required: false }
-      - { label: "Cargar imágenes", name: "images", widget: "file", multiple: true, required: false, hint: "Puedes arrastrar o seleccionar varios archivos a la vez." }
+      - label: "Cargar medios"
+        name: "images"
+        widget: "file"
+        multiple: true
+        required: false
+        accept: "image/*,video/mp4,video/webm,video/quicktime"
+        hint: "Imágenes: usa Recursos para comprimirlas y guardarlas en el proyecto. Videos: usa Cloudinary; se optimizan y generan póster automáticamente."
 
   - name: "projects_category_4"
     label: "Proyectos Categoría 4"
@@ -219,4 +243,10 @@ collections:
           - { label: "Título", name: "label", widget: "string" }
           - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
       - { label: "Derechos reservados", name: "note", widget: "string", required: false }
-      - { label: "Cargar imágenes", name: "images", widget: "file", multiple: true, required: false, hint: "Puedes arrastrar o seleccionar varios archivos a la vez." }
+      - label: "Cargar medios"
+        name: "images"
+        widget: "file"
+        multiple: true
+        required: false
+        accept: "image/*,video/mp4,video/webm,video/quicktime"
+        hint: "Imágenes: usa Recursos para comprimirlas y guardarlas en el proyecto. Videos: usa Cloudinary; se optimizan y generan póster automáticamente."
